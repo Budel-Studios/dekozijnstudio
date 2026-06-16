@@ -1,0 +1,165 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+  De Kozijnstudio — design tokens (Tailwind v4, CSS-based @theme).
+  Brand: premium, minimal, Scandinavian. Light only (no dark mode).
+  Token values come from CLAUDE.md.
+*/
+@theme {
+  /* Brand colours */
+  --color-ink: #23272a; /* antraciet — text, dark sections */
+  --color-paper: #ffffff; /* primary background */
+  --color-paper-soft: #f7f6f3; /* warm off-white background */
+  --color-wood: #c9a36b; /* natural wood — warm accents, image frames */
+  --color-wood-soft: #e3d4ba; /* lighter wood tint */
+  --color-forest: #2f4a3c; /* deep green — accents, CTAs */
+  --color-forest-hover: #263c30; /* CTA hover */
+  --color-mist: #e7e5e0; /* hairlines, surfaces */
+  --color-lime: #abe000; /* MTB Bouw brand accent — use as fill/dot/bar, or as text ONLY on dark backgrounds (low contrast on white) */
+
+  /* Typography — wired up to next/font in layout.tsx */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+
+  /* Type scale (display sizes for headings) */
+  --text-display-sm: 2rem;
+  --text-display-sm--line-height: 1.15;
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.1;
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.05;
+
+  /* Radius */
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
+
+  /* Shadows — soft, premium */
+  --shadow-soft: 0 1px 2px rgb(35 39 42 / 0.04),
+    0 8px 24px rgb(35 39 42 / 0.06);
+}
+
+/*
+ * Custom prose overrides — keeps article typography in line with the brand
+ * design system (Sora headings, ink text, forest links, lime accents).
+ */
+@layer base {
+  .prose {
+    --tw-prose-body: var(--color-ink);
+    --tw-prose-headings: var(--color-ink);
+    --tw-prose-links: var(--color-forest);
+    --tw-prose-bold: var(--color-ink);
+    --tw-prose-counters: var(--color-ink);
+    --tw-prose-bullets: var(--color-lime);
+    --tw-prose-hr: var(--color-mist);
+    --tw-prose-quotes: var(--color-ink);
+    --tw-prose-quote-borders: var(--color-lime);
+    --tw-prose-captions: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    --tw-prose-code: var(--color-ink);
+    --tw-prose-pre-code: var(--color-paper);
+    --tw-prose-pre-bg: var(--color-ink);
+    --tw-prose-th-borders: var(--color-mist);
+    --tw-prose-td-borders: var(--color-mist);
+
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .prose a {
+    font-weight: 500;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.15s;
+  }
+
+  .prose a:hover {
+    color: var(--color-forest-hover);
+  }
+
+  .prose blockquote {
+    font-style: normal;
+    font-weight: 500;
+    background-color: color-mix(in srgb, var(--color-lime) 6%, transparent);
+    border-radius: 0 0.5rem 0.5rem 0;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .prose table {
+    font-size: 0.9rem;
+  }
+
+  .prose thead th {
+    background-color: var(--color-paper-soft);
+  }
+}
+
+@layer components {
+  /*
+   * Animated lime underline for desktop nav items.
+   * Slides in from left on hover; also activates when data-open="true"
+   * (mega menu is open). Used alongside the nav-underline class in the header.
+   */
+  .nav-underline {
+    position: relative;
+  }
+  .nav-underline::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-lime);
+    border-radius: 9999px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nav-underline:hover::after,
+  .nav-underline[data-open="true"]::after {
+    transform: scaleX(1);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Visible, brand-coloured focus state for accessibility (WCAG AA). */
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-lime) 35%, transparent);
+  }
+}
