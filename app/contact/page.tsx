@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Callout } from "@/components/ui/callout";
 import { Placeholder } from "@/components/ui/placeholder";
+import { company } from "@/data/company";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -52,12 +53,16 @@ export default function ContactPage() {
             <div className="space-y-5">
               <div className="rounded-card border border-mist bg-paper-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">Telefoon</p>
-                <p className="mt-1 font-medium text-ink">Placeholder — volgt</p>
+                <p className="mt-1 font-medium text-ink">
+                  <a href={`tel:${company.telefoon.replace(/\s/g, "")}`} className="hover:text-forest">{company.telefoon}</a>
+                </p>
                 <p className="mt-1 text-sm text-ink/60">Bereikbaar op werkdagen 08:00–17:00</p>
               </div>
               <div className="rounded-card border border-mist bg-paper-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">E-mail</p>
-                <p className="mt-1 font-medium text-ink">Placeholder — volgt</p>
+                <p className="mt-1 font-medium text-ink">
+                  <a href={`mailto:${company.email}`} className="hover:text-forest">{company.email}</a>
+                </p>
                 <p className="mt-1 text-sm text-ink/60">We reageren doorgaans binnen één werkdag</p>
               </div>
               <div className="rounded-card border border-mist bg-paper-soft p-5">

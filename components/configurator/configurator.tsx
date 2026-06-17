@@ -14,6 +14,10 @@ import {
   KLEUR_CATEGORIE_LABEL,
   CONFIG_OPTIES,
   CONFIG_UITVOERING,
+  CONFIG_DRAAIRICHTING,
+  CONFIG_HANGSLUIT,
+  CONFIG_VENTILATIE_POSITIE,
+  DRAAIRICHTING_TYPES,
   SIZE_LIMITS,
   type KleurCategorie,
 } from "@/data/configurator";
@@ -25,7 +29,7 @@ import {
 } from "@/lib/configurator-price";
 import { buildHandoff, HANDOFF_KEY } from "@/lib/configurator-handoff";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
-import { montagePrefill } from "@/lib/montage";
+import { defaultCheckedIds } from "@/lib/montage";
 import { computeCheckout } from "@/lib/checkout";
 import { MontageEditor } from "@/components/offerte/montage-editor";
 import { PriceSummary } from "@/components/offerte/price-summary";
@@ -37,10 +41,13 @@ const STEPS = [
   "Afmetingen",
   "Glas",
   "Kleur",
+  "Ventilatie",
   "Uitvoering",
   "Montage",
   "Resultaat",
 ];
+
+const VENTILATIE_OPTIE = "ventilatie";
 
 export function Configurator({ initialProducttype }: { initialProducttype?: string } = {}) {
   const router = useRouter();
@@ -52,28 +59,41 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
   );
   const breakdown = computePrice(config);
 
-  // Montage-aantallen: vooringevuld uit de configuratie, totdat de klant ze
-  // zelf aanpast (dan bevroren op hun keuzes).
-  const [montageAantallen, setMontageAantallen] = useState<Record<string, number>>(
-    () => montagePrefill(initialProducttype ? { ...emptyConfig, producttype: initialProducttype } : null),
+  // Montage: standaard relevante regels aangevinkt; bevroren zodra de klant
+  // zelf iets aan-/uitvinkt. Hoeveelheden worden automatisch berekend.
+  const [montageChecked, setMontageChecked] = useState<string[]>(
+    () => defaultCheckedIds(initialProducttype ? { ...emptyConfig, producttype: initialProducttype } : null),
   );
   const [montageTouched, setMontageTouched] = useState(false);
 
   useEffect(() => {
     if (montageTouched) return;
-    setMontageAantallen(montagePrefill(config));
+    setMontageChecked(defaultCheckedIds(config));
   }, [config, montageTouched]);
 
   const totals = useMemo(
-    () => computeCheckout(config, montageAantallen),
-    [config, montageAantallen],
+    () => computeCheckout(config, montageChecked),
+    [config, montageChecked],
   );
   const hasProduct = Boolean(config.materiaal && config.producttype && config.glas);
 
-  function changeMontage(id: string, value: number) {
+  function toggleMontage(id: string, on: boolean) {
     setMontageTouched(true);
-    setMontageAantallen((a) => ({ ...a, [id]: Number.isNaN(value) ? 0 : value }));
+    setMontageChecked((cur) => (on ? [...new Set([...cur, id])] : cur.filter((x) => x !== id)));
   }
+
+  /** Ventilatierooster aan/uit: stuurt de optie 'ventilatie' aan voor de prijs. */
+  function setVentilatie(aanwezig: boolean) {
+    update({
+      opties: aanwezig
+        ? [...new Set([...config.opties, VENTILATIE_OPTIE])]
+        : config.opties.filter((o) => o !== VENTILATIE_OPTIE),
+    });
+  }
+  const ventilatieAan = config.opties.includes(VENTILATIE_OPTIE);
+  const showDraairichting = config.producttype
+    ? DRAAIRICHTING_TYPES.includes(config.producttype)
+    : false;
 
   const preselectedLabel = initialProducttype
     ? CONFIG_PRODUCTTYPES.find((p) => p.value === initialProducttype)?.label
@@ -104,7 +124,8 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
       case 2: return config.breedteCm > 0 && config.hoogteCm > 0 && config.aantal > 0;
       case 3: return Boolean(config.glas);
       case 4: return Boolean(config.kleur);
-      case 5: return Boolean(config.uitvoering);
+      case 5: return true; // ventilatie (optioneel)
+      case 6: return Boolean(config.uitvoering);
       default: return true;
     }
   })();
@@ -119,7 +140,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
   }
 
   function goToOfferte() {
-    const handoff = buildHandoff(config, montageAantallen);
+    const handoff = buildHandoff(config, montageChecked);
     try {
       sessionStorage.setItem(HANDOFF_KEY, JSON.stringify(handoff));
     } catch {
@@ -241,6 +262,25 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
             <p className="mt-4 text-sm text-ink/55">
               Oppervlak per kozijn: <strong>{breakdown.areaM2.toFixed(2)} m²</strong>
             </p>
+
+            {showDraairichting && (
+              <fieldset className="mt-7">
+                <legend className="mb-3 text-sm font-medium text-ink">
+                  Draairichting <span className="font-normal text-ink/45">(van buitenaf gezien)</span>
+                </legend>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {CONFIG_DRAAIRICHTING.map((d) => (
+                    <SelectCard
+                      key={d.value}
+                      active={config.draairichting === d.value}
+                      onClick={() => update({ draairichting: d.value })}
+                      title={d.label}
+                      description={d.description}
+                    />
+                  ))}
+                </div>
+              </fieldset>
+            )}
           </Step>
         )}
 
@@ -301,9 +341,38 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
             </fieldset>
 
             <fieldset className="mt-7">
-              <legend className="mb-3 text-sm font-medium text-ink">Extra opties (per kozijn)</legend>
+              <legend className="mb-3 text-sm font-medium text-ink">Hang- en sluitwerk</legend>
+              <div className="flex flex-wrap gap-2.5">
+                {CONFIG_HANGSLUIT.map((hs) => {
+                  const active = config.hangSluit === hs.value;
+                  return (
+                    <button
+                      key={hs.value}
+                      type="button"
+                      onClick={() => update({ hangSluit: hs.value })}
+                      aria-pressed={active}
+                      title={hs.description}
+                      className={cn(
+                        "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
+                        active ? "border-forest bg-forest/5 text-ink" : "border-mist text-ink/70 hover:bg-paper-soft",
+                      )}
+                    >
+                      <span
+                        className="size-6 rounded-full border border-black/10"
+                        style={{ backgroundColor: hs.value === "zwart" ? "#1c1c1c" : "#cfd2d4" }}
+                        aria-hidden
+                      />
+                      {hs.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            <fieldset className="mt-7">
+              <legend className="mb-3 text-sm font-medium text-ink">Extra&apos;s (per kozijn)</legend>
               <div className="grid gap-3 sm:grid-cols-3">
-                {CONFIG_OPTIES.map((o) => {
+                {CONFIG_OPTIES.filter((o) => o.value !== VENTILATIE_OPTIE).map((o) => {
                   const checked = config.opties.includes(o.value);
                   return (
                     <label
@@ -326,8 +395,68 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
           </Step>
         )}
 
-        {/* ── Step 6: Uitvoering ── */}
+        {/* ── Step 6: Ventilatie ── */}
         {step === 5 && (
+          <Step title="Ventilatierooster" hint="Optioneel — voor gezonde luchtcirculatie. U bepaalt de positie en kleur.">
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-mist p-4 transition-colors hover:bg-paper-soft">
+              <input
+                type="checkbox"
+                checked={ventilatieAan}
+                onChange={(e) => setVentilatie(e.target.checked)}
+                className="mt-0.5 size-4 accent-forest"
+              />
+              <span>
+                <span className="block text-sm font-medium text-ink">Ventilatierooster toevoegen</span>
+                <span className="mt-0.5 block text-xs text-ink/55">Aanbevolen bij goed isolerende kozijnen.</span>
+              </span>
+            </label>
+
+            {ventilatieAan && (
+              <>
+                <fieldset className="mt-6">
+                  <legend className="mb-3 text-sm font-medium text-ink">In welk glasvlak / positie?</legend>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {CONFIG_VENTILATIE_POSITIE.map((p) => (
+                      <SelectCard
+                        key={p.value}
+                        active={config.ventilatiePositie === p.value}
+                        onClick={() => update({ ventilatiePositie: p.value })}
+                        title={p.label}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset className="mt-6">
+                  <legend className="mb-3 text-sm font-medium text-ink">Kleur rooster</legend>
+                  <div className="flex flex-wrap gap-2.5">
+                    {CONFIG_KLEUREN.map((k) => {
+                      const active = config.ventilatieKleur === k.value;
+                      return (
+                        <button
+                          key={k.value}
+                          type="button"
+                          onClick={() => update({ ventilatieKleur: k.value })}
+                          aria-pressed={active}
+                          title={k.label}
+                          className={cn(
+                            "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
+                            active ? "border-forest bg-forest/5 text-ink" : "border-mist text-ink/70 hover:bg-paper-soft",
+                          )}
+                        >
+                          <span className="size-6 rounded-full border border-black/10" style={{ backgroundColor: k.hex }} aria-hidden />
+                          {k.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              </>
+            )}
+          </Step>
+        )}
+
+        {/* ── Step 7: Uitvoering ── */}
+        {step === 6 && (
           <Step title="Montage of zelf plaatsen?">
             <div className="grid gap-3 sm:grid-cols-2">
               {CONFIG_UITVOERING.map((u) => (
@@ -343,11 +472,11 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
           </Step>
         )}
 
-        {/* ── Step 7: Montage ── */}
-        {step === 6 && (
+        {/* ── Step 8: Montage ── */}
+        {step === 7 && (
           <Step
             title="Montage & werkzaamheden"
-            hint="Aantallen zijn vooringevuld op basis van uw configuratie. Pas ze aan en vink extra werk aan. Alle bedragen incl. btw."
+            hint="Standaard zijn de relevante werkzaamheden aangevinkt. Vink aan of uit — hoeveelheden en prijs berekenen we automatisch. Alle bedragen incl. btw."
           >
             {config.uitvoering === "levering" ? (
               <Callout variant="info" title="U plaatst zelf (alleen levering)">
@@ -359,7 +488,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
               </Callout>
             ) : (
               <>
-                <MontageEditor aantallen={montageAantallen} onChange={changeMontage} />
+                <MontageEditor config={config} checkedIds={montageChecked} onToggle={toggleMontage} />
                 <div className="mt-5 flex items-center justify-between border-t border-mist pt-4 text-sm">
                   <span className="text-ink/60">Montage subtotaal (incl. btw)</span>
                   <span className="font-semibold text-ink">
@@ -371,8 +500,8 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
           </Step>
         )}
 
-        {/* ── Step 8: Resultaat / projectoverzicht ── */}
-        {step === 7 && (
+        {/* ── Step 9: Resultaat / projectoverzicht ── */}
+        {step === 8 && (
           <Step title="Uw projectoverzicht">
             <div className="rounded-card border border-forest/20 bg-forest/5 p-6 text-center">
               <p className="text-sm text-ink/60">
@@ -391,10 +520,11 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
               <Callout variant="info" className="mt-4" title="ISDE-subsidie via MTB Bouw">
                 <p>
                   Indicatieve ISDE-subsidie: <strong>{formatEuro(totals.isde.subsidie)}</strong>{" "}
-                  (± {totals.isde.glasM2.toFixed(1)} m²). ISDE vereist combinatie met
-                  een andere isolatiemaatregel — onze vaste bouwpartner{" "}
+                  (± {totals.isde.glasM2.toFixed(1)} m²). Glas komt zelfstandig in
+                  aanmerking; combineren met een andere isolatiemaatregel kan dit bedrag
+                  bijna verdubbelen — onze vaste bouwpartner{" "}
                   <a href="/mtb-bouw" className="font-semibold underline underline-offset-2">MTB Bouw</a>{" "}
-                  voert die graag voor u uit. Bedrag indicatief, bijgewerkt {isdeBerekening.lastUpdated}.
+                  voert die graag uit. Indicatief, bijgewerkt {isdeBerekening.lastUpdated}.
                 </p>
               </Callout>
             )}
@@ -452,6 +582,8 @@ function LiveSummary({
   const profiel = materiaal?.profielen.find((p) => p.value === config.profiel);
 
   const kleur = CONFIG_KLEUREN.find((k) => k.value === config.kleur);
+  const extras = config.opties.filter((o) => o !== "ventilatie");
+  const ventilatieAan = config.opties.includes("ventilatie");
 
   const rows: Array<[string, string]> = [
     ["Materiaal", materiaal?.label ?? "—"],
@@ -461,15 +593,21 @@ function LiveSummary({
     ["Aantal", String(config.aantal)],
     ["Glas", CONFIG_GLAS.find((g) => g.value === config.glas)?.label ?? "—"],
     ["Kleur", kleur?.label ?? "—"],
-    ["Opties", config.opties.length ? config.opties.map((o) => CONFIG_OPTIES.find((x) => x.value === o)?.label).join(", ") : "—"],
+    ...(config.draairichting ? [["Draairichting", CONFIG_DRAAIRICHTING.find((d) => d.value === config.draairichting)?.label ?? "—"] as [string, string]] : []),
+    ...(config.hangSluit ? [["Hang- en sluitwerk", CONFIG_HANGSLUIT.find((h) => h.value === config.hangSluit)?.label ?? "—"] as [string, string]] : []),
+    ["Ventilatie", ventilatieAan ? `Ja${config.ventilatiePositie ? ` (${CONFIG_VENTILATIE_POSITIE.find((p) => p.value === config.ventilatiePositie)?.label})` : ""}` : "Nee"],
+    ["Extra's", extras.length ? extras.map((o) => CONFIG_OPTIES.find((x) => x.value === o)?.label).join(", ") : "—"],
     ["Uitvoering", CONFIG_UITVOERING.find((u) => u.value === config.uitvoering)?.label ?? "—"],
   ];
 
   return (
     <aside className="order-1 rounded-card border border-mist bg-paper-soft p-6 lg:order-2 lg:sticky lg:top-32">
-      {/* Live tekening */}
+      {/* Live tekening (buitenaanzicht) */}
       <div className="mb-5 rounded-xl border border-mist bg-paper p-4">
         <KozijnPreview config={config} />
+        <p className="mt-2 text-center text-xs uppercase tracking-widest text-ink/40">
+          Buitenaanzicht
+        </p>
       </div>
 
       <p className="text-xs font-semibold uppercase tracking-widest text-wood">

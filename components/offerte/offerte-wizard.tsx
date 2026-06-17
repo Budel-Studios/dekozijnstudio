@@ -569,8 +569,8 @@ function StepSamenvatting({ data, errors, set }: StepProps) {
         />
         <span className="text-sm leading-relaxed text-ink/70">
           Ik ga akkoord dat mijn gegevens worden gebruikt om mijn offerte op te
-          stellen en contact met mij op te nemen. Mijn gegevens worden niet voor
-          andere doeleinden gebruikt of gedeeld.
+          stellen en contact met mij op te nemen, zoals beschreven in de{" "}
+          <a href="/privacy" className="font-medium text-forest underline underline-offset-2">privacyverklaring</a>.
         </span>
       </label>
       <FieldError message={errors.privacyAkkoord} />

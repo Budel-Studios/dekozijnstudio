@@ -9,7 +9,7 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { Callout } from "@/components/ui/callout";
 import { ProcessSteps } from "@/components/ui/process-steps";
 import { ArrowUpRightIcon } from "@/components/icons";
-import { isdeInfo } from "@/data/subsidie";
+import { isdeInfo, isdeAanvraag } from "@/data/subsidie";
 
 export const metadata: Metadata = {
   title: "ISDE-subsidie voor kozijnen",
@@ -135,17 +135,47 @@ export default function IsdeSubsidiePage() {
               description: s,
             }))}
           />
-          <div className="mt-6">
-            <a
-              href={isdeInfo.rvoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-forest underline underline-offset-2 hover:no-underline"
-            >
-              {isdeInfo.rvoLabel}
-              <ArrowUpRightIcon className="size-3.5" />
-            </a>
+
+          {/* Wie doet wat */}
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            <Card>
+              <CardEyebrow>Wat doen wij</CardEyebrow>
+              <CardTitle>De Kozijnstudio</CardTitle>
+              <FeatureList className="mt-4" items={[...isdeAanvraag.watWijDoen]} />
+            </Card>
+            <Card>
+              <CardEyebrow>Wat doet u</CardEyebrow>
+              <CardTitle>U zelf (met onze hulp)</CardTitle>
+              <FeatureList className="mt-4" items={[...isdeAanvraag.watUDoet]} />
+            </Card>
           </div>
+
+          {/* Benodigdheden-checklist */}
+          <div className="mt-6 rounded-card border border-mist bg-paper p-6">
+            <p className="text-sm font-semibold text-ink">Wat heeft u nodig?</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {isdeAanvraag.benodigdheden.map((b) => (
+                <span key={b} className="rounded-pill border border-mist bg-paper-soft px-3 py-1.5 text-xs font-medium text-ink/70">
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <Callout variant="disclaimer" className="mt-6">
+            <p>
+              {isdeAanvraag.termijn}{" "}
+              <a
+                href={isdeInfo.rvoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-forest underline underline-offset-2 hover:no-underline"
+              >
+                {isdeInfo.rvoLabel}
+                <ArrowUpRightIcon className="size-3.5" />
+              </a>
+            </p>
+          </Callout>
         </Container>
       </Section>
 

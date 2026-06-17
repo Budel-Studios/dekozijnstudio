@@ -13,7 +13,7 @@ import {
   CONFIG_KLEUREN,
 } from "@/data/configurator";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
-import { montagePrefill } from "@/lib/montage";
+import { defaultCheckedIds } from "@/lib/montage";
 import { computeCheckout } from "@/lib/checkout";
 import { isdeBerekening, isdeInfo } from "@/data/subsidie";
 import { HANDOFF_KEY, type OfferteHandoff } from "@/lib/configurator-handoff";
@@ -31,7 +31,7 @@ function lbl<T extends { value: string; label: string }>(list: T[], v?: string) 
 export function Checkout() {
   const [config, setConfig] = useState<KozijnConfig | null>(null);
   const [summary, setSummary] = useState<string>("");
-  const [aantallen, setAantallen] = useState<Record<string, number>>(() => montagePrefill(null));
+  const [checked, setChecked] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const [contact, setContact] = useState({
@@ -50,10 +50,10 @@ export function Checkout() {
         const handoff = JSON.parse(raw) as OfferteHandoff;
         setConfig(handoff.config);
         setSummary(handoff.summary);
-        setAantallen(
-          handoff.montageAantallen && Object.keys(handoff.montageAantallen).length > 0
-            ? handoff.montageAantallen
-            : montagePrefill(handoff.config),
+        setChecked(
+          handoff.montageChecked && handoff.montageChecked.length > 0
+            ? handoff.montageChecked
+            : defaultCheckedIds(handoff.config),
         );
         sessionStorage.removeItem(HANDOFF_KEY);
       }
@@ -63,10 +63,10 @@ export function Checkout() {
     setLoaded(true);
   }, []);
 
-  const totals = useMemo(() => computeCheckout(config, aantallen), [config, aantallen]);
+  const totals = useMemo(() => computeCheckout(config, checked), [config, checked]);
 
-  const changeMontage = (id: string, value: number) =>
-    setAantallen((a) => ({ ...a, [id]: Number.isNaN(value) ? 0 : value }));
+  const toggleMontage = (id: string, on: boolean) =>
+    setChecked((cur) => (on ? [...new Set([...cur, id])] : cur.filter((x) => x !== id)));
 
   const setC = (key: keyof typeof contact, value: string) => {
     setContact((c) => ({ ...c, [key]: value }));
@@ -89,7 +89,7 @@ export function Checkout() {
     try {
       const result = await submitCheckout({
         config,
-        aantallen,
+        montageChecked: checked,
         configSummary: summary,
         contact: { ...contact, privacyAkkoord: akkoord },
       });
@@ -176,7 +176,7 @@ export function Checkout() {
             Pas de aantallen aan of vink extra werk aan. Alle bedragen incl. btw.
           </p>
           <div className="mt-6">
-            <MontageEditor aantallen={aantallen} onChange={changeMontage} />
+            <MontageEditor config={config} checkedIds={checked} onToggle={toggleMontage} />
           </div>
           <div className="mt-5 flex items-center justify-between border-t border-mist pt-4 text-sm">
             <span className="text-ink/60">Montage subtotaal (incl. btw)</span>
@@ -206,13 +206,13 @@ export function Checkout() {
                   </p>
                 </Callout>
               )}
-              <Callout variant="info" className="mt-4" title="Combineren met andere maatregelen — via MTB Bouw">
-                <p>{isdeBerekening.combinatieEis}</p>
+              <Callout variant="info" className="mt-4" title="Tip: verdubbel uw subsidie via MTB Bouw">
+                <p>{isdeBerekening.combinatieVoordeel}</p>
                 <p className="mt-2">
                   Onze vaste bouwpartner{" "}
                   <Link href="/mtb-bouw" className="font-semibold underline underline-offset-2">MTB Bouw</Link>{" "}
-                  voert deze isolatiemaatregelen (gevel-, dak- of vloerisolatie) graag voor u uit,
-                  zodat u optimaal van de ISDE profiteert — alles in één hand.
+                  voert die extra isolatiemaatregelen (gevel-, dak- of vloerisolatie) graag voor u uit —
+                  alles in één hand, voor maximaal voordeel.
                 </p>
               </Callout>
               <Callout variant="disclaimer" className="mt-4" title={`Indicatief — bijgewerkt ${isdeBerekening.lastUpdated}`}>
@@ -263,7 +263,8 @@ export function Checkout() {
             <input type="checkbox" checked={akkoord} onChange={(ev) => { setAkkoord(ev.target.checked); setErrors((er) => ({ ...er, privacyAkkoord: "" })); }} className="mt-0.5 size-4 accent-forest" />
             <span className="text-sm leading-relaxed text-ink/70">
               Ik ga akkoord dat mijn gegevens worden gebruikt om mijn offerte op te stellen en
-              contact met mij op te nemen. Mijn gegevens worden niet voor andere doeleinden gebruikt of gedeeld.
+              contact met mij op te nemen, zoals beschreven in de{" "}
+              <Link href="/privacy" className="font-medium text-forest underline underline-offset-2">privacyverklaring</Link>.
             </span>
           </label>
           {errors.privacyAkkoord && <p className="mt-1.5 text-sm text-red-600">{errors.privacyAkkoord}</p>}

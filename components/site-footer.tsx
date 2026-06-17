@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PlaceholderTag } from "@/components/ui/placeholder";
-import { footerGroups } from "@/lib/navigation";
+import { footerGroups, legalLinks } from "@/lib/navigation";
 
 export function SiteFooter() {
   return (
@@ -64,10 +64,20 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-paper/10 pt-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© De Kozijnstudio — onderdeel van MTB Bouw.</p>
-          <p className="text-paper/35">
-            Fase 1 · wireframe — juridische links (privacy, voorwaarden) volgen.
+        <div className="mt-12 border-t border-paper/10 pt-6">
+          <nav aria-label="Juridisch" className="flex flex-wrap gap-x-5 gap-y-2">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-xs text-paper/55 transition-colors hover:text-paper"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <p className="mt-4 text-xs text-paper/40">
+            © {new Date().getFullYear()} De Kozijnstudio — onderdeel van MTB Bouw.
           </p>
         </div>
       </Container>

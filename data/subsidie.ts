@@ -9,10 +9,10 @@
 
 export const isdeInfo = {
   /** Datum waarop deze informatie is gecontroleerd — update bij elke review. */
-  lastUpdated: "juni 2025",
+  lastUpdated: "juni 2026",
 
   disclaimer:
-    "De ISDE-regeling wordt jaarlijks bijgesteld. De bedragen en voorwaarden op deze pagina zijn indicatief en gebaseerd op de stand van juni 2025. Raadpleeg altijd de actuele informatie op rvo.nl voordat u een aanvraag doet.",
+    "De ISDE-regeling wordt jaarlijks bijgesteld. De bedragen en voorwaarden op deze pagina zijn indicatief en gebaseerd op de stand van juni 2026. Raadpleeg altijd de actuele informatie op rvo.nl voordat u een aanvraag doet.",
 
   rvoUrl: "https://www.rvo.nl/subsidies-financiering/isde",
   rvoLabel: "Actuele ISDE-informatie op rvo.nl",
@@ -39,9 +39,42 @@ export const isdeInfo = {
   applicationSteps: [
     "Controleer of uw situatie voldoet aan de ISDE-voorwaarden via rvo.nl.",
     "Vraag een offerte aan bij De Kozijnstudio (inclusief specificatie van het glastype).",
-    "Dien de ISDE-aanvraag in via rvo.nl vóór of gelijktijdig met de opdracht.",
-    "Na plaatsing ontvangt u de subsidie op uw rekening.",
+    "Laat de kozijnen plaatsen — wij leveren de juiste maatregelcode en factuur.",
+    "Dien de ISDE-aanvraag in via mijn.rvo.nl met onze specificaties en uw foto's.",
+    "Na goedkeuring ontvangt u de subsidie op uw rekening.",
   ],
+} as const;
+
+/**
+ * Gedetailleerd aanvraagproces: wie doet wat + benodigdheden.
+ * Procedureel, geen bedragen. Exacte codes/termijnen kunnen wijzigen — verwijs
+ * altijd naar rvo.nl.
+ */
+export const isdeAanvraag = {
+  /** Wat De Kozijnstudio voor de klant verzorgt. */
+  watWijDoen: [
+    "Glasspecificatie aanleveren: glastype, Ug-waarde en het aantal m² per kozijn.",
+    "De juiste maatregelcode voor glasisolatie bij uw offerte en factuur vermelden.",
+    "Een factuur opstellen waarop de maatregel, het glasoppervlak (m²) en de uitvoeringsdatum duidelijk staan.",
+    "Desgewenst foto's maken van de situatie tijdens de werkzaamheden.",
+  ],
+  /** Wat de klant zelf doet. */
+  watUDoet: [
+    "Regel DigiD als u die nog niet heeft (nodig om in te loggen op mijn.rvo.nl).",
+    "Maak foto's van de gevel — zowel vóór als ná de werkzaamheden.",
+    "Dien de aanvraag in op mijn.rvo.nl met onze specificaties, de maatregelcode en uw factuur.",
+    "Geef uw rekeningnummer (IBAN) door; na goedkeuring ontvangt u de subsidie.",
+  ],
+  /** Checklist van benodigdheden. */
+  benodigdheden: [
+    "DigiD",
+    "Maatregelcode glasisolatie (leveren wij aan)",
+    "Gevelfoto's vóór én ná de plaatsing",
+    "Factuur met glastype, m² en uitvoeringsdatum",
+    "Uw rekeningnummer (IBAN)",
+  ],
+  termijn:
+    "Dien uw aanvraag in binnen de door RVO gestelde termijn na uitvoering. Controleer de actuele termijn en maatregelcodes altijd op rvo.nl.",
 } as const;
 
 /**
@@ -54,16 +87,20 @@ export const isdeInfo = {
  * onze vaste bouwpartner MTB Bouw.
  */
 export const isdeBerekening = {
-  lastUpdated: "juni 2025",
-  /** Indicatieve subsidie per m² glas (incl. de combinatie-eis), in euro. */
+  lastUpdated: "juni 2026",
+  /** Indicatieve subsidie per m² glas (basisbedrag), in euro. */
   ratePerM2: {
     "hr-plus": 23, // HR++ — PLACEHOLDER
     triple: 35, // Triple glas — PLACEHOLDER
   } as Record<string, number>,
-  /** Indicatieve minimale glasoppervlakte om in aanmerking te komen (m²). */
-  minM2: 8,
-  /** Wettelijke combinatie-eis (bron RVO). */
-  combinatieEis:
-    "Glasisolatie komt alleen in aanmerking voor ISDE in combinatie met minimaal één andere isolatiemaatregel (bijv. gevel-, dak- of vloerisolatie).",
+  /** Indicatieve minimale glasoppervlakte om in aanmerking te komen (m², 2026). */
+  minM2: 3,
+  /**
+   * Combineren is NIET verplicht: glasisolatie komt zelfstandig in aanmerking.
+   * Combineren met minstens één andere maatregel kan het subsidiebedrag echter
+   * verhogen (tot ongeveer een verdubbeling) — extra besparing dus.
+   */
+  combinatieVoordeel:
+    "Glasisolatie komt zelfstandig in aanmerking voor ISDE. Combineert u het met minimaal één andere isolatiemaatregel (bijv. gevel-, dak- of vloerisolatie), dan kan het subsidiebedrag oplopen tot ongeveer een verdubbeling — een mooie extra besparing.",
 } as const;
 

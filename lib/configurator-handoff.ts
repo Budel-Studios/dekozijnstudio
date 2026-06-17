@@ -12,6 +12,9 @@ import {
   CONFIG_KLEUREN,
   CONFIG_OPTIES,
   CONFIG_UITVOERING,
+  CONFIG_DRAAIRICHTING,
+  CONFIG_HANGSLUIT,
+  CONFIG_VENTILATIE_POSITIE,
 } from "@/data/configurator";
 import { computePrice, formatEuro, type KozijnConfig } from "@/lib/configurator-price";
 
@@ -26,14 +29,14 @@ export type OfferteHandoff = {
   };
   /** Volledige configuratie — gebruikt door de checkout (/offerte). */
   config: KozijnConfig;
-  /** Door de klant gekozen montage-aantallen (per prijslijst-regel). */
-  montageAantallen: Record<string, number>;
+  /** Aangevinkte montage-regel-ids (hoeveelheden zijn automatisch). */
+  montageChecked: string[];
   /** Human-readable multi-line summary, attached to the offerte email. */
   summary: string;
 };
 
 function lbl<T extends { value: string; label: string }>(
-  list: T[],
+  list: readonly T[],
   value?: string,
 ): string {
   return list.find((x) => x.value === value)?.label ?? "—";
@@ -41,7 +44,7 @@ function lbl<T extends { value: string; label: string }>(
 
 export function buildHandoff(
   config: KozijnConfig,
-  montageAantallen: Record<string, number> = {},
+  montageChecked: string[] = [],
 ): OfferteHandoff {
   const breakdown = computePrice(config);
 
@@ -51,10 +54,12 @@ export function buildHandoff(
   const producttypeOptie = CONFIG_PRODUCTTYPES.find((p) => p.value === config.producttype);
   const uitvoeringOptie = CONFIG_UITVOERING.find((u) => u.value === config.uitvoering);
 
-  const optieLabels =
-    config.opties.length > 0
-      ? config.opties.map((o) => lbl(CONFIG_OPTIES, o)).join(", ")
-      : "Geen";
+  const ventilatieAan = config.opties.includes("ventilatie");
+  const extras = config.opties.filter((o) => o !== "ventilatie");
+  const extraLabels = extras.length > 0 ? extras.map((o) => lbl(CONFIG_OPTIES, o)).join(", ") : "Geen";
+  const ventilatieTekst = ventilatieAan
+    ? `Ja${config.ventilatiePositie ? ` (${lbl(CONFIG_VENTILATIE_POSITIE, config.ventilatiePositie)})` : ""}${config.ventilatieKleur ? `, kleur ${lbl(CONFIG_KLEUREN, config.ventilatieKleur)}` : ""}`
+    : "Nee";
 
   const lines = [
     "── Configuratie via de online configurator ──",
@@ -65,7 +70,10 @@ export function buildHandoff(
     `Aantal: ${config.aantal}`,
     `Glas: ${lbl(CONFIG_GLAS, config.glas)}`,
     `Kleur: ${lbl(CONFIG_KLEUREN, config.kleur)}`,
-    `Opties: ${optieLabels}`,
+    config.draairichting ? `Draairichting: ${lbl(CONFIG_DRAAIRICHTING, config.draairichting)}` : "",
+    config.hangSluit ? `Hang- en sluitwerk: ${lbl(CONFIG_HANGSLUIT, config.hangSluit)}` : "",
+    `Ventilatierooster: ${ventilatieTekst}`,
+    `Extra's: ${extraLabels}`,
     `Uitvoering: ${lbl(CONFIG_UITVOERING, config.uitvoering)}`,
     "",
     `Indicatieve richtprijs: ${formatEuro(breakdown.totaal)} (incl. btw)`,
@@ -80,7 +88,7 @@ export function buildHandoff(
       uitvoering: uitvoeringOptie?.offerteType,
     },
     config,
-    montageAantallen,
+    montageChecked,
     summary: lines.join("\n"),
   };
 }

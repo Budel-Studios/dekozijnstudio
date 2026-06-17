@@ -26,8 +26,8 @@ export default function OverOnsPage() {
     <>
       <PageHero
         eyebrow="Over De Kozijnstudio"
-        title="Opgericht om de kozijnenmarkt eerlijker te maken."
-        lead="De Kozijnstudio is een initiatief van MTB Bouw. Onze missie: kozijnen leveren en plaatsen met volledige prijstransparantie, zonder verborgen marges of onduidelijke offertes."
+        title="Kozijnen horen transparant te zijn. De prijzen ook."
+        lead="Wij vonden de kozijnenwereld opvallend ondoorzichtig — gek eigenlijk, want glas en kozijnen zouden juist het toonbeeld van transparantie moeten zijn. Daar doen we iets aan."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Over ons" }]}
         actions={<Button href="/offerte-aanvragen">Offerte aanvragen</Button>}
         media={<Placeholder label="Team De Kozijnstudio" className="min-h-72 lg:min-h-80" />}
@@ -38,20 +38,31 @@ export default function OverOnsPage() {
           <div>
             <Eyebrow>Ons verhaal</Eyebrow>
             <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
-              Waarom De Kozijnstudio?
+              Ontstaan op de bouwplaats
             </h2>
             <p className="mt-4 leading-relaxed text-ink/65">
-              Als bouwbedrijf zagen we bij MTB Bouw hoe klanten keer op keer
-              teleurgesteld werden door onduidelijke kozijnenoffertes:
-              aanvangsprijzen die tijdens het project opliepen, materialen die
-              niet aan verwachtingen voldeden en coördinatieproblemen tussen
-              kozijnen­leverancier en aannemer.
+              Vanuit onze bouwprojecten bij <strong>MTB Bouw</strong> zagen we het
+              keer op keer: klanten die geen idee hadden waar ze aan toe waren.
+              Offertes met &lsquo;pm&rsquo;-posten, prijzen die tijdens het project
+              opliepen, en — misschien wel het meest opvallend — we vonden
+              praktisch <strong>geen enkele partij die een standaard prijslijst
+              voor montage hanteerde</strong>. Hoe kun je dan ooit weten of je een
+              eerlijke prijs betaalt?
             </p>
             <p className="mt-4 leading-relaxed text-ink/65">
-              Daarom richtten we De Kozijnstudio op: een kozijnleverancier die
-              van begin af aan helder communiceert over kosten, materialen en
-              proces — en die via MTB Bouw ook de bouwkundige aanpassingen kan
-              regelen. Eén aanspreekpunt voor het hele project.
+              Daarom startten we De Kozijnstudio: kozijnen leveren én plaatsen met
+              een vaste, openbare montage-prijslijst, alles incl. btw en per
+              onderdeel gespecificeerd. Geen verrassingen, geen verborgen marges.
+            </p>
+            <p className="mt-4 leading-relaxed text-ink/65">
+              En we geloven sterk in <strong>mond-tot-mond</strong>. Liever
+              investeren we het geld dat anderen aan dure marketing en
+              verkoopstrategieën uitgeven rechtstreeks in onze klanten — daarom
+              belonen we wie ons aanbeveelt met onze{" "}
+              <a href="/aanbrengbonus" className="font-medium text-forest underline underline-offset-2 hover:no-underline">
+                Aanbrengbonus
+              </a>
+              .
             </p>
           </div>
           <Placeholder label="Werkplaats / showroom" className="min-h-64" />

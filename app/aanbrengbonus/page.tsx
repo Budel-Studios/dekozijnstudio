@@ -138,9 +138,9 @@ export default function AanbrengbonusPage() {
             ]}
           />
           <p className="mt-5 text-sm text-ink/55">
-            De volledige voorwaarden zijn kosteloos beschikbaar op aanvraag via{" "}
-            <a href="/contact" className="text-forest underline underline-offset-2 hover:no-underline">
-              ons contactformulier
+            Lees de{" "}
+            <a href="/aanbrengbonus-voorwaarden" className="text-forest underline underline-offset-2 hover:no-underline">
+              volledige voorwaarden van de Aanbrengbonus
             </a>
             .
           </p>

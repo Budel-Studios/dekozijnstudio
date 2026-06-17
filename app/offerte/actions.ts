@@ -8,7 +8,7 @@ export type CheckoutResult = { ok: true } | { ok: false; error: string };
 
 type Payload = {
   config: KozijnConfig | null;
-  aantallen: Record<string, number>;
+  montageChecked: string[];
   configSummary: string;
   contact: unknown;
 };
@@ -29,12 +29,13 @@ export async function submitCheckout(payload: Payload): Promise<CheckoutResult> 
     return { ok: true };
   }
 
-  const aantallen =
-    payload.aantallen && typeof payload.aantallen === "object" ? payload.aantallen : {};
+  const montageChecked = Array.isArray(payload.montageChecked)
+    ? payload.montageChecked.filter((x): x is string => typeof x === "string")
+    : [];
 
   const result = await sendCheckoutEmail({
     config: payload.config,
-    aantallen,
+    montageChecked,
     configSummary: typeof payload.configSummary === "string" ? payload.configSummary : "",
     contact: parsed.data,
   });

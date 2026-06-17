@@ -1,81 +1,111 @@
 "use client";
 
-import { formatEuro } from "@/lib/configurator-price";
-import { MONTAGE, EENHEID_LABEL, type MontageRegel } from "@/lib/montage";
+import { formatEuro, type KozijnConfig } from "@/lib/configurator-price";
+import {
+  applicableRegels,
+  autoQuantity,
+  EENHEID_LABEL,
+  HOOGWERKER_NOTE,
+  MONTAGE,
+  type MontageRegel,
+} from "@/lib/montage";
+import { cn } from "@/lib/utils";
 
 const CATEGORIE_VOLGORDE = ["Demontage", "Bouwkundig", "Plaatsing", "Afwerking", "Overig"];
+const BTW = 1 + MONTAGE.btwPercentage / 100;
 
 /**
- * Gedeelde montage-regel-editor (gebruikt in de configurator én in 'Jouw project').
- * Toont alle prijslijst-regels gegroepeerd per categorie; de klant vult aantallen
- * in. Alle bedragen incl. btw.
+ * Gedeelde montage-editor (configurator én 'Jouw project').
+ * De klant vinkt regels aan/uit; hoeveelheden en prijs worden automatisch
+ * berekend uit de configuratie. Alle bedragen incl. btw.
  */
 export function MontageEditor({
-  aantallen,
-  onChange,
+  config,
+  checkedIds,
+  onToggle,
 }: {
-  aantallen: Record<string, number>;
-  onChange: (id: string, value: number) => void;
+  config: KozijnConfig | null;
+  checkedIds: string[];
+  onToggle: (id: string, checked: boolean) => void;
 }) {
+  const regels = applicableRegels(config);
+  const checked = new Set(checkedIds);
+
+  if (regels.length === 0) {
+    return (
+      <p className="rounded-xl border border-mist bg-paper-soft px-4 py-3 text-sm text-ink/55">
+        Geen montage-werkzaamheden van toepassing (u plaatst zelf / nog geen
+        configuratie).
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {CATEGORIE_VOLGORDE.map((categorie) => {
-        const regels = MONTAGE.regels.filter((r) => r.categorie === categorie);
-        if (regels.length === 0) return null;
+        const inCat = regels.filter((r) => r.categorie === categorie);
+        if (inCat.length === 0) return null;
         return (
           <div key={categorie}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-wood">{categorie}</p>
             <div className="divide-y divide-mist rounded-xl border border-mist">
-              {regels.map((regel) => (
+              {inCat.map((regel) => (
                 <MontageRow
                   key={regel.id}
                   regel={regel}
-                  aantal={aantallen[regel.id] ?? 0}
-                  onChange={(v) => onChange(regel.id, v)}
+                  config={config}
+                  checked={checked.has(regel.id)}
+                  onToggle={(c) => onToggle(regel.id, c)}
                 />
               ))}
             </div>
           </div>
         );
       })}
+
+      <p className="rounded-xl border border-wood/30 bg-wood/5 px-4 py-3 text-xs leading-relaxed text-ink/70">
+        <strong className="text-ink">Hoogwerker?</strong> {HOOGWERKER_NOTE}
+      </p>
     </div>
   );
 }
 
 function MontageRow({
   regel,
-  aantal,
-  onChange,
+  config,
+  checked,
+  onToggle,
 }: {
   regel: MontageRegel;
-  aantal: number;
-  onChange: (v: number) => void;
+  config: KozijnConfig | null;
+  checked: boolean;
+  onToggle: (checked: boolean) => void;
 }) {
-  const incl = regel.prijs * (1 + MONTAGE.btwPercentage / 100);
-  const step = regel.eenheid === "stuk" ? 1 : 0.1;
-  const lineIncl = incl * (aantal || 0);
+  const aantal = autoQuantity(regel, config);
+  const lineIncl = regel.prijs * BTW * (checked ? aantal : 0);
+  const aantalLabel =
+    regel.eenheid === "stuk"
+      ? `${aantal}×`
+      : `${aantal} ${EENHEID_LABEL[regel.eenheid]}`;
+
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <label className="flex cursor-pointer items-center gap-3 px-4 py-3">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onToggle(e.target.checked)}
+        className="size-4 shrink-0 accent-forest"
+      />
       <div className="flex-1">
-        <p className="text-sm font-medium text-ink">{regel.label}</p>
+        <p className={cn("text-sm font-medium", checked ? "text-ink" : "text-ink/55")}>{regel.label}</p>
         <p className="text-xs text-ink/50">
-          {formatEuro(incl)} / {EENHEID_LABEL[regel.eenheid]} (incl. btw)
+          {aantalLabel} · {formatEuro(regel.prijs * BTW)} / {EENHEID_LABEL[regel.eenheid]} (incl. btw)
           {regel.toelichting ? ` · ${regel.toelichting}` : ""}
         </p>
       </div>
-      <input
-        type="number"
-        min={0}
-        step={step}
-        value={aantal === 0 ? "" : aantal}
-        placeholder="0"
-        onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
-        aria-label={`Aantal ${regel.label} (${EENHEID_LABEL[regel.eenheid]})`}
-        className="w-20 rounded-lg border border-mist bg-paper px-2.5 py-2 text-right text-sm text-ink outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
-      />
       <div className="w-20 text-right text-sm font-medium text-ink">
-        {aantal > 0 ? formatEuro(lineIncl) : "—"}
+        {checked ? formatEuro(lineIncl) : "—"}
       </div>
-    </div>
+    </label>
   );
 }

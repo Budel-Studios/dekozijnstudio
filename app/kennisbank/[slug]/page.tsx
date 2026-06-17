@@ -17,10 +17,19 @@ import { getAllSlugs, getArticle, getRelatedArticles } from "@/lib/content";
 import { extractToc } from "@/lib/toc";
 import { articleSchema, breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
-// Custom MDX components — injects brand components into article prose
+// Custom MDX components — injects brand components into article prose.
+// Externe links openen automatisch in een nieuw tabblad.
 const mdxComponents = {
   Callout,
   FeatureList,
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const isExternal = /^https?:\/\//.test(props.href ?? "");
+    return isExternal ? (
+      <a {...props} target="_blank" rel="noopener noreferrer" />
+    ) : (
+      <a {...props} />
+    );
+  },
 };
 
 export async function generateStaticParams() {

@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { PriceTable } from "@/components/ui/price-table";
 import { Callout } from "@/components/ui/callout";
 import { FeatureList } from "@/components/ui/feature-list";
+import { MateriaalVergelijking } from "@/components/prijzen/materiaal-vergelijking";
 import { montageCategories, investmentExample, inmeetservice } from "@/data/prices";
 
 export const metadata: Metadata = {
@@ -100,8 +101,23 @@ export default function PrijzenPage() {
         </Container>
       </Section>
 
-      {/* Investeringsoverzicht */}
+      {/* Materiaalvergelijking */}
       <Section>
+        <Container>
+          <Eyebrow>Vergelijk materialen</Eyebrow>
+          <h2 className="mt-4 mb-3 text-2xl text-ink sm:text-3xl">
+            Kunststof, hout of aluminium — wat kost het?
+          </h2>
+          <p className="mb-8 max-w-2xl leading-relaxed text-ink/65">
+            Zo ziet u in één oogopslag het prijsverschil tussen de materialen
+            voor dezelfde voorbeeldconfiguraties.
+          </p>
+          <MateriaalVergelijking />
+        </Container>
+      </Section>
+
+      {/* Investeringsoverzicht */}
+      <Section tone="soft">
         <Container width="narrow">
           <Eyebrow>Voorbeeld</Eyebrow>
           <h2 className="mt-4 mb-6 text-2xl text-ink sm:text-3xl">

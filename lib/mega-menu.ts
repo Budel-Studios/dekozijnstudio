@@ -11,9 +11,17 @@ export type MegaLink = {
   description: string;
 };
 
+export type MegaColumn = {
+  heading: string;
+  links: MegaLink[];
+};
+
 export type MegaGroup = {
   label: string;
-  links: MegaLink[];
+  /** Flat link list (gebruikt als `columns` niet is opgegeven). */
+  links?: MegaLink[];
+  /** Optioneel: gelabelde subkolommen (bijv. Type kozijn / Per materiaal). */
+  columns?: MegaColumn[];
   trustPoints: string[];
   ctaLabel: string;
   ctaHref: string;
@@ -22,36 +30,22 @@ export type MegaGroup = {
 export const megaGroups: MegaGroup[] = [
   {
     label: "Kozijnen",
-    links: [
+    columns: [
       {
-        label: "Ramen",
-        href: "/producten/ramen",
-        description: "Draaikiep-, vaste en valramen — direct samenstellen.",
+        heading: "Type kozijn",
+        links: [
+          { label: "Ramen", href: "/producten/ramen", description: "Draaikiep-, vaste en valramen." },
+          { label: "Deuren", href: "/producten/deuren", description: "Voor-, achter- en tuindeuren." },
+          { label: "Schuif & harmonica", href: "/producten/schuifpuien", description: "Schuifpuien en vouwwanden." },
+        ],
       },
       {
-        label: "Deuren",
-        href: "/producten/deuren",
-        description: "Voordeuren, achterdeuren en tuindeuren op maat.",
-      },
-      {
-        label: "Schuifpuien",
-        href: "/producten/schuifpuien",
-        description: "Schuifpuien en vouwwanden voor maximaal licht.",
-      },
-      {
-        label: "Kunststof kozijnen",
-        href: "/kunststof-kozijnen",
-        description: "Onderhoudsvriendelijk en energiezuinig.",
-      },
-      {
-        label: "Houten kozijnen",
-        href: "/houten-kozijnen",
-        description: "Tijdloze uitstraling, duurzaam materiaal.",
-      },
-      {
-        label: "Aluminium kozijnen",
-        href: "/aluminium-kozijnen",
-        description: "Slanke profielen, minimaal onderhoud.",
+        heading: "Per materiaal",
+        links: [
+          { label: "Houten kozijnen", href: "/houten-kozijnen", description: "Tijdloos en duurzaam." },
+          { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", description: "Onderhoudsvriendelijk." },
+          { label: "Aluminium kozijnen", href: "/aluminium-kozijnen", description: "Slank, minimaal onderhoud." },
+        ],
       },
     ],
     trustPoints: [

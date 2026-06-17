@@ -183,6 +183,28 @@ export const CONFIG_UITVOERING: UitvoeringOptie[] = [
   },
 ];
 
+// ─── Draairichting, hang- en sluitwerk, ventilatie ───────────────────────────
+
+/** Producttypes waarvoor een draairichting relevant is (draaiend deel). */
+export const DRAAIRICHTING_TYPES = ["draaikiep", "valraam", "voordeur", "achterdeur", "tuindeur"];
+
+export const CONFIG_DRAAIRICHTING = [
+  { value: "links", label: "Draairichting links", description: "Scharnieren links (van buitenaf gezien)." },
+  { value: "rechts", label: "Draairichting rechts", description: "Scharnieren rechts (van buitenaf gezien)." },
+] as const;
+
+/** Hang- en sluitwerk: kleur van grepen/scharnieren. */
+export const CONFIG_HANGSLUIT = [
+  { value: "zwart", label: "Zwart", description: "Mat zwart hang- en sluitwerk." },
+  { value: "blank", label: "Blank geanodiseerd", description: "Zilverkleurig geanodiseerd." },
+] as const;
+
+/** Positie van het ventilatierooster in het glasvlak. */
+export const CONFIG_VENTILATIE_POSITIE = [
+  { value: "boven", label: "Bovenin het glasvlak" },
+  { value: "onder", label: "Onderin het glasvlak" },
+] as const;
+
 // Afmetingsgrenzen (cm)
 export const SIZE_LIMITS = {
   breedte: { min: 30, max: 600, default: 100 },

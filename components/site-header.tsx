@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, MenuIcon, CloseIcon, ArrowRightIcon } from "@/components/icons";
 import { headerDirectLinks, footerGroups, primaryCta } from "@/lib/navigation";
-import { megaGroups, type MegaGroup } from "@/lib/mega-menu";
+import { megaGroups, type MegaGroup, type MegaLink } from "@/lib/mega-menu";
 import { cn } from "@/lib/utils";
 
 // ─── Trust signals shown in the top bar ───────────────────────────────────────
@@ -66,23 +66,21 @@ function MegaPanel({ group, onNavigate }: { group: MegaGroup; onNavigate?: () =>
       <Container className="grid grid-cols-3 gap-0 py-8 lg:grid-cols-3">
 
         {/* Links + descriptions (2/3 width) */}
-        <div className="col-span-2 grid grid-cols-2 gap-1 pr-10 border-r border-mist">
-          {group.links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={onNavigate}
-              className="group/item rounded-xl p-4 transition-colors hover:bg-paper-soft"
-            >
-              <p className="flex items-center gap-2 font-medium text-ink text-sm">
-                {link.label}
-                <ArrowRightIcon className="size-3.5 -translate-x-1 opacity-0 transition-all group-hover/item:translate-x-0 group-hover/item:opacity-100 text-forest" />
-              </p>
-              <p className="mt-1 text-xs leading-relaxed text-ink/55">
-                {link.description}
-              </p>
-            </Link>
-          ))}
+        <div className="col-span-2 grid grid-cols-2 gap-x-6 gap-y-1 pr-10 border-r border-mist">
+          {group.columns
+            ? group.columns.map((col) => (
+                <div key={col.heading}>
+                  <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-widest text-wood">
+                    {col.heading}
+                  </p>
+                  {col.links.map((link) => (
+                    <MegaItem key={link.href} link={link} onNavigate={onNavigate} />
+                  ))}
+                </div>
+              ))
+            : (group.links ?? []).map((link) => (
+                <MegaItem key={link.href} link={link} onNavigate={onNavigate} />
+              ))}
         </div>
 
         {/* Trust block (1/3 width) */}
@@ -104,6 +102,22 @@ function MegaPanel({ group, onNavigate }: { group: MegaGroup; onNavigate?: () =>
 
       </Container>
     </div>
+  );
+}
+
+function MegaItem({ link, onNavigate }: { link: MegaLink; onNavigate?: () => void }) {
+  return (
+    <Link
+      href={link.href}
+      onClick={onNavigate}
+      className="group/item block rounded-xl p-4 transition-colors hover:bg-paper-soft"
+    >
+      <p className="flex items-center gap-2 text-sm font-medium text-ink">
+        {link.label}
+        <ArrowRightIcon className="size-3.5 -translate-x-1 text-forest opacity-0 transition-all group-hover/item:translate-x-0 group-hover/item:opacity-100" />
+      </p>
+      <p className="mt-1 text-xs leading-relaxed text-ink/55">{link.description}</p>
+    </Link>
   );
 }
 
@@ -140,7 +154,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
               </button>
               {isOpen && (
                 <div className="mb-2 ml-3 space-y-0.5 border-l-2 border-lime/30 pl-4">
-                  {group.links.map((link) => (
+                  {(group.columns ? group.columns.flatMap((c) => c.links) : group.links ?? []).map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

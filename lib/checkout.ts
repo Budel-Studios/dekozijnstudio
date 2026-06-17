@@ -63,7 +63,7 @@ export type CheckoutTotals = {
 
 export function computeCheckout(
   config: KozijnConfig | null,
-  montageAantallen: Record<string, number>,
+  montageCheckedIds: string[],
 ): CheckoutTotals {
   // Productprijs zonder de simpele configurator-montage (montage = prijslijst).
   const productInclBtw = config
@@ -71,7 +71,7 @@ export function computeCheckout(
     : 0;
   const productExBtw = productInclBtw / BTW_FACTOR;
 
-  const montage = computeMontage(montageAantallen);
+  const montage = computeMontage(config, montageCheckedIds);
 
   const subtotaalExBtw = productExBtw + montage.subtotaalExBtw;
   const btwBedrag = round2(subtotaalExBtw * (MONTAGE.btwPercentage / 100));

@@ -50,6 +50,14 @@ export const primaryCta: NavLink = {
   href: "/offerte-aanvragen",
 };
 
+/** Juridische links — getoond onderaan de footer. */
+export const legalLinks: NavLink[] = [
+  { label: "Privacyverklaring", href: "/privacy" },
+  { label: "Algemene voorwaarden", href: "/algemene-voorwaarden" },
+  { label: "Cookiebeleid", href: "/cookiebeleid" },
+  { label: "Aanbrengbonus-voorwaarden", href: "/aanbrengbonus-voorwaarden" },
+];
+
 /** Grouped header dropdowns (desktop) and accordion (mobile). */
 export const headerGroups: NavGroup[] = [
   { label: "Kozijnen", links: productLinks },

@@ -1,8 +1,11 @@
 /**
- * Montage-prijslijst: laden, voorinvullen en berekenen.
+ * Montage-prijslijst: laden, automatisch berekenen en selecteren.
  * De prijslijst (data/montage-prijslijst.json) is door de eigenaar zelf te
  * onderhouden. Prijzen zijn excl. btw; deze module rekent btw erbij voor
  * de klantweergave (incl. btw).
+ *
+ * Model: de klant vinkt regels aan/uit. De hoeveelheid (stuk/m²/m¹) wordt
+ * automatisch afgeleid uit de configuratie — de klant vult niets in.
  */
 
 import prijslijst from "@/data/montage-prijslijst.json";
@@ -18,7 +21,8 @@ export type MontageRegel = {
   prijs: number;
   uren: number;
   categorie: string;
-  optioneel: boolean;
+  /** Standaard aangevinkt? false = situationeel (klant vinkt zelf aan). */
+  defaultOn: boolean;
   eenmalig?: boolean;
   toelichting?: string;
 };
@@ -31,9 +35,9 @@ export const MONTAGE = {
 
 const BTW = 1 + MONTAGE.btwPercentage / 100;
 
-export function regelById(id: string): MontageRegel | undefined {
-  return MONTAGE.regels.find((r) => r.id === id);
-}
+/** Informatieve melding over hoogwerker-huur (geen vaste prijslijst-post). */
+export const HOOGWERKER_NOTE =
+  "Per project bekijken we of een hoogwerker nodig is. Een hoogwerker kost doorgaans € 150–250 per 2 uur. We richten de werkzaamheden zo in dat een hoogwerker zo min mogelijk nodig is — en de kosten dus zo laag mogelijk blijven.";
 
 export const EENHEID_LABEL: Record<Eenheid, string> = {
   stuk: "stuk",
@@ -45,38 +49,58 @@ function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
-// ─── Voorinvullen op basis van de configuratie ───────────────────────────────
-
 const DEUR_TYPES = ["voordeur", "achterdeur", "tuindeur"];
 
-/** Slimme standaard-aantallen afgeleid uit de configuratie. Klant past aan. */
-export function montagePrefill(config: KozijnConfig | null): Record<string, number> {
-  const q: Record<string, number> = {};
-  for (const r of MONTAGE.regels) q[r.id] = 0;
+// ─── Automatische hoeveelheden ────────────────────────────────────────────────
 
-  // Geen montage bij 'alleen levering' (DIY) of als er nog geen config is.
-  if (!config || config.uitvoering === "levering") return q;
+/**
+ * Berekent automatisch de hoeveelheid voor een regel op basis van de config.
+ * 0 betekent: niet van toepassing voor deze configuratie.
+ */
+export function autoQuantity(regel: MontageRegel, config: KozijnConfig | null): number {
+  if (!config || config.uitvoering === "levering") return 0;
 
-  // Inmeetservice + afvoer horen bij een montageproject
-  q["inmeetservice"] = 1;
-  q["afvoer-materialen"] = 1;
-
-  const area = round2((config.breedteCm / 100) * (config.hoogteCm / 100)) || 0;
+  const b = config.breedteCm || 0;
+  const h = config.hoogteCm || 0;
+  const area = round2((b / 100) * (h / 100));
+  const perimeter = round2((2 * (b + h)) / 100); // m¹ per kozijn
   const n = Math.max(1, config.aantal || 1);
   const isDoor = config.producttype ? DEUR_TYPES.includes(config.producttype) : false;
 
-  // Aanname: vervanging van bestaande kozijnen (klant kan op 0 zetten bij nieuwbouw)
-  q["verwijderen-bestaand"] = 1;
-  q["verwijderen-extra"] = Math.max(0, n - 1);
-
-  if (isDoor) {
-    q["plaatsen-buitendeur"] = n;
-  } else {
-    q["plaatsen-kozijn-m2"] = area;
-    q["plaatsen-extra-kozijn-m2"] = round2(area * (n - 1));
+  switch (regel.id) {
+    case "inmeetservice":
+    case "afvoer-materialen":
+    case "verwijderen-bestaand":
+      return 1;
+    case "verwijderen-extra":
+      return Math.max(0, n - 1);
+    case "plaatsen-kozijn-m2":
+      return isDoor ? 0 : area;
+    case "plaatsen-extra-kozijn-m2":
+      return isDoor ? 0 : round2(area * (n - 1));
+    case "plaatsen-buitendeur":
+      return isDoor ? n : 0;
+    case "binnenafwerking-m1":
+    case "buitenafwerking-m1":
+      return round2(perimeter * n);
+    default:
+      // Generieke fallback per eenheid
+      if (regel.eenheid === "m2") return round2(area * n);
+      if (regel.eenheid === "m1") return round2(perimeter * n);
+      return n; // stuk
   }
+}
 
-  return q;
+/** Regels die van toepassing zijn (auto-hoeveelheid > 0) voor deze config. */
+export function applicableRegels(config: KozijnConfig | null): MontageRegel[] {
+  return MONTAGE.regels.filter((r) => autoQuantity(r, config) > 0);
+}
+
+/** Standaard aangevinkte regel-ids: van toepassing én defaultOn. */
+export function defaultCheckedIds(config: KozijnConfig | null): string[] {
+  return applicableRegels(config)
+    .filter((r) => r.defaultOn)
+    .map((r) => r.id);
 }
 
 // ─── Berekening ──────────────────────────────────────────────────────────────
@@ -95,30 +119,19 @@ export type MontageResult = {
   totaalUren: number;
 };
 
-/** Normaliseert ingevoerde aantallen (eenmalig → max 1, geen negatieven). */
-export function normaliseerAantallen(
-  raw: Record<string, number>,
-): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const r of MONTAGE.regels) {
-    let v = Number(raw[r.id]) || 0;
-    if (v < 0) v = 0;
-    if (r.eenmalig && v > 1) v = 1;
-    if (r.eenheid === "stuk") v = Math.round(v);
-    else v = round2(v);
-    out[r.id] = v;
-  }
-  return out;
-}
-
-export function computeMontage(rawAantallen: Record<string, number>): MontageResult {
-  const aantallen = normaliseerAantallen(rawAantallen);
+/** Berekent de montage op basis van de aangevinkte regels (qty = automatisch). */
+export function computeMontage(
+  config: KozijnConfig | null,
+  checkedIds: string[],
+): MontageResult {
+  const checked = new Set(checkedIds);
   const lines: MontageLine[] = [];
   let subtotaalExBtw = 0;
   let totaalUren = 0;
 
   for (const regel of MONTAGE.regels) {
-    const aantal = aantallen[regel.id] ?? 0;
+    if (!checked.has(regel.id)) continue;
+    const aantal = autoQuantity(regel, config);
     if (aantal <= 0) continue;
     const lineExBtw = round2(regel.prijs * aantal);
     subtotaalExBtw += lineExBtw;

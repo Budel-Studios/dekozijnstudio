@@ -173,7 +173,7 @@ export async function sendOfferteEmail(
 
 export async function sendCheckoutEmail(input: {
   config: KozijnConfig | null;
-  aantallen: Record<string, number>;
+  montageChecked: string[];
   configSummary: string;
   contact: CheckoutContact;
 }): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
@@ -183,7 +183,7 @@ export async function sendCheckoutEmail(input: {
     return { ok: false, reason: "not_configured" };
   }
 
-  const totals = computeCheckout(input.config, input.aantallen);
+  const totals = computeCheckout(input.config, input.montageChecked);
   const c = input.contact;
 
   const montageRows = totals.montage.lines

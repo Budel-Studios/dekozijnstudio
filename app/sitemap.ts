@@ -25,6 +25,10 @@ const routes: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: "/faq", priority: 0.8, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.8, changeFrequency: "monthly" },
   { path: "/offerte-aanvragen", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/algemene-voorwaarden", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/cookiebeleid", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/aanbrengbonus-voorwaarden", priority: 0.3, changeFrequency: "yearly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,21 +1,21 @@
 {
-  "_instructie": "Onderhoud deze montage-prijslijst zelf. Pas 'prijs' (excl. btw) en 'uren' aan, of voeg regels toe/verwijder ze. Eenheid: 'stuk', 'm2' of 'm1'. 'optioneel': true = standaard niet aangevinkt. 'eenmalig': true = max. 1 per project. Zie docs/montage-prijslijst-onderhoud.md.",
+  "_instructie": "Onderhoud deze montage-prijslijst zelf. Pas 'prijs' (excl. btw) en 'uren' aan, of voeg regels toe/verwijder ze. Eenheid: 'stuk', 'm2' of 'm1'. 'defaultOn': true = standaard aangevinkt; false = situationeel (klant vinkt zelf aan). 'eenmalig': true = max. 1 per project. Hoeveelheden worden automatisch berekend uit de configuratie. Zie docs/montage-prijslijst-onderhoud.md.",
   "valuta": "EUR",
   "btwPercentage": 21,
   "prijzenExclBtw": true,
-  "laatstBijgewerkt": "2025-06-08",
+  "laatstBijgewerkt": "2026-06-08",
   "regels": [
-    { "id": "verwijderen-bestaand", "label": "Verwijderen bestaand kozijn", "eenheid": "stuk", "prijs": 182, "uren": 3.0, "categorie": "Demontage", "optioneel": false },
-    { "id": "verwijderen-extra", "label": "Verwijderen elk extra kozijn", "eenheid": "stuk", "prijs": 122, "uren": 2.0, "categorie": "Demontage", "optioneel": false },
-    { "id": "opening-maken", "label": "Opening maken", "eenheid": "stuk", "prijs": 293, "uren": 4.0, "categorie": "Bouwkundig", "optioneel": true, "toelichting": "Muuropening vergroten of nieuw maken (via MTB Bouw)." },
-    { "id": "plaatsen-kozijn-m2", "label": "Plaatsen kozijn (per m²)", "eenheid": "m2", "prijs": 110, "uren": 1.0, "categorie": "Plaatsing", "optioneel": false },
-    { "id": "plaatsen-extra-kozijn-m2", "label": "Plaatsen elk extra kozijn (per m²)", "eenheid": "m2", "prijs": 74, "uren": 1.0, "categorie": "Plaatsing", "optioneel": false },
-    { "id": "voorzetkozijn", "label": "Plaatsen voorzetkozijn (alleen bij spouwmuur)", "eenheid": "stuk", "prijs": 115, "uren": 1.0, "categorie": "Plaatsing", "optioneel": true },
-    { "id": "binnenafwerking-m1", "label": "Binnenafwerking (excl. materiaal) per m1", "eenheid": "m1", "prijs": 61, "uren": 1.0, "categorie": "Afwerking", "optioneel": true },
-    { "id": "buitenafwerking-m1", "label": "Buitenafwerking (excl. materiaal) per m1", "eenheid": "m1", "prijs": 61, "uren": 1.0, "categorie": "Afwerking", "optioneel": true },
-    { "id": "plaatsen-buitendeur", "label": "Plaatsen buitendeur", "eenheid": "stuk", "prijs": 78, "uren": 3.0, "categorie": "Plaatsing", "optioneel": false },
-    { "id": "afvoer-materialen", "label": "Afvoer oude materialen", "eenheid": "stuk", "prijs": 61, "uren": 1.0, "categorie": "Overig", "optioneel": false },
-    { "id": "werk-boven-bg", "label": "Werken boven begane grond (steiger e.d.)", "eenheid": "stuk", "prijs": 74, "uren": 1.0, "categorie": "Overig", "optioneel": true },
-    { "id": "inmeetservice", "label": "Inmeetservice (eenmalig per project)", "eenheid": "stuk", "prijs": 49, "uren": 1.0, "categorie": "Overig", "optioneel": false, "eenmalig": true }
+    { "id": "verwijderen-bestaand", "label": "Verwijderen bestaand kozijn", "eenheid": "stuk", "prijs": 182, "uren": 3.0, "categorie": "Demontage", "defaultOn": true },
+    { "id": "verwijderen-extra", "label": "Verwijderen elk extra kozijn", "eenheid": "stuk", "prijs": 122, "uren": 2.0, "categorie": "Demontage", "defaultOn": true },
+    { "id": "opening-maken", "label": "Opening maken", "eenheid": "stuk", "prijs": 293, "uren": 4.0, "categorie": "Bouwkundig", "defaultOn": false, "toelichting": "Muuropening vergroten of nieuw maken (via MTB Bouw)." },
+    { "id": "plaatsen-kozijn-m2", "label": "Plaatsen kozijn (per m²)", "eenheid": "m2", "prijs": 110, "uren": 1.0, "categorie": "Plaatsing", "defaultOn": true },
+    { "id": "plaatsen-extra-kozijn-m2", "label": "Plaatsen elk extra kozijn (per m²)", "eenheid": "m2", "prijs": 74, "uren": 1.0, "categorie": "Plaatsing", "defaultOn": true },
+    { "id": "plaatsen-buitendeur", "label": "Plaatsen buitendeur", "eenheid": "stuk", "prijs": 78, "uren": 3.0, "categorie": "Plaatsing", "defaultOn": true },
+    { "id": "voorzetkozijn", "label": "Plaatsen voorzetkozijn (alleen bij spouwmuur)", "eenheid": "stuk", "prijs": 115, "uren": 1.0, "categorie": "Plaatsing", "defaultOn": false },
+    { "id": "binnenafwerking-m1", "label": "Binnenafwerking (excl. materiaal) per m1", "eenheid": "m1", "prijs": 61, "uren": 1.0, "categorie": "Afwerking", "defaultOn": true },
+    { "id": "buitenafwerking-m1", "label": "Buitenafwerking (excl. materiaal) per m1", "eenheid": "m1", "prijs": 61, "uren": 1.0, "categorie": "Afwerking", "defaultOn": true },
+    { "id": "afvoer-materialen", "label": "Afvoer oude materialen", "eenheid": "stuk", "prijs": 61, "uren": 1.0, "categorie": "Overig", "defaultOn": true },
+    { "id": "werk-boven-bg", "label": "Werken boven begane grond (toeslag per kozijn)", "eenheid": "stuk", "prijs": 74, "uren": 1.0, "categorie": "Overig", "defaultOn": false },
+    { "id": "inmeetservice", "label": "Inmeetservice (eenmalig per project)", "eenheid": "stuk", "prijs": 49, "uren": 1.0, "categorie": "Overig", "defaultOn": true, "eenmalig": true }
   ]
 }

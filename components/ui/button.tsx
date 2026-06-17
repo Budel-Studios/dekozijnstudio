@@ -45,7 +45,12 @@ export function Button({
   const classes = cn(base, variants[variant], sizes[size], className);
 
   if ("href" in props && props.href !== undefined) {
-    return <Link className={classes} {...props} />;
+    // Externe links openen automatisch in een nieuw tabblad.
+    const isExternal = /^https?:\/\//.test(props.href);
+    const externalAttrs = isExternal
+      ? { target: "_blank" as const, rel: "noopener noreferrer" }
+      : {};
+    return <Link className={classes} {...externalAttrs} {...props} />;
   }
 
   return <button className={classes} {...(props as ComponentProps<"button">)} />;

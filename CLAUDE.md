@@ -160,4 +160,10 @@ Home · Over ons · Kunststof kozijnen · Houten kozijnen · Aluminium kozijnen 
 - **Mega menu hover definitief gefixt**: `onMouseLeave`/`onMouseEnter` staan nu op het hele `<header>` (paneel is DOM-kind van header → hoveren ervan triggert nooit sluiten). Directe links sluiten het paneel bij hover. Plus klik-om-te-openen op de triggers (touch-vriendelijk) en sluiten bij navigatie. Sluit-vertraging 160 ms als extra marge.
 - NB: na het verwijderen van een route de stale typecache opruimen (`.next/types`, `.next/dev/types`) en dev-server herstarten, anders faalt `next build` op een verwijzing naar de oude route.
 
+#### Juridische pagina's (concept, te toetsen)
+- **Pagina's**: `/privacy` (AVG-privacyverklaring), `/algemene-voorwaarden`, `/cookiebeleid`, `/aanbrengbonus-voorwaarden`. Gedeelde lay-out `components/legal/legal-layout.tsx` met **concept-disclaimer** (juridisch te toetsen vóór livegang) + prose-styling.
+- **Bedrijfsgegevens** centraal in `data/company.ts` — PLACEHOLDER-velden (KvK, adres, e-mail, telefoon) tussen [haken], nog invullen. `LEGAL_LAST_UPDATED` voor de datum.
+- **Koppelingen**: footer-onderbalk toont nu de juridische links (`legalLinks` in `navigation.ts`); privacy-consent in offerte-wizard én checkout linkt naar `/privacy`; aanbrengbonus-pagina linkt naar de voorwaarden. Sitemap bijgewerkt.
+- **Belangrijk**: dit zijn concepten met placeholders — geen verzonnen juridische feiten als definitief; laat toetsen door een jurist en vul bedrijfsgegevens in.
+
 @AGENTS.md

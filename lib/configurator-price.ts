@@ -23,6 +23,13 @@ export type KozijnConfig = {
   glas?: string;
   /** Kleur/afwerking — value uit CONFIG_KLEUREN */
   kleur?: string;
+  /** Draairichting van het draaiend deel (links/rechts) */
+  draairichting?: string;
+  /** Kleur hang- en sluitwerk (zwart/blank) */
+  hangSluit?: string;
+  /** Ventilatierooster — positie in glasvlak + kleur (value uit CONFIG_KLEUREN) */
+  ventilatiePositie?: string;
+  ventilatieKleur?: string;
   opties: string[];
   uitvoering?: string;
 };
