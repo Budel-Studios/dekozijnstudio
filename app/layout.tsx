@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { organizationSchema, jsonLd } from "@/lib/jsonld";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Swiss grotesque — vrij alternatief voor Suisse Int'l (rebrand 2026).
+const grotesk = Hanken_Grotesk({
+  variable: "--font-grotesk",
   subsets: ["latin"],
   display: "swap",
-});
-
-const sora = Sora({
-  variable: "--font-sora",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -57,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="nl"
-      className={`${inter.variable} ${sora.variable} h-full antialiased`}
+      className={`${grotesk.variable} h-full antialiased`}
     >
       <head>
         <script
@@ -65,7 +60,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: jsonLd(organizationSchema()) }}
         />
       </head>
-      <body className="flex min-h-full flex-col bg-paper text-ink">
+      <body className="flex min-h-full flex-col bg-paper-soft text-ink">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

@@ -35,6 +35,21 @@ Design-tokens (Tailwind/CSS — stem af op het echte logo):
 | `mist` | `#E7E5E0` | Lijnen, vlakken |
 | `lime` (MTB Bouw) | `#ABE000` | Subtiele merksignatuur — alleen als vlak/streepje/punt of als tekst op donkere achtergrond (te laag contrast op wit) |
 
+> **REBRAND 2026 (actief — vervangt bovenstaande tabel):** donkergroen + lime + mint, Swiss grotesque, **volledig hoekig**, glasmorfisme-accenten. Tokennamen zijn behouden, alleen de waarden hermapt in `app/globals.css`:
+> | Token | Nieuw | Gebruik |
+> |---|---|---|
+> | `ink` | `#15302B` (donkergroen) | tekst & donkere secties |
+> | `paper` | `#FFFFFF` | kaarten / glas |
+> | `paper-soft` / `mint` | `#E6F1E8` | **pagina-basis** (body) & rustige secties |
+> | `lime` | `#ABE000` (MTB-lime) | accent + **primaire CTA** (tekst = `ink`); hover `lime-hover` `#9BCC00` |
+> | `forest` | `#1E4A3C` | links / secundaire accenten |
+> | `wood` | `#5C7568` (salie) | voorheen hout → gedempt groen accent (eyebrow-tekst) |
+> | `mist` | `#CBDDD0` | mint-grijze lijnen |
+>
+> - **Font:** Hanken Grotesk via `next/font` (vrij alternatief voor Suisse Int'l; `--font-grotesk` → `--font-sans`/`--font-display`). Suisse Int'l kan later self-hosted.
+> - **Hoekig:** alle radius-tokens `0px` + globale regel `[class*="rounded"]{border-radius:0!important}`.
+> - **CTA:** primaire knop = lime met donkergroene tekst.
+
 Typografie: strakke, moderne sans (bv. `Inter` of `Geist` voor body; een verfijnde display-sans voor koppen). Ruime line-height, duidelijke type-schaal.
 
 ## Tech & conventies

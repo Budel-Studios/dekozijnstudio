@@ -3,42 +3,51 @@
 
 /*
   De Kozijnstudio — design tokens (Tailwind v4, CSS-based @theme).
-  Brand: premium, minimal, Scandinavian. Light only (no dark mode).
-  Token values come from CLAUDE.md.
+  REBRAND 2026: donkergroen + lime + mint, Swiss grotesque, volledig hoekig
+  (geen ronde hoeken — reflecteert kozijnen), met glasmorfisme-accenten.
+  Tokennamen behouden; alleen waarden hermapt zodat de hele site meeverandert.
 */
 @theme {
-  /* Brand colours */
-  --color-ink: #23272a; /* antraciet — text, dark sections */
-  --color-paper: #ffffff; /* primary background */
-  --color-paper-soft: #f7f6f3; /* warm off-white background */
-  --color-wood: #c9a36b; /* natural wood — warm accents, image frames */
-  --color-wood-soft: #e3d4ba; /* lighter wood tint */
-  --color-forest: #2f4a3c; /* deep green — accents, CTAs */
-  --color-forest-hover: #263c30; /* CTA hover */
-  --color-mist: #e7e5e0; /* hairlines, surfaces */
-  --color-lime: #abe000; /* MTB Bouw brand accent — use as fill/dot/bar, or as text ONLY on dark backgrounds (low contrast on white) */
+  /* Brand colours (rebrand) */
+  --color-ink: #15302b; /* donkergroen — tekst & donkere vlakken */
+  --color-paper: #ffffff; /* wit — kaarten / glas-oppervlakken */
+  --color-paper-soft: #e6f1e8; /* mint — pagina-basis & rustige secties */
+  --color-mint: #e6f1e8; /* expliciete mint-alias */
+  --color-lime: #abe000; /* MTB-lime — accent & primaire CTA (tekst = ink) */
+  --color-lime-hover: #9bcc00; /* lime hover */
+  --color-forest: #1e4a3c; /* mid-groen — links/secundaire accenten */
+  --color-forest-hover: #163a2f;
+  --color-wood: #5c7568; /* (voorheen hout) → gedempt salie-groen accent */
+  --color-wood-soft: #aac3b2;
+  --color-mist: #cbddd0; /* mint-grijze lijnen/vlakken */
 
-  /* Typography — wired up to next/font in layout.tsx */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+  /* Typography — Swiss grotesque (Hanken Grotesk via next/font) */
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif,
-    system-ui, sans-serif;
+  --font-display: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale (display sizes for headings) */
   --text-display-sm: 2rem;
-  --text-display-sm--line-height: 1.15;
+  --text-display-sm--line-height: 1.12;
   --text-display: 2.75rem;
-  --text-display--line-height: 1.1;
-  --text-display-lg: 3.5rem;
-  --text-display-lg--line-height: 1.05;
+  --text-display--line-height: 1.05;
+  --text-display-lg: 3.75rem;
+  --text-display-lg--line-height: 1.0;
 
-  /* Radius */
-  --radius-card: 1rem;
-  --radius-pill: 9999px;
+  /* Radius — volledig hoekig */
+  --radius-card: 0px;
+  --radius-pill: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
 
-  /* Shadows — soft, premium */
-  --shadow-soft: 0 1px 2px rgb(35 39 42 / 0.04),
-    0 8px 24px rgb(35 39 42 / 0.06);
+  /* Shadows — strak/zacht */
+  --shadow-soft: 0 1px 2px rgb(21 48 43 / 0.05),
+    0 10px 30px rgb(21 48 43 / 0.08);
 }
 
 /*
@@ -136,11 +145,18 @@
   }
 
   body {
-    background-color: var(--color-paper);
+    background-color: var(--color-paper-soft); /* mint als pagina-basis */
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Rebrand: volledig hoekig — overschrijft elke rounded-* utility. */
+  [class*="rounded"],
+  [class*="rounded"]::before,
+  [class*="rounded"]::after {
+    border-radius: 0 !important;
   }
 
   h1,

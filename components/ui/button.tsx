@@ -9,7 +9,7 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-pill font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-forest text-paper hover:bg-forest-hover",
+  primary: "bg-lime text-ink hover:bg-lime-hover",
   secondary: "border border-ink/15 bg-paper text-ink hover:bg-paper-soft",
   ghost: "text-ink hover:bg-paper-soft",
 };
