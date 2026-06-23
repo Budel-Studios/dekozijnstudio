@@ -100,6 +100,78 @@ export function computeCheckout(
   };
 }
 
+// ─── Project (meerdere kozijnen) ──────────────────────────────────────────────
+
+export type ProjectLineItem = { config: KozijnConfig; montageChecked: string[] };
+
+export type ProjectTotals = {
+  perItem: CheckoutTotals[];
+  /** Geaggregeerd projecttotaal (CheckoutTotals-vorm zodat PriceSummary werkt). */
+  total: CheckoutTotals;
+  itemCount: number;
+};
+
+export function computeProject(items: ProjectLineItem[]): ProjectTotals {
+  const perItem = items.map((it) => computeCheckout(it.config, it.montageChecked));
+
+  let productInclBtw = 0;
+  let montageExBtw = 0;
+  let montageInclBtw = 0;
+  let totaalUren = 0;
+  let isdeSubsidie = 0;
+  let isdeGlasM2 = 0;
+  let isdeEligible = false;
+  const lines = [];
+
+  for (const t of perItem) {
+    productInclBtw += t.productInclBtw;
+    montageExBtw += t.montage.subtotaalExBtw;
+    montageInclBtw += t.montage.subtotaalInclBtw;
+    totaalUren += t.montage.totaalUren;
+    lines.push(...t.montage.lines);
+    isdeSubsidie += t.isde.subsidie;
+    if (t.isde.eligible) {
+      isdeGlasM2 += t.isde.glasM2;
+      isdeEligible = true;
+    }
+  }
+
+  const productExBtw = productInclBtw / BTW_FACTOR;
+  const subtotaalExBtw = productExBtw + montageExBtw;
+  const btwBedrag = round2(subtotaalExBtw * (MONTAGE.btwPercentage / 100));
+  const subtotaalInclBtw = round2(subtotaalExBtw + btwBedrag);
+  const brutoInclBtw = subtotaalInclBtw;
+  const nettoInvestering = round2(brutoInclBtw - isdeSubsidie);
+  const aanbetaling = round2(round2(productInclBtw) * AANBETALING_KOZIJN_AANDEEL);
+  const restantBijOplevering = round2(brutoInclBtw - aanbetaling);
+
+  const total: CheckoutTotals = {
+    productInclBtw: round2(productInclBtw),
+    montage: {
+      lines,
+      subtotaalExBtw: round2(montageExBtw),
+      subtotaalInclBtw: round2(montageInclBtw),
+      totaalUren: round2(totaalUren),
+    },
+    subtotaalInclBtw,
+    btwBedrag,
+    isde: {
+      eligible: isdeEligible,
+      glasM2: round2(isdeGlasM2),
+      ratePerM2: 0,
+      subsidie: round2(isdeSubsidie),
+      meetsMinimum: round2(isdeGlasM2) >= isdeBerekening.minM2,
+    },
+    brutoInclBtw,
+    nettoInvestering,
+    aanbetaling,
+    restantBijOplevering,
+    eindtotaalInclBtw: nettoInvestering,
+  };
+
+  return { perItem, total, itemCount: items.length };
+}
+
 // ─── Validatieschema voor verzending ─────────────────────────────────────────
 
 export const checkoutContactSchema = z.object({

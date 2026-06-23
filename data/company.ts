@@ -1,15 +1,15 @@
 /**
  * Bedrijfsgegevens — één bron voor juridische pagina's, footer en contact.
- * De Kozijnstudio is een handelsnaam/onderdeel van MTB Bouw B.V.
- * Gegevens met [haken] nog te verifiëren/invullen (niet op mtbbouw.com gevonden).
+ * De Kozijnstudio B.V. is onderdeel van MTB Bouw.
+ * Gegevens met [haken] nog te verifiëren/invullen.
  */
 export const company = {
   /** Handelsnaam waaronder de site opereert */
   naam: "De Kozijnstudio",
   /** Juridische entiteit */
-  entiteit: "MTB Bouw B.V.",
+  entiteit: "De Kozijnstudio B.V.",
   moeder: "MTB Bouw",
-  kvk: "[KvK-nummer MTB Bouw B.V. — nog invullen]",
+  kvk: "60942037",
   btw: "[btw-identificatienummer — nog invullen]",
   adres: "[Straat en huisnummer — nog invullen]",
   postcodePlaats: "[Postcode en plaats — nog invullen]",

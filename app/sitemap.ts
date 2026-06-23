@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const baseUrl = "https://www.dekozijnstudio.nl"; // placeholder — update when domain is live
+import { SITE_URL as baseUrl } from "@/lib/site";
 
 const routes: Array<{ path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }> = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" },

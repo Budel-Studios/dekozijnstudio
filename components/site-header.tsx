@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, MenuIcon, CloseIcon, ArrowRightIcon } from "@/components/icons";
 import { headerDirectLinks, footerGroups, primaryCta } from "@/lib/navigation";
 import { megaGroups, type MegaGroup, type MegaLink } from "@/lib/mega-menu";
+import { ProjectLink } from "@/components/offerte/project-link";
 import { cn } from "@/lib/utils";
 
 // ─── Trust signals shown in the top bar ───────────────────────────────────────
@@ -199,7 +200,11 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
           </ul>
         </div>
 
-        <div className="pt-4 pb-2">
+        <div className="pt-4 pb-2 space-y-3">
+          <ProjectLink
+            onClick={onClose}
+            className="w-full justify-center border border-mist px-4 py-3 text-sm font-medium text-ink"
+          />
           <Button href={primaryCta.href} className="w-full justify-center" onClick={onClose}>
             {primaryCta.label}
           </Button>
@@ -338,7 +343,8 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden items-center gap-4 lg:flex">
+            <ProjectLink className="text-sm font-medium text-ink/70 transition-colors hover:text-ink" />
             <Button href={primaryCta.href} size="sm">
               {primaryCta.label}
             </Button>

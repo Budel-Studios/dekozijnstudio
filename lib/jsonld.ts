@@ -5,7 +5,7 @@
  * BreadcrumbList (all inner pages).
  */
 
-const SITE_URL = "https://www.dekozijnstudio.nl"; // placeholder — update when domain is live
+import { SITE_URL } from "@/lib/site";
 
 // ─── Organization / LocalBusiness ────────────────────────────────────────────
 
