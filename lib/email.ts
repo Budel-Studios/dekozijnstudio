@@ -294,6 +294,7 @@ export async function sendCheckoutEmail(input: {
 export async function sendProjectEmail(input: {
   items: ProjectLineItem[];
   contact: CheckoutContact;
+  pdfBase64?: string | null;
 }): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
   const smtp = readSmtpConfig();
   if (!smtp) {
@@ -384,6 +385,17 @@ export async function sendProjectEmail(input: {
     auth: { user: smtp.user, pass: smtp.pass },
   });
 
+  const attachments =
+    input.pdfBase64 && input.pdfBase64.length > 0
+      ? [
+          {
+            filename: "projectaanvraag-dekozijnstudio.pdf",
+            content: Buffer.from(input.pdfBase64, "base64"),
+            contentType: "application/pdf",
+          },
+        ]
+      : undefined;
+
   try {
     await transporter.sendMail({
       from: `"De Kozijnstudio — website" <${smtp.from}>`,
@@ -392,6 +404,7 @@ export async function sendProjectEmail(input: {
       subject: `Projectaanvraag — ${c.naam} (${c.plaats}) — ${project.itemCount} kozijn(en) — ${formatEuro(t.brutoInclBtw)}`,
       text,
       html,
+      attachments,
     });
     return { ok: true };
   } catch (error) {

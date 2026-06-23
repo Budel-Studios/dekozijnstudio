@@ -11,7 +11,10 @@ import {
   CONFIG_PRODUCTTYPES,
   CONFIG_GLAS,
   CONFIG_KLEUREN,
+  CONFIG_DRAAIRICHTING,
+  CONFIG_HANGSLUIT,
 } from "@/data/configurator";
+import { buildProjectPdf, type PdfItem } from "@/lib/project-pdf";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
 import { computeProject } from "@/lib/checkout";
 import { isdeBerekening, isdeInfo } from "@/data/subsidie";
@@ -33,6 +36,35 @@ function lbl<T extends { value: string; label: string }>(list: readonly T[], v?:
   return list.find((x) => x.value === v)?.label ?? "—";
 }
 
+/** Rastert een ingesloten SVG-tekening naar een PNG data-URL (voor de PDF). */
+async function svgToPng(svg: SVGSVGElement): Promise<{ dataUrl: string; w: number; h: number }> {
+  const vb = svg.viewBox?.baseVal;
+  const w = vb && vb.width ? vb.width : svg.clientWidth || 300;
+  const h = vb && vb.height ? vb.height : svg.clientHeight || 300;
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.setAttribute("width", String(w));
+  clone.setAttribute("height", String(h));
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const xml = new XMLSerializer().serializeToString(clone);
+  const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+  const img = new Image();
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error("svg load"));
+    img.src = url;
+  });
+  const scale = 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no canvas context");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return { dataUrl: canvas.toDataURL("image/png"), w, h };
+}
+
 export function Checkout() {
   const [items, setItems] = useState<ProjectItem[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -45,6 +77,7 @@ export function Checkout() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
     setItems(readProject());
@@ -86,6 +119,68 @@ export function Checkout() {
     setErrors((e) => ({ ...e, [key]: "" }));
   };
 
+  async function generatePdf(): Promise<{ blob: Blob; base64: string } | null> {
+    if (typeof document === "undefined") return null;
+    const svgs = Array.from(
+      document.querySelectorAll<SVGSVGElement>("[data-kozijn-preview] svg"),
+    );
+    const pdfItems: PdfItem[] = [];
+    for (let i = 0; i < items.length; i++) {
+      const c = items[i].config;
+      let imageDataUrl = "";
+      let ratio = 0.8;
+      const svg = svgs[i];
+      if (svg) {
+        try {
+          const png = await svgToPng(svg);
+          imageDataUrl = png.dataUrl;
+          ratio = png.h > 0 ? png.w / png.h : 0.8;
+        } catch {
+          /* tekening overslaan bij rasterfout */
+        }
+      }
+      const rows: Array<[string, string]> = [
+        ["Materiaal", lbl(CONFIG_MATERIALEN, c.materiaal)],
+        ["Type", lbl(CONFIG_PRODUCTTYPES, c.producttype)],
+        ["Afmeting", `${c.breedteCm} × ${c.hoogteCm} cm`],
+        ["Aantal", String(c.aantal)],
+        ["Glas", lbl(CONFIG_GLAS, c.glas)],
+        ["Kleur", lbl(CONFIG_KLEUREN, c.kleur)],
+      ];
+      if (c.draairichting) rows.push(["Draairichting", lbl(CONFIG_DRAAIRICHTING, c.draairichting)]);
+      if (c.hangSluit) rows.push(["Hang/sluit", lbl(CONFIG_HANGSLUIT, c.hangSluit)]);
+      if (c.opties.includes("ventilatie")) rows.push(["Ventilatie", "Ja"]);
+      pdfItems.push({
+        imageDataUrl,
+        imageRatio: ratio,
+        titel: `Kozijn ${i + 1}`,
+        rows,
+        prijs: formatEuro(project.perItem[i]?.brutoInclBtw ?? 0),
+      });
+    }
+
+    const overzicht: Array<[string, string]> = [
+      ["Kozijnen", formatEuro(totals.productInclBtw)],
+      ["Montage & werk", formatEuro(totals.montage.subtotaalInclBtw)],
+      ["*Bruto (incl. btw)", formatEuro(totals.brutoInclBtw)],
+      [`waarvan btw`, formatEuro(totals.btwBedrag)],
+    ];
+    if (totals.isde.subsidie > 0) {
+      overzicht.push(["ISDE-subsidie (indicatief)", `− ${formatEuro(totals.isde.subsidie)}`]);
+      overzicht.push(["*Netto investering", formatEuro(totals.nettoInvestering)]);
+    }
+    overzicht.push(["Aanbetaling bij opdracht", formatEuro(totals.aanbetaling)]);
+    overzicht.push(["Restant bij oplevering", formatEuro(totals.restantBijOplevering)]);
+
+    const datum = new Date().toLocaleDateString("nl-NL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    return buildProjectPdf({ datum, contact: { ...contact }, items: pdfItems, overzicht });
+  }
+
   async function handleSubmit() {
     const e: Record<string, string> = {};
     if (contact.naam.trim().length < 2) e.naam = "Vul uw naam in.";
@@ -99,12 +194,22 @@ export function Checkout() {
 
     setSubmitting(true);
     setSubmitError(null);
+
+    let pdf: { blob: Blob; base64: string } | null = null;
+    try {
+      pdf = await generatePdf();
+    } catch {
+      pdf = null; // PDF mislukt — aanvraag gaat alsnog door
+    }
+
     try {
       const result = await submitProject({
         items: items.map((i) => ({ config: i.config, montageChecked: i.montageChecked })),
         contact: { ...contact, privacyAkkoord: akkoord },
+        pdfBase64: pdf?.base64 ?? null,
       });
       if (result.ok) {
+        if (pdf) setPdfUrl(URL.createObjectURL(pdf.blob));
         setDone(true);
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -135,9 +240,19 @@ export function Checkout() {
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-ink/65">
           We hebben uw project met alle kozijnen ontvangen en nemen doorgaans
           binnen één werkdag contact met u op om de inmeetservice in te plannen.
+          {pdfUrl ? " U kunt hieronder een PDF van uw aanvraag downloaden." : ""}
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Button href="/">Terug naar home</Button>
+          {pdfUrl && (
+            <a
+              href={pdfUrl}
+              download="projectaanvraag-dekozijnstudio.pdf"
+              className="inline-flex h-11 items-center justify-center gap-2 bg-lime px-6 text-sm font-medium text-ink transition-colors hover:bg-lime-hover"
+            >
+              ↓ Download PDF
+            </a>
+          )}
+          <Button href="/" variant={pdfUrl ? "secondary" : "primary"}>Terug naar home</Button>
           <Button href="/configurator" variant="secondary">Nieuw kozijn samenstellen</Button>
         </div>
       </div>
@@ -319,7 +434,7 @@ function ProjectCard({
       </div>
 
       <div className="mt-5 grid gap-6 sm:grid-cols-[150px_1fr] sm:items-start">
-        <div className="border border-mist bg-paper-soft p-3">
+        <div data-kozijn-preview className="border border-mist bg-paper-soft p-3">
           <KozijnPreview config={c} />
         </div>
         <dl className="space-y-1.5 text-sm">

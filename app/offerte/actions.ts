@@ -8,6 +8,7 @@ export type CheckoutResult = { ok: true } | { ok: false; error: string };
 type ProjectPayload = {
   items: unknown;
   contact: unknown;
+  pdfBase64?: string | null;
 };
 
 /**
@@ -43,7 +44,12 @@ export async function submitProject(payload: ProjectPayload): Promise<CheckoutRe
     return { ok: false, error: "Uw project bevat nog geen kozijnen." };
   }
 
-  const result = await sendProjectEmail({ items, contact: parsed.data });
+  const pdfBase64 =
+    typeof payload.pdfBase64 === "string" && payload.pdfBase64.length > 0
+      ? payload.pdfBase64
+      : null;
+
+  const result = await sendProjectEmail({ items, contact: parsed.data, pdfBase64 });
 
   if (!result.ok) {
     return {
