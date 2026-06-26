@@ -42,6 +42,7 @@ export const megaGroups: MegaGroup[] = [
       {
         heading: "Per materiaal",
         links: [
+          { label: "Kozijnen vergelijken", href: "/kozijnen", description: "Hout, kunststof en aluminium naast elkaar." },
           { label: "Houten kozijnen", href: "/houten-kozijnen", description: "Tijdloos en duurzaam." },
           { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", description: "Onderhoudsvriendelijk." },
           { label: "Aluminium kozijnen", href: "/aluminium-kozijnen", description: "Slank, minimaal onderhoud." },

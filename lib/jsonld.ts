@@ -18,10 +18,13 @@ export function organizationSchema() {
       "Transparante kozijnleverancier voor kunststof, houten en aluminium kozijnen. Onderdeel van MTB Bouw. Werkgebied: Twente & Oost-Nederland.",
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`, // placeholder
-    areaServed: {
-      "@type": "AdministrativeArea",
-      name: "Twente en Oost-Nederland",
-    },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Twente" },
+      { "@type": "AdministrativeArea", name: "Overijssel" },
+      { "@type": "City", name: "Enschede" },
+      { "@type": "City", name: "Hengelo" },
+      { "@type": "City", name: "Almelo" },
+    ],
     parentOrganization: {
       "@type": "Organization",
       name: "MTB Bouw",
