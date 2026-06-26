@@ -8,9 +8,15 @@ import {
   BOUWKUNDIG_OPTIONS,
   labelFor,
 } from "@/lib/offerte-schema";
-import { computeCheckout, type CheckoutContact } from "@/lib/checkout";
+import {
+  computeCheckout,
+  computeProject,
+  type CheckoutContact,
+  type ProjectLineItem,
+} from "@/lib/checkout";
 import { formatEuro, type KozijnConfig } from "@/lib/configurator-price";
 import { EENHEID_LABEL, MONTAGE } from "@/lib/montage";
+import { buildHandoff } from "@/lib/configurator-handoff";
 
 /**
  * SMTP email sending via Nodemailer.
@@ -279,6 +285,130 @@ export async function sendCheckoutEmail(input: {
     return { ok: true };
   } catch (error) {
     console.error("[checkout] Versturen mislukt:", error);
+    return { ok: false, reason: "send_failed" };
+  }
+}
+
+// ─── Project-offerte (mandje met meerdere kozijnen) ──────────────────────────
+
+export async function sendProjectEmail(input: {
+  items: ProjectLineItem[];
+  contact: CheckoutContact;
+  pdfBase64?: string | null;
+}): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
+  const smtp = readSmtpConfig();
+  if (!smtp) {
+    console.error("[project] SMTP is niet geconfigureerd (.env.local).");
+    return { ok: false, reason: "not_configured" };
+  }
+
+  const project = computeProject(input.items);
+  const t = project.total;
+  const c = input.contact;
+
+  const itemsHtml = input.items
+    .map((it, idx) => {
+      const summary = buildHandoff(it.config, it.montageChecked).summary;
+      const pi = project.perItem[idx];
+      return `<div style="margin:14px 0;border:1px solid #e7e5e0;">
+        <p style="margin:0;padding:8px 12px;background:#15302b;color:#abe000;font-weight:700;font-size:13px;">Kozijn ${idx + 1} — ${escapeHtml(formatEuro(pi.brutoInclBtw))} incl. btw</p>
+        <pre style="margin:0;padding:10px 12px;white-space:pre-wrap;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#333;">${escapeHtml(summary)}</pre>
+      </div>`;
+    })
+    .join("");
+
+  const isdeRow =
+    t.isde.subsidie > 0
+      ? `<tr><td colspan="2" style="padding:6px 12px;">ISDE-subsidie (indicatief, via RVO)</td><td style="padding:6px 12px;text-align:right;color:#1e4a3c;">− ${formatEuro(t.isde.subsidie)}</td></tr>
+         <tr><td colspan="2" style="padding:6px 12px;font-weight:600;">Netto investering (na ISDE)</td><td style="padding:6px 12px;text-align:right;font-weight:600;">${formatEuro(t.nettoInvestering)}</td></tr>`
+      : "";
+
+  const html = `<!doctype html><html lang="nl"><body style="margin:0;background:#e6f1e8;font-family:Arial,Helvetica,sans-serif;color:#15302b;">
+  <div style="max-width:680px;margin:0 auto;padding:24px;">
+    <div style="background:#15302b;color:#fff;padding:20px 24px;">
+      <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe projectaanvraag — ${project.itemCount} kozijn(en)</p>
+      <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio · via website</p>
+    </div>
+    <div style="background:#fff;border:1px solid #cbddd0;border-top:none;padding:16px 24px;">
+      <h3 style="margin:8px 0;font-size:15px;">Klant</h3>
+      <p style="margin:0;font-size:14px;line-height:1.6;">
+        ${escapeHtml(c.naam)}<br>${escapeHtml(c.email)} · ${escapeHtml(c.telefoon)}<br>
+        ${escapeHtml(c.postcode.toUpperCase())} ${escapeHtml(c.plaats)}
+        ${c.opmerkingen ? `<br><br><strong>Opmerkingen:</strong><br>${escapeHtml(c.opmerkingen)}` : ""}
+      </p>
+
+      <h3 style="margin:18px 0 4px;font-size:15px;">Kozijnen in dit project</h3>
+      ${itemsHtml}
+
+      <h3 style="margin:18px 0 8px;font-size:15px;">Projectoverzicht</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr><td colspan="2" style="padding:6px 12px;">Kozijnen (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.productInclBtw)}</td></tr>
+        <tr><td colspan="2" style="padding:6px 12px;">Montage & werk (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.montage.subtotaalInclBtw)}</td></tr>
+        <tr><td colspan="2" style="padding:8px 12px;border-top:1px solid #cbddd0;font-weight:700;">Bruto (incl. btw)</td><td style="padding:8px 12px;text-align:right;border-top:1px solid #cbddd0;font-weight:700;">${formatEuro(t.brutoInclBtw)}</td></tr>
+        <tr><td colspan="2" style="padding:2px 12px;font-size:12px;color:#777;">waarvan btw (${MONTAGE.btwPercentage}%)</td><td style="padding:2px 12px;text-align:right;font-size:12px;color:#777;">${formatEuro(t.btwBedrag)}</td></tr>
+        ${isdeRow}
+        <tr><td colspan="3" style="padding:10px 12px 2px;font-size:12px;color:#abe000;background:#15302b;">BETALING</td></tr>
+        <tr><td colspan="2" style="padding:6px 12px;">Aanbetaling bij opdracht</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.aanbetaling)}</td></tr>
+        <tr><td colspan="2" style="padding:6px 12px;">Restant bij oplevering</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.restantBijOplevering)}</td></tr>
+      </table>
+      <p style="margin:12px 0 0;font-size:12px;color:#777;">Richtprijs — niet bindend. Definitieve prijs na inmeetservice. Totaal indicatieve montage-uren: ${t.montage.totaalUren} u.</p>
+    </div>
+  </div>
+</body></html>`;
+
+  const text = [
+    `Nieuwe projectaanvraag — ${project.itemCount} kozijn(en) — De Kozijnstudio`,
+    ``,
+    `Klant: ${c.naam} · ${c.email} · ${c.telefoon} · ${c.postcode.toUpperCase()} ${c.plaats}`,
+    c.opmerkingen ? `Opmerkingen: ${c.opmerkingen}` : ``,
+    ``,
+    ...input.items.flatMap((it, idx) => [
+      `── Kozijn ${idx + 1} (${formatEuro(project.perItem[idx].brutoInclBtw)} incl. btw) ──`,
+      buildHandoff(it.config, it.montageChecked).summary,
+      ``,
+    ]),
+    `Kozijnen: ${formatEuro(t.productInclBtw)}`,
+    `Montage: ${formatEuro(t.montage.subtotaalInclBtw)}`,
+    `Bruto incl. btw: ${formatEuro(t.brutoInclBtw)} (waarvan btw ${formatEuro(t.btwBedrag)})`,
+    t.isde.subsidie > 0 ? `ISDE-subsidie (indicatief): -${formatEuro(t.isde.subsidie)}` : ``,
+    t.isde.subsidie > 0 ? `Netto investering: ${formatEuro(t.nettoInvestering)}` : ``,
+    `Aanbetaling bij opdracht: ${formatEuro(t.aanbetaling)}`,
+    `Restant bij oplevering: ${formatEuro(t.restantBijOplevering)}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const transporter = nodemailer.createTransport({
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.secure,
+    auth: { user: smtp.user, pass: smtp.pass },
+  });
+
+  const attachments =
+    input.pdfBase64 && input.pdfBase64.length > 0
+      ? [
+          {
+            filename: "projectaanvraag-dekozijnstudio.pdf",
+            content: Buffer.from(input.pdfBase64, "base64"),
+            contentType: "application/pdf",
+          },
+        ]
+      : undefined;
+
+  try {
+    await transporter.sendMail({
+      from: `"De Kozijnstudio — website" <${smtp.from}>`,
+      to: smtp.to,
+      replyTo: `"${c.naam}" <${c.email}>`,
+      subject: `Projectaanvraag — ${c.naam} (${c.plaats}) — ${project.itemCount} kozijn(en) — ${formatEuro(t.brutoInclBtw)}`,
+      text,
+      html,
+      attachments,
+    });
+    return { ok: true };
+  } catch (error) {
+    console.error("[project] Versturen mislukt:", error);
     return { ok: false, reason: "send_failed" };
   }
 }

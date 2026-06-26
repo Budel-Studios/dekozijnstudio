@@ -27,7 +27,7 @@ import {
   emptyConfig,
   type KozijnConfig,
 } from "@/lib/configurator-price";
-import { buildHandoff, HANDOFF_KEY } from "@/lib/configurator-handoff";
+import { addToProject as addKozijnToProject } from "@/lib/project-cart";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
 import { defaultCheckedIds } from "@/lib/montage";
 import { computeCheckout } from "@/lib/checkout";
@@ -139,14 +139,18 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  function goToOfferte() {
-    const handoff = buildHandoff(config, montageChecked);
-    try {
-      sessionStorage.setItem(HANDOFF_KEY, JSON.stringify(handoff));
-    } catch {
-      // sessionStorage unavailable — proceed anyway, checkout just won't prefill
+  function addToProject(navigate: boolean) {
+    addKozijnToProject(config, montageChecked);
+    if (navigate) {
+      router.push("/offerte");
+    } else {
+      // Nog een kozijn: configurator resetten naar een schone start.
+      setConfig(emptyConfig);
+      setMontageChecked(defaultCheckedIds(emptyConfig));
+      setMontageTouched(false);
+      setStep(0);
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    router.push("/offerte");
   }
 
   const selectedMateriaal = CONFIG_MATERIALEN.find((m) => m.value === config.materiaal);
@@ -538,11 +542,11 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
             </Callout>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Button onClick={goToOfferte} className="flex-1 justify-center">
-                Naar jouw project →
+              <Button onClick={() => addToProject(true)} className="flex-1 justify-center">
+                Toevoegen aan project &amp; afronden →
               </Button>
-              <Button variant="secondary" onClick={() => setStep(0)} className="justify-center">
-                Opnieuw beginnen
+              <Button variant="secondary" onClick={() => addToProject(false)} className="justify-center">
+                + Nog een kozijn
               </Button>
             </div>
           </Step>

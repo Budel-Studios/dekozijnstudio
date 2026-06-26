@@ -1,24 +1,22 @@
 "use server";
 
-import { checkoutContactSchema } from "@/lib/checkout";
-import { sendCheckoutEmail } from "@/lib/email";
-import type { KozijnConfig } from "@/lib/configurator-price";
+import { checkoutContactSchema, type ProjectLineItem } from "@/lib/checkout";
+import { sendProjectEmail } from "@/lib/email";
 
 export type CheckoutResult = { ok: true } | { ok: false; error: string };
 
-type Payload = {
-  config: KozijnConfig | null;
-  montageChecked: string[];
-  configSummary: string;
+type ProjectPayload = {
+  items: unknown;
   contact: unknown;
+  pdfBase64?: string | null;
 };
 
 /**
- * Verwerkt de checkout-offerte: valideert de contactgegevens, herberekent het
- * prijsoverzicht server-side (uit config + montage-aantallen) en mailt de
+ * Verwerkt de project-aanvraag ('Jouw project'): valideert de contactgegevens,
+ * herberekent het prijsoverzicht server-side uit alle kozijnen en mailt de
  * volledige specificatie naar De Kozijnstudio. Niets wordt opgeslagen.
  */
-export async function submitCheckout(payload: Payload): Promise<CheckoutResult> {
+export async function submitProject(payload: ProjectPayload): Promise<CheckoutResult> {
   const parsed = checkoutContactSchema.safeParse(payload.contact);
   if (!parsed.success) {
     return { ok: false, error: "Controleer uw contactgegevens en probeer opnieuw." };
@@ -29,16 +27,29 @@ export async function submitCheckout(payload: Payload): Promise<CheckoutResult> 
     return { ok: true };
   }
 
-  const montageChecked = Array.isArray(payload.montageChecked)
-    ? payload.montageChecked.filter((x): x is string => typeof x === "string")
-    : [];
+  // Items opschonen + begrenzen
+  const rawItems = Array.isArray(payload.items) ? payload.items : [];
+  const items: ProjectLineItem[] = rawItems
+    .slice(0, 50)
+    .filter((it): it is { config: unknown; montageChecked?: unknown } => !!it && typeof it === "object")
+    .map((it) => ({
+      config: (it.config ?? null) as ProjectLineItem["config"],
+      montageChecked: Array.isArray(it.montageChecked)
+        ? it.montageChecked.filter((x): x is string => typeof x === "string")
+        : [],
+    }))
+    .filter((it) => it.config !== null);
 
-  const result = await sendCheckoutEmail({
-    config: payload.config,
-    montageChecked,
-    configSummary: typeof payload.configSummary === "string" ? payload.configSummary : "",
-    contact: parsed.data,
-  });
+  if (items.length === 0) {
+    return { ok: false, error: "Uw project bevat nog geen kozijnen." };
+  }
+
+  const pdfBase64 =
+    typeof payload.pdfBase64 === "string" && payload.pdfBase64.length > 0
+      ? payload.pdfBase64
+      : null;
+
+  const result = await sendProjectEmail({ items, contact: parsed.data, pdfBase64 });
 
   if (!result.ok) {
     return {

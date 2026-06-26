@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { organizationSchema, jsonLd } from "@/lib/jsonld";
+import { SITE_URL } from "@/lib/site";
 
 // Swiss grotesque — vrij alternatief voor Suisse Int'l (rebrand 2026).
 const grotesk = Hanken_Grotesk({
@@ -14,7 +15,7 @@ const grotesk = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.dekozijnstudio.nl"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "De Kozijnstudio — Transparante kozijnen in Twente",
     template: "%s · De Kozijnstudio",

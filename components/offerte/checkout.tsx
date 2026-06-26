@@ -5,33 +5,68 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { CheckIcon } from "@/components/icons";
-import { formatEuro, type KozijnConfig } from "@/lib/configurator-price";
+import { formatEuro } from "@/lib/configurator-price";
 import {
   CONFIG_MATERIALEN,
   CONFIG_PRODUCTTYPES,
   CONFIG_GLAS,
   CONFIG_KLEUREN,
+  CONFIG_DRAAIRICHTING,
+  CONFIG_HANGSLUIT,
 } from "@/data/configurator";
+import { buildProjectPdf, type PdfItem } from "@/lib/project-pdf";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
-import { defaultCheckedIds } from "@/lib/montage";
-import { computeCheckout } from "@/lib/checkout";
+import { computeProject } from "@/lib/checkout";
 import { isdeBerekening, isdeInfo } from "@/data/subsidie";
-import { HANDOFF_KEY, type OfferteHandoff } from "@/lib/configurator-handoff";
-import { submitCheckout } from "@/app/offerte/actions";
+import { submitProject } from "@/app/offerte/actions";
 import { MontageEditor } from "@/components/offerte/montage-editor";
 import { PriceSummary } from "@/components/offerte/price-summary";
+import {
+  readProject,
+  writeProject,
+  removeFromProject,
+  PROJECT_EVENT,
+  type ProjectItem,
+} from "@/lib/project-cart";
 
 const inputClass =
-  "w-full rounded-xl border border-mist bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-forest focus:ring-2 focus:ring-forest/15";
+  "w-full border border-mist bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-forest focus:ring-2 focus:ring-forest/15";
 
-function lbl<T extends { value: string; label: string }>(list: T[], v?: string) {
+function lbl<T extends { value: string; label: string }>(list: readonly T[], v?: string) {
   return list.find((x) => x.value === v)?.label ?? "—";
 }
 
+/** Rastert een ingesloten SVG-tekening naar een PNG data-URL (voor de PDF). */
+async function svgToPng(svg: SVGSVGElement): Promise<{ dataUrl: string; w: number; h: number }> {
+  const vb = svg.viewBox?.baseVal;
+  const w = vb && vb.width ? vb.width : svg.clientWidth || 300;
+  const h = vb && vb.height ? vb.height : svg.clientHeight || 300;
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.setAttribute("width", String(w));
+  clone.setAttribute("height", String(h));
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const xml = new XMLSerializer().serializeToString(clone);
+  const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+  const img = new Image();
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error("svg load"));
+    img.src = url;
+  });
+  const scale = 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no canvas context");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return { dataUrl: canvas.toDataURL("image/png"), w, h };
+}
+
 export function Checkout() {
-  const [config, setConfig] = useState<KozijnConfig | null>(null);
-  const [summary, setSummary] = useState<string>("");
-  const [checked, setChecked] = useState<string[]>([]);
+  const [items, setItems] = useState<ProjectItem[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const [contact, setContact] = useState({
@@ -42,36 +77,109 @@ export function Checkout() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(HANDOFF_KEY);
-      if (raw) {
-        const handoff = JSON.parse(raw) as OfferteHandoff;
-        setConfig(handoff.config);
-        setSummary(handoff.summary);
-        setChecked(
-          handoff.montageChecked && handoff.montageChecked.length > 0
-            ? handoff.montageChecked
-            : defaultCheckedIds(handoff.config),
-        );
-        sessionStorage.removeItem(HANDOFF_KEY);
-      }
-    } catch {
-      /* ignore */
-    }
+    setItems(readProject());
     setLoaded(true);
+    const onUpd = () => setItems(readProject());
+    window.addEventListener(PROJECT_EVENT, onUpd);
+    return () => window.removeEventListener(PROJECT_EVENT, onUpd);
   }, []);
 
-  const totals = useMemo(() => computeCheckout(config, checked), [config, checked]);
+  const project = useMemo(
+    () => computeProject(items.map((i) => ({ config: i.config, montageChecked: i.montageChecked }))),
+    [items],
+  );
+  const totals = project.total;
 
-  const toggleMontage = (id: string, on: boolean) =>
-    setChecked((cur) => (on ? [...new Set([...cur, id])] : cur.filter((x) => x !== id)));
+  function removeItem(id: string) {
+    setItems(removeFromProject(id));
+  }
+
+  function toggleItemMontage(id: string, regelId: string, on: boolean) {
+    setItems((cur) => {
+      const next = cur.map((it) =>
+        it.id === id
+          ? {
+              ...it,
+              montageChecked: on
+                ? [...new Set([...it.montageChecked, regelId])]
+                : it.montageChecked.filter((x) => x !== regelId),
+            }
+          : it,
+      );
+      writeProject(next);
+      return next;
+    });
+  }
 
   const setC = (key: keyof typeof contact, value: string) => {
     setContact((c) => ({ ...c, [key]: value }));
     setErrors((e) => ({ ...e, [key]: "" }));
   };
+
+  async function generatePdf(): Promise<{ blob: Blob; base64: string } | null> {
+    if (typeof document === "undefined") return null;
+    const svgs = Array.from(
+      document.querySelectorAll<SVGSVGElement>("[data-kozijn-preview] svg"),
+    );
+    const pdfItems: PdfItem[] = [];
+    for (let i = 0; i < items.length; i++) {
+      const c = items[i].config;
+      let imageDataUrl = "";
+      let ratio = 0.8;
+      const svg = svgs[i];
+      if (svg) {
+        try {
+          const png = await svgToPng(svg);
+          imageDataUrl = png.dataUrl;
+          ratio = png.h > 0 ? png.w / png.h : 0.8;
+        } catch {
+          /* tekening overslaan bij rasterfout */
+        }
+      }
+      const rows: Array<[string, string]> = [
+        ["Materiaal", lbl(CONFIG_MATERIALEN, c.materiaal)],
+        ["Type", lbl(CONFIG_PRODUCTTYPES, c.producttype)],
+        ["Afmeting", `${c.breedteCm} × ${c.hoogteCm} cm`],
+        ["Aantal", String(c.aantal)],
+        ["Glas", lbl(CONFIG_GLAS, c.glas)],
+        ["Kleur", lbl(CONFIG_KLEUREN, c.kleur)],
+      ];
+      if (c.draairichting) rows.push(["Draairichting", lbl(CONFIG_DRAAIRICHTING, c.draairichting)]);
+      if (c.hangSluit) rows.push(["Hang/sluit", lbl(CONFIG_HANGSLUIT, c.hangSluit)]);
+      if (c.opties.includes("ventilatie")) rows.push(["Ventilatie", "Ja"]);
+      pdfItems.push({
+        imageDataUrl,
+        imageRatio: ratio,
+        titel: `Kozijn ${i + 1}`,
+        rows,
+        prijs: formatEuro(project.perItem[i]?.brutoInclBtw ?? 0),
+      });
+    }
+
+    const overzicht: Array<[string, string]> = [
+      ["Kozijnen", formatEuro(totals.productInclBtw)],
+      ["Montage & werk", formatEuro(totals.montage.subtotaalInclBtw)],
+      ["*Bruto (incl. btw)", formatEuro(totals.brutoInclBtw)],
+      [`waarvan btw`, formatEuro(totals.btwBedrag)],
+    ];
+    if (totals.isde.subsidie > 0) {
+      overzicht.push(["ISDE-subsidie (indicatief)", `− ${formatEuro(totals.isde.subsidie)}`]);
+      overzicht.push(["*Netto investering", formatEuro(totals.nettoInvestering)]);
+    }
+    overzicht.push(["Aanbetaling bij opdracht", formatEuro(totals.aanbetaling)]);
+    overzicht.push(["Restant bij oplevering", formatEuro(totals.restantBijOplevering)]);
+
+    const datum = new Date().toLocaleDateString("nl-NL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    return buildProjectPdf({ datum, contact: { ...contact }, items: pdfItems, overzicht });
+  }
 
   async function handleSubmit() {
     const e: Record<string, string> = {};
@@ -86,14 +194,22 @@ export function Checkout() {
 
     setSubmitting(true);
     setSubmitError(null);
+
+    let pdf: { blob: Blob; base64: string } | null = null;
     try {
-      const result = await submitCheckout({
-        config,
-        montageChecked: checked,
-        configSummary: summary,
+      pdf = await generatePdf();
+    } catch {
+      pdf = null; // PDF mislukt — aanvraag gaat alsnog door
+    }
+
+    try {
+      const result = await submitProject({
+        items: items.map((i) => ({ config: i.config, montageChecked: i.montageChecked })),
         contact: { ...contact, privacyAkkoord: akkoord },
+        pdfBase64: pdf?.base64 ?? null,
       });
       if (result.ok) {
+        if (pdf) setPdfUrl(URL.createObjectURL(pdf.blob));
         setDone(true);
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -106,113 +222,109 @@ export function Checkout() {
     }
   }
 
+  if (!loaded) {
+    return (
+      <div className="border border-mist bg-paper p-8 text-sm text-ink/50">
+        Project laden…
+      </div>
+    );
+  }
+
   if (done) {
     return (
-      <div className="rounded-card border border-mist bg-paper p-8 text-center sm:p-12">
-        <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-lime/15">
+      <div className="border border-mist bg-paper p-8 text-center sm:p-12">
+        <div className="mx-auto mb-5 flex size-14 items-center justify-center bg-lime/15">
           <CheckIcon className="size-7 text-forest" />
         </div>
         <h2 className="font-display text-2xl font-semibold text-ink">Bedankt — uw projectaanvraag is verzonden!</h2>
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-ink/65">
-          We hebben uw project met volledige specificatie ontvangen en nemen
-          doorgaans binnen één werkdag contact met u op om de inmeetservice in te plannen.
+          We hebben uw project met alle kozijnen ontvangen en nemen doorgaans
+          binnen één werkdag contact met u op om de inmeetservice in te plannen.
+          {pdfUrl ? " U kunt hieronder een PDF van uw aanvraag downloaden." : ""}
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Button href="/">Terug naar home</Button>
-          <Button href="/configurator" variant="secondary">Nieuwe configuratie</Button>
+          {pdfUrl && (
+            <a
+              href={pdfUrl}
+              download="projectaanvraag-dekozijnstudio.pdf"
+              className="inline-flex h-11 items-center justify-center gap-2 bg-lime px-6 text-sm font-medium text-ink transition-colors hover:bg-lime-hover"
+            >
+              ↓ Download PDF
+            </a>
+          )}
+          <Button href="/" variant={pdfUrl ? "secondary" : "primary"}>Terug naar home</Button>
+          <Button href="/configurator" variant="secondary">Nieuw kozijn samenstellen</Button>
         </div>
       </div>
     );
   }
 
-  const isde = totals.isde;
+  // Leeg mandje
+  if (loaded && items.length === 0) {
+    return (
+      <div className="border border-mist bg-paper p-8 text-center sm:p-12">
+        <p className="font-display text-xl font-semibold text-ink">Uw project is nog leeg</p>
+        <p className="mx-auto mt-3 max-w-md leading-relaxed text-ink/65">
+          Stel uw eerste kozijn samen in de configurator en voeg het toe aan uw
+          project. U kunt zoveel kozijnen toevoegen als u wilt.
+        </p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Button href="/configurator">Naar de configurator</Button>
+          <Button href="/producten" variant="secondary">Bekijk producten</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
       {/* ── Hoofdkolom ── */}
       <div className="space-y-6">
-        {/* 1. Product */}
-        <section className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">1. Uw kozijn</h2>
-          {!loaded ? (
-            <div className="mt-5 h-24 animate-pulse rounded-xl bg-paper-soft" aria-hidden />
-          ) : config ? (
-            <div className="mt-5 grid gap-6 sm:grid-cols-[160px_1fr] sm:items-center">
-              <div className="rounded-xl border border-mist bg-paper-soft p-3">
-                <KozijnPreview config={config} />
-              </div>
-              <dl className="space-y-1.5 text-sm">
-                <Row k="Materiaal" v={lbl(CONFIG_MATERIALEN, config.materiaal)} />
-                <Row k="Type" v={lbl(CONFIG_PRODUCTTYPES, config.producttype)} />
-                <Row k="Afmeting" v={`${config.breedteCm} × ${config.hoogteCm} cm`} />
-                <Row k="Aantal" v={String(config.aantal)} />
-                <Row k="Glas" v={lbl(CONFIG_GLAS, config.glas)} />
-                <Row k="Kleur" v={lbl(CONFIG_KLEUREN, config.kleur)} />
-                <div className="mt-2 flex justify-between border-t border-mist pt-2 font-medium text-ink">
-                  <dt>Kozijnprijs (incl. btw)</dt>
-                  <dd>{formatEuro(totals.productInclBtw)}</dd>
-                </div>
-              </dl>
-            </div>
-          ) : (
-            <Callout variant="info" className="mt-5">
-              <p>
-                Er is nog geen configuratie geladen. Stel eerst uw kozijn samen in
-                de configurator, of vraag een{" "}
-                <Link href="/offerte-aanvragen" className="font-medium underline underline-offset-2">snelle offerte</Link>{" "}
-                aan.
-              </p>
-              <div className="mt-3">
-                <Button href="/configurator" size="sm">Naar de configurator</Button>
-              </div>
-            </Callout>
-          )}
-        </section>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-lg font-semibold text-ink">
+            Uw kozijnen {loaded ? `(${items.length})` : ""}
+          </h2>
+          <Button href="/configurator" variant="secondary" size="sm">+ Nog een kozijn</Button>
+        </div>
 
-        {/* 2. Montage */}
-        <section className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">2. Montage &amp; werkzaamheden</h2>
-          <p className="mt-1.5 text-sm text-ink/55">
-            Pas de aantallen aan of vink extra werk aan. Alle bedragen incl. btw.
-          </p>
-          <div className="mt-6">
-            <MontageEditor config={config} checkedIds={checked} onToggle={toggleMontage} />
-          </div>
-          <div className="mt-5 flex items-center justify-between border-t border-mist pt-4 text-sm">
-            <span className="text-ink/60">Montage subtotaal (incl. btw)</span>
-            <span className="font-semibold text-ink">{formatEuro(totals.montage.subtotaalInclBtw)}</span>
-          </div>
-        </section>
+        {items.map((item, idx) => (
+          <ProjectCard
+            key={item.id}
+            index={idx}
+            item={item}
+            productPrijs={project.perItem[idx]?.productInclBtw ?? 0}
+            montagePrijs={project.perItem[idx]?.montage.subtotaalInclBtw ?? 0}
+            onRemove={() => removeItem(item.id)}
+            onToggleMontage={(regelId, on) => toggleItemMontage(item.id, regelId, on)}
+          />
+        ))}
 
-        {/* 3. ISDE */}
-        <section className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">3. ISDE-subsidie</h2>
-          {isde.eligible ? (
+        {/* ISDE (gecombineerd over het hele project) */}
+        <section className="border border-mist bg-paper p-6 sm:p-8">
+          <h2 className="font-display text-lg font-semibold text-ink">ISDE-subsidie</h2>
+          {totals.isde.eligible ? (
             <>
-              <div className="mt-4 rounded-xl border border-forest/20 bg-forest/5 p-5">
+              <div className="mt-4 border border-forest/20 bg-forest/5 p-5">
                 <p className="text-sm text-ink/60">Indicatieve ISDE-subsidie (ontvangt u van RVO)</p>
-                <p className="font-display text-2xl font-semibold text-forest">− {formatEuro(isde.subsidie)}</p>
-                <p className="mt-1 text-xs text-ink/50">
-                  o.b.v. ± {isde.glasM2.toFixed(1)} m² {lbl(CONFIG_GLAS, config?.glas)} ·{" "}
-                  {formatEuro(isde.ratePerM2)}/m² (indicatief)
-                </p>
+                <p className="font-display text-2xl font-semibold text-forest">− {formatEuro(totals.isde.subsidie)}</p>
+                <p className="mt-1 text-xs text-ink/50">o.b.v. ± {totals.isde.glasM2.toFixed(1)} m² HR++/triple glas in dit project</p>
               </div>
-              {!isde.meetsMinimum && (
+              {!totals.isde.meetsMinimum && (
                 <Callout variant="warning" className="mt-4">
                   <p>
-                    Let op: de glasoppervlakte (± {isde.glasM2.toFixed(1)} m²) ligt onder de
-                    indicatieve minimumdrempel van {isdeBerekening.minM2} m². Mogelijk komt u
-                    (nog) niet in aanmerking — vergroot het oppervlak of combineer met andere maatregelen.
+                    Let op: het glasoppervlak (± {totals.isde.glasM2.toFixed(1)} m²) ligt onder de
+                    indicatieve minimumdrempel van {isdeBerekening.minM2} m². Voeg eventueel meer
+                    kozijnen toe om in aanmerking te komen.
                   </p>
                 </Callout>
               )}
-              <Callout variant="info" className="mt-4" title="Tip: verdubbel uw subsidie via MTB Bouw">
+              <Callout variant="info" className="mt-4" title="Verdubbelen via MTB Bouw">
                 <p>{isdeBerekening.combinatieVoordeel}</p>
                 <p className="mt-2">
-                  Onze vaste bouwpartner{" "}
+                  Glas komt zelfstandig in aanmerking. Combineren met een andere isolatiemaatregel
+                  kan de subsidie verdubbelen — onze vaste bouwpartner{" "}
                   <Link href="/mtb-bouw" className="font-semibold underline underline-offset-2">MTB Bouw</Link>{" "}
-                  voert die extra isolatiemaatregelen (gevel-, dak- of vloerisolatie) graag voor u uit —
-                  alles in één hand, voor maximaal voordeel.
+                  voert die graag voor u uit.
                 </p>
               </Callout>
               <Callout variant="disclaimer" className="mt-4" title={`Indicatief — bijgewerkt ${isdeBerekening.lastUpdated}`}>
@@ -226,18 +338,14 @@ export function Checkout() {
             </>
           ) : (
             <Callout variant="disclaimer" className="mt-4">
-              <p>
-                ISDE-subsidie geldt bij HR++- of triple glas. Uw huidige keuze komt niet in
-                aanmerking. Kies HR++ of triple glas in de{" "}
-                <Link href="/configurator" className="font-medium underline underline-offset-2">configurator</Link>.
-              </p>
+              <p>ISDE-subsidie geldt bij HR++- of triple glas. Kies dat glastype in de configurator om mogelijk subsidie te ontvangen.</p>
             </Callout>
           )}
         </section>
 
-        {/* 4. Gegevens */}
-        <section className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">4. Uw gegevens</h2>
+        {/* Gegevens */}
+        <section className="border border-mist bg-paper p-6 sm:p-8">
+          <h2 className="font-display text-lg font-semibold text-ink">Uw gegevens</h2>
           <p className="mt-1.5 text-sm text-ink/55">
             We gebruiken deze uitsluitend om uw offerte op te stellen en contact op te nemen.
           </p>
@@ -270,20 +378,21 @@ export function Checkout() {
           {errors.privacyAkkoord && <p className="mt-1.5 text-sm text-red-600">{errors.privacyAkkoord}</p>}
 
           {submitError && (
-            <p role="alert" className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{submitError}</p>
+            <p role="alert" className="mt-5 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{submitError}</p>
           )}
 
           <div className="mt-6">
             <Button onClick={handleSubmit} disabled={submitting} className="w-full justify-center sm:w-auto">
-              {submitting ? "Versturen…" : "Projectaanvraag versturen"}
+              {submitting ? "Versturen…" : `Projectaanvraag versturen (${items.length} kozijn${items.length === 1 ? "" : "en"})`}
             </Button>
           </div>
         </section>
       </div>
 
       {/* ── Prijsoverzicht (sticky) ── */}
-      <aside className="rounded-card border border-mist bg-paper-soft p-6 lg:sticky lg:top-32">
+      <aside className="border border-mist bg-paper-soft p-6 lg:sticky lg:top-32">
         <p className="text-xs font-semibold uppercase tracking-widest text-wood">Projectoverzicht</p>
+        <p className="mt-1 text-sm text-ink/55">{items.length} kozijn{items.length === 1 ? "" : "en"}</p>
         <div className="mt-4">
           <PriceSummary totals={totals} />
         </div>
@@ -295,7 +404,77 @@ export function Checkout() {
   );
 }
 
-// ─── Subcomponenten ──────────────────────────────────────────────────────────
+// ─── Project-item kaart ──────────────────────────────────────────────────────
+
+function ProjectCard({
+  index,
+  item,
+  productPrijs,
+  montagePrijs,
+  onRemove,
+  onToggleMontage,
+}: {
+  index: number;
+  item: ProjectItem;
+  productPrijs: number;
+  montagePrijs: number;
+  onRemove: () => void;
+  onToggleMontage: (regelId: string, on: boolean) => void;
+}) {
+  const [montageOpen, setMontageOpen] = useState(false);
+  const c = item.config;
+
+  return (
+    <section className="border border-mist bg-paper p-6 sm:p-8">
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="font-display text-lg font-semibold text-ink">Kozijn {index + 1}</h3>
+        <button type="button" onClick={onRemove} className="text-sm font-medium text-ink/45 underline underline-offset-2 hover:text-red-600">
+          Verwijderen
+        </button>
+      </div>
+
+      <div className="mt-5 grid gap-6 sm:grid-cols-[150px_1fr] sm:items-start">
+        <div data-kozijn-preview className="border border-mist bg-paper-soft p-3">
+          <KozijnPreview config={c} />
+        </div>
+        <dl className="space-y-1.5 text-sm">
+          <Row k="Materiaal" v={lbl(CONFIG_MATERIALEN, c.materiaal)} />
+          <Row k="Type" v={lbl(CONFIG_PRODUCTTYPES, c.producttype)} />
+          <Row k="Afmeting" v={`${c.breedteCm} × ${c.hoogteCm} cm`} />
+          <Row k="Aantal" v={String(c.aantal)} />
+          <Row k="Glas" v={lbl(CONFIG_GLAS, c.glas)} />
+          <Row k="Kleur" v={lbl(CONFIG_KLEUREN, c.kleur)} />
+          <div className="mt-2 flex justify-between border-t border-mist pt-2 text-ink">
+            <dt className="font-medium">Kozijn + montage (incl. btw)</dt>
+            <dd className="font-semibold">{formatEuro(productPrijs + montagePrijs)}</dd>
+          </div>
+        </dl>
+      </div>
+
+      {/* Montage per kozijn (uitklapbaar) */}
+      <div className="mt-5 border-t border-mist pt-4">
+        <button
+          type="button"
+          onClick={() => setMontageOpen((o) => !o)}
+          aria-expanded={montageOpen}
+          className="flex w-full items-center justify-between text-sm font-medium text-ink"
+        >
+          <span>Montage &amp; werkzaamheden — {formatEuro(montagePrijs)}</span>
+          <span className="text-ink/40">{montageOpen ? "Verbergen" : "Aanpassen"}</span>
+        </button>
+        {montageOpen && (
+          <div className="mt-4">
+            <MontageEditor
+              config={c}
+              checkedIds={item.montageChecked}
+              onToggle={(regelId, on) => onToggleMontage(regelId, on)}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
