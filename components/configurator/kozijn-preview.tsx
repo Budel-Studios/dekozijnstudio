@@ -1,4 +1,4 @@
-import { PROFIEL_DIKTE, CONFIG_KLEUREN } from "@/data/configurator";
+import { PROFIEL_DIKTE, CONFIG_KLEUREN, findProfiel } from "@/data/configurator";
 import type { KozijnConfig } from "@/lib/configurator-price";
 
 /**
@@ -57,9 +57,18 @@ export function KozijnPreview({ config }: { config: KozijnConfig }) {
     h = maxW / ratio;
   }
 
-  // Profieldikte (frame) op basis van materiaal
-  const dikteFactor = config.materiaal ? PROFIEL_DIKTE[config.materiaal] ?? 0.07 : 0.07;
-  const f = Math.max(7, Math.min(w, h) * dikteFactor);
+  // Profieldikte (frame): bij een profiel met echte specs op ware schaal uit de
+  // zichtbreedte (mm); anders een schatting per materiaal.
+  const profiel = findProfiel(config.materiaal, config.profiel);
+  const f = (() => {
+    if (profiel?.specs && bw > 0) {
+      const unitsPerCm = w / bw; // SVG-units per cm (verhouding blijft behouden)
+      const real = (profiel.specs.kozijnMm[0] / 10) * unitsPerCm;
+      return Math.max(6, Math.min(real, Math.min(w, h) * 0.16));
+    }
+    const dikteFactor = config.materiaal ? PROFIEL_DIKTE[config.materiaal] ?? 0.07 : 0.07;
+    return Math.max(7, Math.min(w, h) * dikteFactor);
+  })();
 
   // Marges voor maatlijnen
   const mL = 46; // links: hoogtemaat

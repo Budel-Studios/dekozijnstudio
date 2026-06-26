@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { CheckIcon } from "@/components/icons";
@@ -19,7 +20,9 @@ import {
   CONFIG_VENTILATIE_POSITIE,
   DRAAIRICHTING_TYPES,
   SIZE_LIMITS,
+  findProfiel,
   type KleurCategorie,
+  type Profiel,
 } from "@/data/configurator";
 import {
   computePrice,
@@ -203,19 +206,17 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
             </div>
             {selectedMateriaal && (
               <div className="mt-6">
-                <label htmlFor="profiel" className="mb-1.5 block text-sm font-medium text-ink">
-                  Profiel
-                </label>
-                <select
-                  id="profiel"
-                  value={config.profiel ?? ""}
-                  onChange={(e) => update({ profiel: e.target.value })}
-                  className="w-full max-w-sm rounded-xl border border-mist bg-paper px-4 py-3 text-sm text-ink outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
-                >
+                <p className="mb-2 text-sm font-medium text-ink">Profiel</p>
+                <div className="grid gap-3 sm:grid-cols-2">
                   {selectedMateriaal.profielen.map((p) => (
-                    <option key={p.value} value={p.value}>{p.label}</option>
+                    <ProfielCard
+                      key={p.value}
+                      active={config.profiel === p.value}
+                      onClick={() => update({ profiel: p.value })}
+                      profiel={p}
+                    />
                   ))}
-                </select>
+                </div>
               </div>
             )}
           </Step>
@@ -612,6 +613,26 @@ function LiveSummary({
         <p className="mt-2 text-center text-xs uppercase tracking-widest text-ink/40">
           Buitenaanzicht
         </p>
+        {profiel?.specs && (
+          <dl className="mt-3 space-y-1 border-t border-mist pt-3 text-xs">
+            {profiel.afbeelding && (
+              <div className="mb-2 flex items-center gap-2">
+                <span className="relative block size-10 shrink-0 overflow-hidden border border-mist bg-paper">
+                  <Image src={profiel.afbeelding} alt={`Profiel ${profiel.label}`} fill sizes="40px" className="object-contain p-0.5" />
+                </span>
+                <span className="text-[11px] font-medium uppercase tracking-wide text-ink/55">{profiel.label}</span>
+              </div>
+            )}
+            <SpecRow label="Zichtbreedte" value={`${profiel.specs.kozijnMm[0]} mm`} />
+            <SpecRow label="Inbouwdiepte" value={`${profiel.specs.inbouwdiepteMm} mm`} />
+            {profiel.specs.raamMm && (
+              <SpecRow label="Raamprofiel" value={`${profiel.specs.raamMm[0]} × ${profiel.specs.raamMm[1]} mm`} />
+            )}
+            {typeof profiel.specs.aanslagMm === "number" && (
+              <SpecRow label="Aanslag" value={`${profiel.specs.aanslagMm} mm`} />
+            )}
+          </dl>
+        )}
       </div>
 
       <p className="text-xs font-semibold uppercase tracking-widest text-wood">
@@ -684,6 +705,76 @@ function SelectCard({
       </span>
       {description && <span className="text-xs leading-relaxed text-ink/55">{description}</span>}
     </button>
+  );
+}
+
+function ProfielCard({
+  active,
+  onClick,
+  profiel,
+}: {
+  active: boolean;
+  onClick: () => void;
+  profiel: Profiel;
+}) {
+  const specs = profiel.specs;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
+        active ? "border-forest bg-forest/5 ring-1 ring-forest/20" : "border-mist hover:bg-paper-soft",
+      )}
+    >
+      {profiel.afbeelding && (
+        <span className="relative mb-2 block h-24 w-full overflow-hidden border border-mist bg-paper">
+          <Image
+            src={profiel.afbeelding}
+            alt={`Profiel ${profiel.label}`}
+            fill
+            sizes="200px"
+            className="object-contain p-2"
+          />
+        </span>
+      )}
+      <span className="flex w-full items-center justify-between gap-2">
+        <span className="text-sm font-medium text-ink">{profiel.label}</span>
+        {active && (
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-lime/20">
+            <CheckIcon className="size-3 text-forest" />
+          </span>
+        )}
+      </span>
+      {profiel.omschrijving && (
+        <span className="text-xs leading-relaxed text-ink/55">{profiel.omschrijving}</span>
+      )}
+      {specs && (
+        <span className="mt-1.5 flex flex-wrap gap-1.5">
+          <SpecChip>{specs.kozijnMm[0]} mm zicht</SpecChip>
+          <SpecChip>{specs.inbouwdiepteMm} mm diep</SpecChip>
+          {typeof specs.aanslagMm === "number" && <SpecChip>{specs.aanslagMm} mm aanslag</SpecChip>}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function SpecChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-sm bg-mist/70 px-1.5 py-0.5 text-[11px] font-medium text-ink/65">
+      {children}
+    </span>
+  );
+}
+
+function SpecRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-3">
+      <dt className="text-ink/50">{label}</dt>
+      <dd className="font-medium text-ink/80">{value}</dd>
+    </div>
   );
 }
 
