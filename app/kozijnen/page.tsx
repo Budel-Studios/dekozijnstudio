@@ -8,6 +8,7 @@ import { FAQ } from "@/components/ui/faq";
 import { Placeholder } from "@/components/ui/placeholder";
 import { MateriaalSectie } from "@/components/kozijnen/materiaal-sectie";
 import { ProductSpecs } from "@/components/kozijnen/product-specs";
+import { ProfielTabs } from "@/components/kozijnen/profiel-tabs";
 import { KozijnVergelijkTabel } from "@/components/kozijnen/kozijn-vergelijk-tabel";
 import { Keuzehulp } from "@/components/kozijnen/keuzehulp";
 import { LeveranciersSectie } from "@/components/kozijnen/leveranciers";
@@ -31,6 +32,18 @@ export const metadata: Metadata = {
       "Houten, kunststof en aluminium kozijnen naast elkaar: profielen, glas, isolatie en een keuzehulp. Levering en montage in Twente en Oost-Nederland.",
   },
 };
+
+const MATERIAAL_META: Record<string, { label: string; href: string }> = {
+  hout: { label: "Hout", href: "/houten-kozijnen" },
+  kunststof: { label: "Kunststof", href: "/kunststof-kozijnen" },
+  aluminium: { label: "Aluminium", href: "/aluminium-kozijnen" },
+};
+
+const ALLE_PROFIELEN = [
+  ...HOUT_PRODUCTEN,
+  ...KUNSTSTOF_PRODUCTEN,
+  ...ALUMINIUM_PRODUCTEN,
+];
 
 export default function KozijnenGidsPage() {
   return (
@@ -72,63 +85,37 @@ export default function KozijnenGidsPage() {
         <Keuzehulp />
       </MateriaalSectie>
 
-      {/* 2. Houten kozijnen */}
+      {/* 2. Profielen — tab-selector per profiel */}
       <MateriaalSectie
-        id="hout"
+        id="profielen"
         tone="soft"
-        eyebrow="Houten kozijnen"
-        titel="Mahonie — warm, stabiel en tijdloos"
-        intro="Mahonie staat bekend om zijn warme uitstraling, goede maatvastheid en duurzaamheid. Een hoogwaardige keuze voor wie de natuurlijke, klassieke look van hout wil combineren met een lange levensduur."
+        eyebrow="Profielen"
+        titel="Onze profielen — kies en vergelijk"
+        intro="Wij leveren houten kozijnen in mahonie, kunststof kozijnen (Gealan S 9000 NL en Schüco) en aluminium kozijnen (Reynaers SL 38 en Aluprof MB-79N). Kies hieronder een profiel om de specificaties te bekijken."
       >
-        <div className="space-y-6">
-          {HOUT_PRODUCTEN.map((p) => (
-            <ProductSpecs key={p.id} product={p} />
-          ))}
-          <div>
-            <Button href="/houten-kozijnen" variant="secondary" size="sm">
-              Meer over houten kozijnen
-            </Button>
-          </div>
-        </div>
-      </MateriaalSectie>
-
-      {/* 3. Kunststof kozijnen */}
-      <MateriaalSectie
-        id="kunststof"
-        eyebrow="Kunststof kozijnen"
-        titel="Onderhoudsarm, goed geïsoleerd en betaalbaar"
-        intro="Kunststof kozijnen zijn onderhoudsarm, isoleren uitstekend en gaan lang mee — geschikt voor zowel renovatie als nieuwbouw, met veel kleurmogelijkheden. Wij werken met de profielen Gealan S 9000 NL en Schüco."
-      >
-        <div className="space-y-6">
-          {KUNSTSTOF_PRODUCTEN.map((p) => (
-            <ProductSpecs key={p.id} product={p} />
-          ))}
-          <div>
-            <Button href="/kunststof-kozijnen" variant="secondary" size="sm">
-              Meer over kunststof kozijnen
-            </Button>
-          </div>
-        </div>
-      </MateriaalSectie>
-
-      {/* 4. Aluminium kozijnen */}
-      <MateriaalSectie
-        id="aluminium"
-        tone="soft"
-        eyebrow="Aluminium kozijnen"
-        titel="Slank, modern en duurzaam"
-        intro="Aluminium kozijnen zijn geschikt voor moderne, slanke toepassingen met een hoogwaardige afwerking en nagenoeg geen onderhoud. Wij voeren de systemen Reynaers SL 38 en Aluprof MB-79N."
-      >
-        <div className="space-y-6">
-          {ALUMINIUM_PRODUCTEN.map((p) => (
-            <ProductSpecs key={p.id} product={p} />
-          ))}
-          <div>
-            <Button href="/aluminium-kozijnen" variant="secondary" size="sm">
-              Meer over aluminium kozijnen
-            </Button>
-          </div>
-        </div>
+        <ProfielTabs
+          tabs={ALLE_PROFIELEN.map((p) => ({
+            id: p.id,
+            titel: p.titel,
+            materiaal: MATERIAAL_META[p.materiaal]?.label ?? p.materiaal,
+          }))}
+        >
+          {ALLE_PROFIELEN.map((p) => {
+            const meta = MATERIAAL_META[p.materiaal];
+            return (
+              <div key={p.id} className="space-y-6">
+                <ProductSpecs product={p} />
+                {meta && (
+                  <div>
+                    <Button href={meta.href} variant="secondary" size="sm">
+                      Meer over {meta.label.toLowerCase()} kozijnen
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </ProfielTabs>
       </MateriaalSectie>
 
       {/* 5. Vergelijkingstabel */}
