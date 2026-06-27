@@ -2,12 +2,12 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/catalog/product-card";
-import { featuredProducts } from "@/data/catalog";
+import { PresetCard } from "@/components/catalog/preset-card";
+import { featuredPresets } from "@/data/preset-configuraties";
 
 /** "Meest gekozen producten" — conversie-instap op de homepage. */
 export function FeaturedProducts() {
-  const products = featuredProducts();
+  const presets = featuredPresets();
 
   return (
     <Section tone="soft">
@@ -29,8 +29,8 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product) => (
-            <ProductCard key={product.slug} product={product} />
+          {presets.map((preset) => (
+            <PresetCard key={preset.slug} preset={preset} />
           ))}
         </div>
       </Container>

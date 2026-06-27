@@ -3,14 +3,15 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
-import { ProductCard } from "@/components/catalog/product-card";
+import { PresetCard } from "@/components/catalog/preset-card";
 import {
   CATEGORIE_META,
-  productsByCategory,
+  familiesByCategory,
   type ProductCategorie,
-} from "@/data/catalog";
+} from "@/data/preset-configuraties";
 
 const CATEGORIES: ProductCategorie[] = ["ramen", "deuren", "schuifpuien"];
 
@@ -46,7 +47,7 @@ export default async function CategoriePage({
   if (!isCategorie(categorie)) notFound();
 
   const meta = CATEGORIE_META[categorie];
-  const products = productsByCategory(categorie);
+  const families = familiesByCategory(categorie);
 
   return (
     <>
@@ -62,17 +63,28 @@ export default async function CategoriePage({
         actions={<Button href="/configurator">Naar de configurator</Button>}
       />
 
-      <Section>
-        <Container>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
+      {families.map((familie, index) => (
+        <Section key={familie.key} id={familie.key} tone={index % 2 === 0 ? "paper" : "soft"}>
+          <Container>
+            <div className="mb-8 max-w-xl">
+              <Eyebrow>{familie.titel}</Eyebrow>
+              <h2 className="mt-4 text-2xl text-ink sm:text-3xl">{familie.titel}</h2>
+              <p className="mt-3 leading-relaxed text-ink/60">{familie.omschrijving}</p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {familie.presets.map((preset) => (
+                <PresetCard key={preset.slug} preset={preset} />
+              ))}
+            </div>
+          </Container>
+        </Section>
+      ))}
 
-          <Callout variant="disclaimer" className="mt-10">
+      <Section tone="ink">
+        <Container>
+          <Callout variant="disclaimer" className="border-paper/15 bg-paper/5 text-paper/70">
             <p>
-              "Vanaf"-prijzen zijn indicatieve richtprijzen (incl. btw) op basis
+              &ldquo;Vanaf&rdquo;-prijzen zijn indicatieve richtprijzen (incl. btw) op basis
               van een standaardmaat in kunststof, zonder montage. De definitieve
               prijs wordt vastgesteld na de inmeetservice (€ 49, verrekend bij
               doorgang).
