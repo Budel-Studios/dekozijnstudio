@@ -18,7 +18,7 @@ export default function AlgemeneVoorwaardenPage() {
       <h2>1. Definities</h2>
       <p>
         In deze voorwaarden wordt verstaan onder &lsquo;wij&rsquo;/&lsquo;ons&rsquo;:{" "}
-        {company.naam}, handelsnaam van {company.entiteit} (onderdeel van {company.moeder});
+        {company.naam}, handelsnaam van {company.entiteit};
         en &lsquo;klant&rsquo;: de natuurlijke persoon of rechtspersoon met wie wij een
         overeenkomst aangaan.
       </p>
