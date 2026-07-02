@@ -54,6 +54,10 @@ export const primaryCta: NavLink = {
 export const werkgebiedLinks: NavLink[] = [
   { label: "Kozijnen Twente", href: "/kozijnen-twente" },
   { label: "Kozijnen Enschede", href: "/kozijnen-enschede" },
+  { label: "Kozijnen Hengelo", href: "/kozijnen-hengelo" },
+  { label: "Kozijnen Almelo", href: "/kozijnen-almelo" },
+  { label: "Kozijnen Oldenzaal", href: "/kozijnen-oldenzaal" },
+  { label: "Kozijnen Haaksbergen", href: "/kozijnen-haaksbergen" },
 ];
 
 /** Juridische links — getoond onderaan de footer. */

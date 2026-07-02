@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
 import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { Placeholder } from "@/components/ui/placeholder";
 import { MateriaalSectie } from "@/components/kozijnen/materiaal-sectie";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
 import { breadcrumbSchema, organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
-import type { RegioPagina } from "@/data/regio";
+import { REGIO_PAGINAS, type RegioPagina } from "@/data/regio";
 
 const MATERIALEN = [
   {
@@ -37,6 +38,11 @@ const MATERIALEN = [
  */
 export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
   const inNaam = `in ${data.naam}`;
+  // Chips die zelf een landingspagina hebben, worden interne links
+  // (bv. "Hengelo" op de Twente-pagina → /kozijnen-hengelo).
+  const plaatsSlug = new Map(
+    REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r) => [r.naam, r.slug]),
+  );
 
   return (
     <>
@@ -84,14 +90,25 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
               Werkgebied
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {data.plaatsen.map((plaats) => (
-                <span
-                  key={plaats}
-                  className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70"
-                >
-                  {plaats}
-                </span>
-              ))}
+              {data.plaatsen.map((plaats) => {
+                const slug = plaatsSlug.get(plaats);
+                return slug ? (
+                  <Link
+                    key={plaats}
+                    href={`/${slug}`}
+                    className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70 underline decoration-mist underline-offset-4 transition-colors hover:border-forest hover:text-forest"
+                  >
+                    {plaats}
+                  </Link>
+                ) : (
+                  <span
+                    key={plaats}
+                    className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70"
+                  >
+                    {plaats}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>
