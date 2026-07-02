@@ -182,10 +182,18 @@ Home · Over ons · Kunststof kozijnen · Houten kozijnen · Aluminium kozijnen 
 - **Belangrijk**: dit zijn concepten met placeholders — geen verzonnen juridische feiten als definitief; laat toetsen door een jurist en vul bedrijfsgegevens in.
 
 #### Lokale SEO-landingspagina's (regio)
-- **Routes**: `/kozijnen-twente` (regio) en `/kozijnen-enschede` (plaats) — statisch, gericht op "kozijnen twente"-achtige zoektermen.
+- **Routes**: `/kozijnen-twente` (regio-hub) + plaatspagina's `/kozijnen-enschede`, `/kozijnen-hengelo`, `/kozijnen-almelo`, `/kozijnen-oldenzaal`, `/kozijnen-haaksbergen` — statisch, gericht op "kozijnen twente"-achtige zoektermen.
 - **Data-driven**: alle content per pagina in `data/regio.ts` (`REGIO_PAGINAS`); gedeelde template `components/regio/regio-pagina.tsx` (hero, lokale USP's, werkgebied-chips, materialen, unieke lokale context, FAQ + FAQPage/Breadcrumb JSON-LD, CTA).
-- **Anti-doorway-regel**: lokale alinea's en FAQ zijn per pagina uniek geschreven — nooit gedeelde lappen tekst hergebruiken bij nieuwe plaatsen.
+- **Interne links**: werkgebied-chips die zelf een landingspagina hebben worden automatisch links (naam-match in de template) — de Twente-hub linkt zo naar alle plaatspagina's.
+- **Anti-doorway-regel**: lokale alinea's en FAQ zijn per pagina uniek geschreven — nooit gedeelde lappen tekst hergebruiken bij nieuwe plaatsen. Elke stad heeft een eigen invalshoek (Hengelo: bouwperiodes/beschermd stadsgezicht 't Lansink; Almelo: naoorlogse verduurzaming + West-Twente; Oldenzaal: binnenstad + Noordoost-Twente; Haaksbergen: vrijstaand/buitengebied/schuifpuien).
 - **Nieuwe plaats toevoegen** = entry in `data/regio.ts` + dun page-bestand `app/kozijnen-<plaats>/page.tsx` + regel in `app/sitemap.ts` + link in `werkgebiedLinks` (`lib/navigation.ts`, footer "Werkgebied").
 - Projectfoto's per regio zijn nog Placeholder — echte foto's volgen.
+
+#### Bedrijfsgegevens ingevuld (keuze gebruiker: MTB Bouw-gegevens "voor nu")
+- `data/company.ts`: **entiteit = MTB Bouw B.V.** (De Kozijnstudio = handelsnaam; eigen B.V. mogelijk later), adres Heersenkampweg 5, 7546 PG Enschede, tel 053 206 50 71, WhatsApp +31 6 42 99 70 18, openingstijden ma–vr 08:00–17:00. **Btw-nummer nog placeholder** (niet gerenderd op de site).
+- Juridische pagina's (privacy, algemene voorwaarden) tonen nu "handelsnaam van MTB Bouw B.V." — dubbele "(onderdeel van MTB Bouw)" verwijderd.
+- **Organization/LocalBusiness JSON-LD** (`lib/jsonld.ts`) gevuld met echt adres, telefoon, e-mail, openingstijden, Instagram en uitgebreid `areaServed` — goed voor lokale SEO.
+- **Contactpagina** geactualiseerd: stale "formulier volgt in fase 4"-melding vervangen door direct contact (mail/WhatsApp-knoppen + offerte/configurator-CTA), WhatsApp- en adreskaart toegevoegd, locatiesectie toont het echte adres (bezoek op afspraak). Kaart-embed nog Placeholder.
+- **Fase 6 geparkeerd** (keuze gebruiker) en **richtprijzen configurator volgen later** — content eerst.
 
 @AGENTS.md

@@ -6,6 +6,7 @@
  */
 
 import { SITE_URL } from "@/lib/site";
+import { company } from "@/data/company";
 
 // ─── Organization / LocalBusiness ────────────────────────────────────────────
 
@@ -18,19 +19,32 @@ export function organizationSchema() {
       "Transparante kozijnleverancier voor kunststof, houten en aluminium kozijnen. Onderdeel van MTB Bouw. Werkgebied: Twente & Oost-Nederland.",
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`, // placeholder
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: company.adres,
+      postalCode: company.postcode,
+      addressLocality: company.plaats,
+      addressRegion: "Overijssel",
+      addressCountry: "NL",
+    },
+    telephone: company.telefoonHref,
+    email: company.email,
+    openingHours: "Mo-Fr 08:00-17:00",
     areaServed: [
       { "@type": "AdministrativeArea", name: "Twente" },
       { "@type": "AdministrativeArea", name: "Overijssel" },
       { "@type": "City", name: "Enschede" },
       { "@type": "City", name: "Hengelo" },
       { "@type": "City", name: "Almelo" },
+      { "@type": "City", name: "Oldenzaal" },
+      { "@type": "City", name: "Haaksbergen" },
     ],
     parentOrganization: {
       "@type": "Organization",
       name: "MTB Bouw",
       url: "https://www.mtbbouw.com",
     },
-    sameAs: [],
+    sameAs: [company.instagram],
   };
 }
 

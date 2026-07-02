@@ -17,9 +17,9 @@ export default function PrivacyPage() {
     >
       <h2>1. Wie zijn wij?</h2>
       <p>
-        {company.naam} is een handelsnaam van {company.entiteit} (onderdeel van{" "}
-        {company.moeder}) en verwerkingsverantwoordelijke voor de verwerking van
-        persoonsgegevens zoals beschreven in deze privacyverklaring.
+        {company.naam} is een handelsnaam van {company.entiteit} en
+        verwerkingsverantwoordelijke voor de verwerking van persoonsgegevens
+        zoals beschreven in deze privacyverklaring.
       </p>
       <ul>
         <li>KvK: {company.kvk}</li>
