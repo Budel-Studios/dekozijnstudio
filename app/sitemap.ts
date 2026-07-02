@@ -9,6 +9,8 @@ const routes: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: "/producten/schuifpuien", priority: 0.9, changeFrequency: "monthly" },
   { path: "/configurator", priority: 0.9, changeFrequency: "monthly" },
   { path: "/kozijnen", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/kozijnen-twente", priority: 0.85, changeFrequency: "monthly" },
+  { path: "/kozijnen-enschede", priority: 0.85, changeFrequency: "monthly" },
   { path: "/over-ons", priority: 0.7, changeFrequency: "monthly" },
   { path: "/mtb-bouw", priority: 0.7, changeFrequency: "monthly" },
   { path: "/kunststof-kozijnen", priority: 0.9, changeFrequency: "monthly" },

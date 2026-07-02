@@ -181,4 +181,11 @@ Home · Over ons · Kunststof kozijnen · Houten kozijnen · Aluminium kozijnen 
 - **Koppelingen**: footer-onderbalk toont nu de juridische links (`legalLinks` in `navigation.ts`); privacy-consent in offerte-wizard én checkout linkt naar `/privacy`; aanbrengbonus-pagina linkt naar de voorwaarden. Sitemap bijgewerkt.
 - **Belangrijk**: dit zijn concepten met placeholders — geen verzonnen juridische feiten als definitief; laat toetsen door een jurist en vul bedrijfsgegevens in.
 
+#### Lokale SEO-landingspagina's (regio)
+- **Routes**: `/kozijnen-twente` (regio) en `/kozijnen-enschede` (plaats) — statisch, gericht op "kozijnen twente"-achtige zoektermen.
+- **Data-driven**: alle content per pagina in `data/regio.ts` (`REGIO_PAGINAS`); gedeelde template `components/regio/regio-pagina.tsx` (hero, lokale USP's, werkgebied-chips, materialen, unieke lokale context, FAQ + FAQPage/Breadcrumb JSON-LD, CTA).
+- **Anti-doorway-regel**: lokale alinea's en FAQ zijn per pagina uniek geschreven — nooit gedeelde lappen tekst hergebruiken bij nieuwe plaatsen.
+- **Nieuwe plaats toevoegen** = entry in `data/regio.ts` + dun page-bestand `app/kozijnen-<plaats>/page.tsx` + regel in `app/sitemap.ts` + link in `werkgebiedLinks` (`lib/navigation.ts`, footer "Werkgebied").
+- Projectfoto's per regio zijn nog Placeholder — echte foto's volgen.
+
 @AGENTS.md

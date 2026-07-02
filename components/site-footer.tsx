@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
-import { PlaceholderTag } from "@/components/ui/placeholder";
-import { footerGroups, legalLinks } from "@/lib/navigation";
+import { footerGroups, legalLinks, werkgebiedLinks } from "@/lib/navigation";
 
 export function SiteFooter() {
   return (
@@ -37,9 +36,23 @@ export function SiteFooter() {
                 </a>
               </p>
             </div>
-            <div className="mt-4">
-              <PlaceholderTag>Werkgebied · contact volgt</PlaceholderTag>
-            </div>
+            <nav aria-label="Werkgebied" className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-paper/40">
+                Werkgebied
+              </p>
+              <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
+                {werkgebiedLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-paper/70 transition-colors hover:text-paper"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           {/* Sitemap columns */}

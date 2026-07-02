@@ -50,6 +50,12 @@ export const primaryCta: NavLink = {
   href: "/offerte-aanvragen",
 };
 
+/** Lokale landingspagina's — getoond in de footer onder "Werkgebied". */
+export const werkgebiedLinks: NavLink[] = [
+  { label: "Kozijnen Twente", href: "/kozijnen-twente" },
+  { label: "Kozijnen Enschede", href: "/kozijnen-enschede" },
+];
+
 /** Juridische links — getoond onderaan de footer. */
 export const legalLinks: NavLink[] = [
   { label: "Privacyverklaring", href: "/privacy" },
