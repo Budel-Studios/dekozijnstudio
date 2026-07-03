@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL as baseUrl } from "@/lib/site";
+import { getAllArticles } from "@/lib/content";
 
 const routes: Array<{ path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }> = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" },
@@ -38,10 +39,23 @@ const routes: Array<{ path: string; priority: number; changeFrequency: MetadataR
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map(({ path, priority, changeFrequency }) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency,
-    priority,
-  }));
+  const staticRoutes: MetadataRoute.Sitemap = routes.map(
+    ({ path, priority, changeFrequency }) => ({
+      url: `${baseUrl}${path}`,
+      lastModified: new Date(),
+      changeFrequency,
+      priority,
+    }),
+  );
+
+  const articleRoutes: MetadataRoute.Sitemap = getAllArticles().map(
+    (article) => ({
+      url: `${baseUrl}/kennisbank/${article.slug}`,
+      lastModified: new Date(article.date),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    }),
+  );
+
+  return [...staticRoutes, ...articleRoutes];
 }

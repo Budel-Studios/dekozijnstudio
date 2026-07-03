@@ -112,7 +112,8 @@ Home · Over ons · Kunststof kozijnen · Houten kozijnen · Aluminium kozijnen 
 ### Fase 3 — afgerond (CMS + kennisbank)
 - **Content-laag**: MDX-bestanden in `content/kennisbank/*.mdx`, gelezen via `lib/content.ts` (gray-matter, fs). Swap-baar naar Supabase in fase 4+. How-to staat als comment in `lib/content.ts`.
 - **Packages**: `next-mdx-remote` (RSC), `gray-matter`, `@tailwindcss/typography`, `remark-gfm`, `rehype-slug`, `rehype-autolink-headings`.
-- **8 kennisbank-artikelen** (nl-NL, SEO-geoptimaliseerd): wat-kosten-kozijnen, pvc-hout-aluminium, isde-subsidie-kozijnen, zelf-kozijnen-plaatsen, levensduur-kozijnen, hr-plus-plus-triple-glas, montageproces, bouwkundige-aanpassingen-kozijnen.
+- **11 kennisbank-artikelen** (nl-NL, SEO-geoptimaliseerd): wat-kosten-kozijnen, pvc-hout-aluminium, isde-subsidie-kozijnen, zelf-kozijnen-plaatsen, levensduur-kozijnen, hr-plus-plus-triple-glas, montageproces, bouwkundige-aanpassingen-kozijnen + (juli 2026) kozijnen-en-vergunningen (categorie "Regelgeving"), condens-op-ramen, kozijnen-onderhouden.
+- **Sitemap bevat artikelen**: `app/sitemap.ts` voegt alle kennisbank-slugs toe via `getAllArticles()` (lastModified = artikeldatum) — nieuwe artikelen verschijnen automatisch in sitemap.xml.
 - **Artikel-template** (`app/kennisbank/[slug]/page.tsx`): MDXRemote rendering, TOC sidebar (desktop, `components/kennisbank/article-toc.tsx`), Article JSON-LD + BreadcrumbList JSON-LD, gerelateerde artikelen (`components/kennisbank/related-articles.tsx`), in-article CTA box.
 - **Kennisbank-index** (`app/kennisbank/page.tsx`) is volledig dynamisch — lees `getAllArticles()` uit content-laag, gegroepeerd per categorie.
 - **TOC-extractie**: `lib/toc.ts` — parst `## / ###` headings, genereert IDs conform github-slugger (matcht rehype-slug output).
