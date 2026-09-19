@@ -20,11 +20,11 @@ export function Placeholder({
       role="img"
       aria-label={`Placeholder — ${label}`}
       className={cn(
-        "flex min-h-40 items-center justify-center rounded-card border-2 border-dashed border-mist bg-paper-soft p-6 text-center",
+        "flex min-h-40 items-center justify-center rounded-card border border-dashed border-ink/20 bg-mint/60 p-6 text-center",
         className,
       )}
     >
-      <span className="text-sm font-medium uppercase tracking-widest text-ink/35">
+      <span className="text-sm font-medium uppercase tracking-widest text-ink/45">
         {children ?? label}
       </span>
     </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
+import { Logo } from "@/components/logo";
 import { footerGroups, legalLinks, werkgebiedLinks } from "@/lib/navigation";
 
 export function SiteFooter() {
@@ -9,15 +10,12 @@ export function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
           {/* Brand column */}
           <div className="lg:col-span-2">
-            <p className="flex items-baseline gap-1.5 font-display text-lg font-semibold">
-              De Kozijnstudio
-              <span aria-hidden className="size-1.5 rounded-full bg-lime" />
-            </p>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-paper/60">
+            <Logo inverse />
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
               De meest transparante kozijnleverancier van Nederland.{" "}
               <span className="text-paper/40">(placeholder-claim)</span>
             </p>
-            <div className="mt-4 rounded-xl border border-paper/15 bg-paper/5 p-4">
+            <div className="mt-4 rounded-2xl border border-paper/15 bg-paper/5 p-4">
               <p className="text-sm text-paper/80">
                 Onderdeel van{" "}
                 <Link href="/mtb-bouw" className="font-semibold text-paper underline underline-offset-2 hover:text-lime">
@@ -45,7 +43,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-paper/70 transition-colors hover:text-paper"
+                      className="text-sm text-paper/70 transition-colors hover:text-lime"
                     >
                       {link.label}
                     </Link>
@@ -66,7 +64,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-paper/70 transition-colors hover:text-paper"
+                      className="text-sm text-paper/70 transition-colors hover:text-lime"
                     >
                       {link.label}
                     </Link>

@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk } from "next/font/google";
+import { Bricolage_Grotesque, Sora } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { organizationSchema, jsonLd } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/site";
 
-// Swiss grotesque — vrij alternatief voor Suisse Int'l (rebrand 2026).
-const grotesk = Hanken_Grotesk({
-  variable: "--font-grotesk",
+// Merkstijl 2026-09: characterful display face for headings, friendly sans for body.
+const heading = Bricolage_Grotesque({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600", "700", "800"],
+});
+
+const body = Sora({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
@@ -53,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="nl"
-      className={`${grotesk.variable} h-full antialiased`}
+      className={`${heading.variable} ${body.variable} h-full antialiased`}
     >
       <head>
         <script

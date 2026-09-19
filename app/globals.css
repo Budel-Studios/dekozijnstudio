@@ -3,56 +3,51 @@
 
 /*
   De Kozijnstudio — design tokens (Tailwind v4, CSS-based @theme).
-  REBRAND 2026: donkergroen + lime + mint, Swiss grotesque, volledig hoekig
-  (geen ronde hoeken — reflecteert kozijnen), met glasmorfisme-accenten.
+  MERKSTIJL 2026-09 (Lovable-merkproef): fris limoengroen als signatuur,
+  warm gebroken wit, zacht antraciet en een subtiele houttint. Minimaal en
+  op maat, maar vriendelijk: afgeronde vormen, pill-knoppen, zachte schaduw.
   Tokennamen behouden; alleen waarden hermapt zodat de hele site meeverandert.
 */
 @theme {
-  /* Brand colours (rebrand) */
-  --color-ink: #15302b; /* donkergroen — tekst & donkere vlakken */
-  --color-paper: #ffffff; /* wit — kaarten / glas-oppervlakken */
-  --color-paper-soft: #e6f1e8; /* mint — pagina-basis & rustige secties */
-  --color-mint: #e6f1e8; /* expliciete mint-alias */
-  --color-lime: #abe000; /* MTB-lime — accent & primaire CTA (tekst = ink) */
-  --color-lime-hover: #9bcc00; /* lime hover */
-  --color-forest: #1e4a3c; /* mid-groen — links/secundaire accenten */
-  --color-forest-hover: #163a2f;
-  --color-wood: #5c7568; /* (voorheen hout) → gedempt salie-groen accent */
-  --color-wood-soft: #aac3b2;
-  --color-mist: #cbddd0; /* mint-grijze lijnen/vlakken */
+  /* Brand colours */
+  --color-ink: #23272a; /* antraciet — tekst & donkere vlakken */
+  --color-paper: #ffffff; /* wit — kaarten */
+  --color-paper-soft: #f7f6f3; /* warm gebroken wit — pagina-basis */
+  --color-mint: #f1f5e4; /* zachte limoen-tint — rustige accentvlakken */
+  --color-lime: #abe000; /* signatuurgroen — primaire CTA (tekst = ink) */
+  --color-lime-hover: #9bcc00;
+  --color-forest: #4d7c0f; /* leesbaar groen — links/iconen (AA op wit) */
+  --color-forest-hover: #3f6212;
+  --color-wood: #8a6a3d; /* hout — tekstaccent (AA op warm wit) */
+  --color-wood-soft: #c9a36b; /* natuurlijk hout — vlakken/kaders */
+  --color-mist: #e3dfd6; /* warme lijnen/vlakken */
 
-  /* Typography — Swiss grotesque (Hanken Grotesk via next/font) */
-  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, -apple-system,
+  /* Typography — Bricolage Grotesque (koppen) + Sora (tekst) via next/font */
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale (display sizes for headings) */
-  --text-display-sm: 2rem;
-  --text-display-sm--line-height: 1.12;
-  --text-display: 2.75rem;
-  --text-display--line-height: 1.05;
-  --text-display-lg: 3.75rem;
-  --text-display-lg--line-height: 1.0;
+  --text-display-sm: 2.25rem;
+  --text-display-sm--line-height: 1.08;
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.02;
+  --text-display-lg: 4.75rem;
+  --text-display-lg--line-height: 0.98;
 
-  /* Radius — volledig hoekig */
-  --radius-card: 0px;
-  --radius-pill: 0px;
-  --radius-xs: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
+  /* Radius — vriendelijk afgerond */
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
 
-  /* Shadows — strak/zacht */
-  --shadow-soft: 0 1px 2px rgb(21 48 43 / 0.05),
-    0 10px 30px rgb(21 48 43 / 0.08);
+  /* Shadows — zacht, met een groene gloed voor primaire acties */
+  --shadow-soft: 0 1px 2px rgb(35 39 42 / 0.04),
+    0 12px 32px -12px rgb(35 39 42 / 0.12);
+  --shadow-studio: 0 14px 40px -20px rgb(77 124 15 / 0.45);
 }
 
 /*
  * Custom prose overrides — keeps article typography in line with the brand
- * design system (Sora headings, ink text, forest links, lime accents).
+ * design system (Bricolage Grotesque headings, ink text, forest links, lime accents).
  */
 @layer base {
   .prose {
@@ -145,18 +140,11 @@
   }
 
   body {
-    background-color: var(--color-paper-soft); /* mint als pagina-basis */
+    background-color: var(--color-paper-soft); /* warm wit als pagina-basis */
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  /* Rebrand: volledig hoekig — overschrijft elke rounded-* utility. */
-  [class*="rounded"],
-  [class*="rounded"]::before,
-  [class*="rounded"]::after {
-    border-radius: 0 !important;
   }
 
   h1,
@@ -164,18 +152,40 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
   /* Visible, brand-coloured focus state for accessibility (WCAG AA). */
   :focus-visible {
-    outline: 2px solid var(--color-forest);
-    outline-offset: 2px;
-    border-radius: 3px;
+    outline: 3px solid var(--color-forest);
+    outline-offset: 3px;
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-lime) 35%, transparent);
+    background-color: color-mix(in srgb, var(--color-lime) 45%, transparent);
+  }
+}
+
+@layer utilities {
+  /* Subtle image zoom on hover. */
+  .image-zoom {
+    transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .image-zoom:hover {
+    transform: scale(1.025);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

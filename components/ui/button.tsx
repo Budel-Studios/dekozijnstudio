@@ -2,22 +2,24 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary" | "ghost" | "light";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-pill font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-[background-color,border-color,box-shadow,transform] duration-200 [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-lime text-ink hover:bg-lime-hover",
-  secondary: "border border-ink/15 bg-paper text-ink hover:bg-paper-soft",
-  ghost: "text-ink hover:bg-paper-soft",
+  primary: "bg-lime text-ink shadow-studio hover:-translate-y-px hover:bg-lime-hover",
+  secondary:
+    "border border-ink/20 bg-paper/85 text-ink backdrop-blur-sm hover:-translate-y-px hover:border-ink hover:bg-paper",
+  ghost: "text-ink hover:bg-ink/5",
+  light: "bg-paper text-ink shadow-studio hover:-translate-y-px hover:bg-paper-soft",
 };
 
 const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-sm",
   md: "h-11 px-6 text-sm",
-  lg: "h-12 px-8 text-base",
+  lg: "h-12 px-6 text-sm sm:px-8",
 };
 
 type SharedProps = {

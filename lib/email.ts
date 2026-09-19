@@ -201,7 +201,7 @@ export async function sendCheckoutEmail(input: {
 
   const isdeRow =
     totals.isde.subsidie > 0
-      ? `<tr><td colspan="2" style="padding:6px 12px;">ISDE-subsidie (indicatief)</td><td style="padding:6px 12px;text-align:right;color:#2f4a3c;">− ${formatEuro(totals.isde.subsidie)}</td></tr>`
+      ? `<tr><td colspan="2" style="padding:6px 12px;">ISDE-subsidie (indicatief)</td><td style="padding:6px 12px;text-align:right;color:#4d7c0f;">− ${formatEuro(totals.isde.subsidie)}</td></tr>`
       : "";
 
   const html = `<!doctype html><html lang="nl"><body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
@@ -311,7 +311,7 @@ export async function sendProjectEmail(input: {
       const summary = buildHandoff(it.config, it.montageChecked).summary;
       const pi = project.perItem[idx];
       return `<div style="margin:14px 0;border:1px solid #e7e5e0;">
-        <p style="margin:0;padding:8px 12px;background:#15302b;color:#abe000;font-weight:700;font-size:13px;">Kozijn ${idx + 1} — ${escapeHtml(formatEuro(pi.brutoInclBtw))} incl. btw</p>
+        <p style="margin:0;padding:8px 12px;background:#23272a;color:#abe000;font-weight:700;font-size:13px;">Kozijn ${idx + 1} — ${escapeHtml(formatEuro(pi.brutoInclBtw))} incl. btw</p>
         <pre style="margin:0;padding:10px 12px;white-space:pre-wrap;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#333;">${escapeHtml(summary)}</pre>
       </div>`;
     })
@@ -323,13 +323,13 @@ export async function sendProjectEmail(input: {
          <tr><td colspan="2" style="padding:6px 12px;font-weight:600;">Netto investering (na ISDE)</td><td style="padding:6px 12px;text-align:right;font-weight:600;">${formatEuro(t.nettoInvestering)}</td></tr>`
       : "";
 
-  const html = `<!doctype html><html lang="nl"><body style="margin:0;background:#e6f1e8;font-family:Arial,Helvetica,sans-serif;color:#15302b;">
+  const html = `<!doctype html><html lang="nl"><body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
   <div style="max-width:680px;margin:0 auto;padding:24px;">
-    <div style="background:#15302b;color:#fff;padding:20px 24px;">
+    <div style="background:#23272a;color:#fff;padding:20px 24px;">
       <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe projectaanvraag — ${project.itemCount} kozijn(en)</p>
       <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio · via website</p>
     </div>
-    <div style="background:#fff;border:1px solid #cbddd0;border-top:none;padding:16px 24px;">
+    <div style="background:#fff;border:1px solid #e3dfd6;border-top:none;padding:16px 24px;">
       <h3 style="margin:8px 0;font-size:15px;">Klant</h3>
       <p style="margin:0;font-size:14px;line-height:1.6;">
         ${escapeHtml(c.naam)}<br>${escapeHtml(c.email)} · ${escapeHtml(c.telefoon)}<br>
@@ -344,10 +344,10 @@ export async function sendProjectEmail(input: {
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         <tr><td colspan="2" style="padding:6px 12px;">Kozijnen (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.productInclBtw)}</td></tr>
         <tr><td colspan="2" style="padding:6px 12px;">Montage & werk (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.montage.subtotaalInclBtw)}</td></tr>
-        <tr><td colspan="2" style="padding:8px 12px;border-top:1px solid #cbddd0;font-weight:700;">Bruto (incl. btw)</td><td style="padding:8px 12px;text-align:right;border-top:1px solid #cbddd0;font-weight:700;">${formatEuro(t.brutoInclBtw)}</td></tr>
+        <tr><td colspan="2" style="padding:8px 12px;border-top:1px solid #e3dfd6;font-weight:700;">Bruto (incl. btw)</td><td style="padding:8px 12px;text-align:right;border-top:1px solid #e3dfd6;font-weight:700;">${formatEuro(t.brutoInclBtw)}</td></tr>
         <tr><td colspan="2" style="padding:2px 12px;font-size:12px;color:#777;">waarvan btw (${MONTAGE.btwPercentage}%)</td><td style="padding:2px 12px;text-align:right;font-size:12px;color:#777;">${formatEuro(t.btwBedrag)}</td></tr>
         ${isdeRow}
-        <tr><td colspan="3" style="padding:10px 12px 2px;font-size:12px;color:#abe000;background:#15302b;">BETALING</td></tr>
+        <tr><td colspan="3" style="padding:10px 12px 2px;font-size:12px;color:#abe000;background:#23272a;">BETALING</td></tr>
         <tr><td colspan="2" style="padding:6px 12px;">Aanbetaling bij opdracht</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.aanbetaling)}</td></tr>
         <tr><td colspan="2" style="padding:6px 12px;">Restant bij oplevering</td><td style="padding:6px 12px;text-align:right;">${formatEuro(t.restantBijOplevering)}</td></tr>
       </table>
