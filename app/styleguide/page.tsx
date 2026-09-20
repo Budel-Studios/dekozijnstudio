@@ -14,13 +14,14 @@ export const metadata: Metadata = {
 };
 
 const colors = [
-  { name: "ink", value: "#23272A", className: "bg-ink", text: "text-paper" },
+  { name: "lime — signatuur", value: "#ABE000", className: "bg-lime", text: "text-ink" },
+  { name: "ink — antraciet", value: "#23272A", className: "bg-ink", text: "text-paper" },
+  { name: "paper-soft — warm wit", value: "#F7F6F3", className: "bg-paper-soft border border-mist", text: "text-ink" },
   { name: "paper", value: "#FFFFFF", className: "bg-paper border border-mist", text: "text-ink" },
-  { name: "paper-soft", value: "#F7F6F3", className: "bg-paper-soft border border-mist", text: "text-ink" },
-  { name: "wood", value: "#C9A36B", className: "bg-wood", text: "text-ink" },
-  { name: "forest", value: "#2F4A3C", className: "bg-forest", text: "text-paper" },
-  { name: "mist", value: "#E7E5E0", className: "bg-mist", text: "text-ink" },
-  { name: "lime (MTB)", value: "#ABE000", className: "bg-lime", text: "text-ink" },
+  { name: "forest — tekstgroen", value: "#4D7C0F", className: "bg-forest", text: "text-paper" },
+  { name: "mint — limoentint", value: "#F1F5E4", className: "bg-mint border border-mist", text: "text-ink" },
+  { name: "wood-soft — hout", value: "#C9A36B", className: "bg-wood-soft", text: "text-ink" },
+  { name: "mist — lijnen", value: "#E3DFD6", className: "bg-mist", text: "text-ink" },
 ];
 
 const typeScale = [
@@ -100,15 +101,15 @@ export default function StyleguidePage() {
             <div className="grid gap-4 pt-4 sm:grid-cols-2">
               <div className="rounded-card border border-mist p-5">
                 <p className="text-xs uppercase tracking-widest text-ink/40">
-                  Display — Sora
+                  Display — Bricolage Grotesque
                 </p>
                 <p className="mt-2 font-display text-2xl text-ink">
-                  Koppen in Sora
+                  Koppen in Bricolage Grotesque
                 </p>
               </div>
               <div className="rounded-card border border-mist p-5">
                 <p className="text-xs uppercase tracking-widest text-ink/40">
-                  Body — Inter
+                  Body — Sora
                 </p>
                 <p className="mt-2 leading-relaxed text-ink/70">
                   {LOREM_PARAGRAPH}

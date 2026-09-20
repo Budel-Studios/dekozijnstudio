@@ -26,7 +26,7 @@ export function PageHero({
   const hasMedia = media !== undefined;
 
   return (
-    <section className="bg-paper-soft">
+    <section className="border-b border-mist bg-paper-soft">
       <Container
         className={`py-14 sm:py-18 lg:py-20 ${hasMedia ? "grid items-center gap-10 lg:grid-cols-2 lg:gap-16" : ""}`}
       >

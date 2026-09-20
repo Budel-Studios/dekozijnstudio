@@ -9,6 +9,7 @@ import { headerDirectLinks, footerGroups, primaryCta } from "@/lib/navigation";
 import { megaGroups, type MegaGroup, type MegaLink } from "@/lib/mega-menu";
 import { ProjectLink } from "@/components/offerte/project-link";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/logo";
 
 // ─── Trust signals shown in the top bar ───────────────────────────────────────
 
@@ -44,15 +45,7 @@ function TopBar() {
 // ─── Wordmark ─────────────────────────────────────────────────────────────────
 
 function Wordmark() {
-  return (
-    <Link
-      href="/"
-      className="flex items-baseline gap-1.5 font-display text-lg font-semibold tracking-tight text-ink"
-    >
-      De Kozijnstudio
-      <span aria-hidden className="size-1.5 translate-y-[-1px] rounded-full bg-lime" />
-    </Link>
-  );
+  return <Logo />;
 }
 
 // ─── Mega menu panel ──────────────────────────────────────────────────────────
@@ -62,7 +55,7 @@ function MegaPanel({ group, onNavigate }: { group: MegaGroup; onNavigate?: () =>
     <div
       role="region"
       aria-label={`${group.label} menu`}
-      className="absolute left-0 right-0 top-full border-b border-mist bg-paper/95 backdrop-blur-md shadow-soft"
+      className="absolute left-0 right-0 top-full rounded-b-3xl border-b border-mist bg-paper/95 backdrop-blur-md shadow-soft"
     >
       <Container className="grid grid-cols-3 gap-0 py-8 lg:grid-cols-3">
 
@@ -130,7 +123,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
   return (
     <div
       id="mobile-menu"
-      className="max-h-[calc(100dvh-7rem)] overflow-y-auto border-t border-mist bg-paper lg:hidden"
+      className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-b-3xl border-t border-mist bg-paper shadow-soft lg:hidden"
     >
       <Container className="py-6 space-y-1">
 
@@ -289,11 +282,11 @@ export function SiteHeader() {
         className={cn(
           "transition-all duration-300",
           scrolled || openGroup || mobileOpen
-            ? "border-b border-white/20 bg-white/85 shadow-soft backdrop-blur-md"
-            : "border-b border-transparent bg-white/60 backdrop-blur-sm",
+            ? "border-b border-mist bg-paper-soft/95 shadow-soft backdrop-blur-md"
+            : "border-b border-mist/60 bg-paper-soft/90 backdrop-blur-sm",
         )}
       >
-        <Container className="flex h-15 items-center justify-between gap-6">
+        <Container className="flex h-18 items-center justify-between gap-6">
           <Wordmark />
 
           {/* Desktop nav */}
@@ -357,7 +350,7 @@ export function SiteHeader() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             aria-label={mobileOpen ? "Menu sluiten" : "Menu openen"}
-            className="inline-flex size-10 items-center justify-center rounded-pill text-ink hover:bg-black/5 lg:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-pill border border-ink/20 text-ink hover:border-ink lg:hidden"
           >
             {mobileOpen ? (
               <CloseIcon className="size-5" />
