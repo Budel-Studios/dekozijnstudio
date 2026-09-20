@@ -7,6 +7,7 @@ import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
 import { Placeholder } from "@/components/ui/placeholder";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Kunststof kozijnen",
@@ -44,6 +45,20 @@ const profielen = [
 export default function KunststofKozijnenPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Kunststof kozijnen",
+              description: "Kunststof kozijnen op maat met profielen van Schüco en Gealan, inclusief montage in Twente en Oost-Nederland.",
+              path: "/kunststof-kozijnen",
+              serviceType: "Kunststof kozijnen op maat",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Kunststof kozijnen"
         title="Onderhoudsvriendelijk, energiezuinig en op maat."

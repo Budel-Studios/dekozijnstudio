@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Sora } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Analytics } from "@/components/analytics";
 import { organizationSchema, jsonLd } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/site";
 
@@ -52,6 +53,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Vul GOOGLE_SITE_VERIFICATION in Vercel → Environment Variables met de code
+  // uit Search Console (methode "HTML-tag"); zonder waarde blijft de tag weg.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({
@@ -72,6 +78,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

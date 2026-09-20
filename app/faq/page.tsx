@@ -5,7 +5,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FAQ, type FaqItem } from "@/components/ui/faq";
-import { faqPageSchema, breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { faqPageSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Veelgestelde vragen",
@@ -133,10 +133,6 @@ export default function FaqPage() {
         dangerouslySetInnerHTML={{
           __html: jsonLd(
             faqPageSchema(allFaqItems),
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: "Veelgestelde vragen", href: "/faq" },
-            ]),
           ),
         }}
       />

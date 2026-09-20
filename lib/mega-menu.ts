@@ -62,6 +62,12 @@ export const megaGroups: MegaGroup[] = [
     label: "Diensten",
     links: [
       {
+        label: "Kozijnen vervangen",
+        href: "/kozijnen-vervangen",
+        description:
+          "Wanneer vervangen loont, hoe het verloopt en wat het kost.",
+      },
+      {
         label: "Montage",
         href: "/montage",
         description:

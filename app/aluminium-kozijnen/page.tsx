@@ -7,6 +7,7 @@ import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
 import { Placeholder } from "@/components/ui/placeholder";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Aluminium kozijnen",
@@ -49,6 +50,20 @@ const profielen = [
 export default function AluminiumKozijnenPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Aluminium kozijnen",
+              description: "Aluminium kozijnen en schuifpuien met slanke profielen van Schüco, Aluprof en Reynaers, inclusief montage.",
+              path: "/aluminium-kozijnen",
+              serviceType: "Aluminium kozijnen op maat",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Aluminium kozijnen"
         title="Slanke profielen, maximaal glas."

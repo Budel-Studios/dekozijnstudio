@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { CheckIcon } from "@/components/icons";
@@ -221,6 +222,10 @@ export function Checkout() {
         pdfBase64: pdf?.base64 ?? null,
       });
       if (result.ok) {
+        trackEvent("offerte_aanvraag", {
+          formulier: "projectaanvraag",
+          aantal_kozijnen: items.length,
+        });
         if (pdf) setPdfUrl(URL.createObjectURL(pdf.blob));
         setDone(true);
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });

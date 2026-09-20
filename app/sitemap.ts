@@ -21,6 +21,7 @@ const routes: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: "/kunststof-kozijnen", priority: 0.9, changeFrequency: "monthly" },
   { path: "/houten-kozijnen", priority: 0.9, changeFrequency: "monthly" },
   { path: "/aluminium-kozijnen", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/kozijnen-vervangen", priority: 0.95, changeFrequency: "monthly" },
   { path: "/montage", priority: 0.8, changeFrequency: "monthly" },
   { path: "/diy", priority: 0.7, changeFrequency: "monthly" },
   { path: "/bouwkundige-aanpassingen", priority: 0.8, changeFrequency: "monthly" },

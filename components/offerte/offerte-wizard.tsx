@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { submitOfferte } from "@/app/offerte-aanvragen/actions";
 import { HANDOFF_KEY, type OfferteHandoff } from "@/lib/configurator-handoff";
 import {
@@ -106,6 +107,7 @@ export function OfferteWizard() {
     try {
       const result = await submitOfferte(full.data);
       if (result.ok) {
+        trackEvent("offerte_aanvraag", { formulier: "offerteformulier" });
         setDone(true);
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
       } else {

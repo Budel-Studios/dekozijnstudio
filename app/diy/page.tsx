@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
 import { Callout } from "@/components/ui/callout";
 import { Placeholder } from "@/components/ui/placeholder";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Zelf plaatsen (DIY)",
@@ -31,6 +32,20 @@ const wasmogelijk = [
 export default function DiyPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Kozijnen zelf plaatsen",
+              description: "Levering van maatwerkkozijnen zonder montage, met instructies en ondersteuning voor wie zelf plaatst.",
+              path: "/diy",
+              serviceType: "Levering zonder montage",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Zelf plaatsen (DIY)"
         title="Kozijnen leveren — plaatsen doet u zelf."

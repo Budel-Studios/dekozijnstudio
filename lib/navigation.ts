@@ -24,6 +24,7 @@ export const productLinks: NavLink[] = [
 ];
 
 export const serviceLinks: NavLink[] = [
+  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen" },
   { label: "Montage", href: "/montage" },
   { label: "Zelf plaatsen (DIY)", href: "/diy" },
   { label: "Bouwkundige aanpassingen", href: "/bouwkundige-aanpassingen" },

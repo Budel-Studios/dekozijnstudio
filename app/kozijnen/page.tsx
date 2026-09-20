@@ -19,7 +19,7 @@ import {
   ALUMINIUM_PRODUCTEN,
   FAQ_ITEMS,
 } from "@/data/kozijnen-gids";
-import { breadcrumbSchema, organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
+import { organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Kozijnen in Twente: hout, kunststof & aluminium vergelijken",
@@ -52,10 +52,6 @@ export default function KozijnenGidsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: jsonLd(
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: "Kozijnen", href: "/kozijnen" },
-            ]),
             organizationSchema(),
             faqPageSchema(FAQ_ITEMS),
           ),

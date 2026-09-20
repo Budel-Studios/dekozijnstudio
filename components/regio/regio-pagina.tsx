@@ -7,7 +7,7 @@ import { FAQ } from "@/components/ui/faq";
 import { Placeholder } from "@/components/ui/placeholder";
 import { MateriaalSectie } from "@/components/kozijnen/materiaal-sectie";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
-import { breadcrumbSchema, organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
+import { organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
 import { REGIO_PAGINAS, type RegioPagina } from "@/data/regio";
 
 const MATERIALEN = [
@@ -50,10 +50,6 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: jsonLd(
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: `Kozijnen ${data.naam}`, href: `/${data.slug}` },
-            ]),
             organizationSchema(),
             faqPageSchema(data.faq),
           ),

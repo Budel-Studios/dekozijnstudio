@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
 import { Placeholder } from "@/components/ui/placeholder";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Houten kozijnen",
@@ -37,6 +38,20 @@ const onderhoud = [
 export default function HoutenKozijnenPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Houten kozijnen",
+              description: "Houten kozijnen op maat in duurzame houtsoorten, inclusief montage in Twente en Oost-Nederland.",
+              path: "/houten-kozijnen",
+              serviceType: "Houten kozijnen op maat",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Houten kozijnen"
         title="Tijdloze uitstraling, duurzaam materiaal."

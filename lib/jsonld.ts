@@ -84,6 +84,37 @@ export function breadcrumbSchema(items: BreadcrumbItem[]) {
   };
 }
 
+// ─── Service ──────────────────────────────────────────────────────────────────
+
+/**
+ * Dienstpagina's (montage, bouwkundig werk, materialen). Bewust zonder `offers`
+ * met bedragen: kozijnprijzen zijn maatwerk en staan niet online.
+ */
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    description: opts.description,
+    serviceType: opts.serviceType ?? opts.name,
+    url: `${SITE_URL}${opts.path}`,
+    provider: {
+      "@type": "LocalBusiness",
+      name: "De Kozijnstudio",
+      url: SITE_URL,
+    },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Twente" },
+      { "@type": "AdministrativeArea", name: "Overijssel" },
+    ],
+  };
+}
+
 // ─── Article ──────────────────────────────────────────────────────────────────
 
 export function articleSchema(opts: {

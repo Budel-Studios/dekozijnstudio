@@ -7,6 +7,7 @@ import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Placeholder } from "@/components/ui/placeholder";
 import { MtbBouwBand } from "@/components/mtb-bouw-band";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Bouwkundige aanpassingen",
@@ -41,6 +42,20 @@ const aanpassingen = [
 export default function BouwkundigeAanpassingenPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Bouwkundige aanpassingen",
+              description: "Openingen vergroten, lateien plaatsen, metselwerk aanpassen en binnenafwerking bij het vervangen van kozijnen, uitgevoerd door MTB Bouw.",
+              path: "/bouwkundige-aanpassingen",
+              serviceType: "Bouwkundig werk bij kozijnen",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Bouwkundige aanpassingen"
         title="Eén bedrijf voor kozijnen én de verbouwing."

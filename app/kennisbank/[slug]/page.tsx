@@ -15,7 +15,7 @@ import { ArticleToc } from "@/components/kennisbank/article-toc";
 import { RelatedArticles } from "@/components/kennisbank/related-articles";
 import { getAllSlugs, getArticle, getRelatedArticles } from "@/lib/content";
 import { extractToc } from "@/lib/toc";
-import { articleSchema, breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { articleSchema, jsonLd } from "@/lib/jsonld";
 
 // Custom MDX components — injects brand components into article prose.
 // Externe links openen automatisch in een nieuw tabblad.
@@ -92,11 +92,6 @@ export default async function KennisbankArtikelPage({
               datePublished: article.date,
               dateModified: article.dateModified,
             }),
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: "Kennisbank", href: "/kennisbank" },
-              { label: article.title, href: `/kennisbank/${slug}` },
-            ]),
           ),
         }}
       />

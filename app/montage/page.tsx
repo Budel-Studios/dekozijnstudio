@@ -9,6 +9,7 @@ import { ProcessSteps } from "@/components/ui/process-steps";
 import { Placeholder } from "@/components/ui/placeholder";
 import { MtbBouwBand } from "@/components/mtb-bouw-band";
 import { inmeetservice } from "@/data/prices";
+import { serviceSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Montage",
@@ -55,6 +56,20 @@ const montageSteps = [
 export default function MontagePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            serviceSchema({
+              name: "Kozijnmontage",
+              description: "Professionele montage van kunststof, houten en aluminium kozijnen, inclusief afwerking en afvoer van het oude kozijn.",
+              path: "/montage",
+              serviceType: "Kozijnen plaatsen",
+            }),
+          ),
+        }}
+      />
+
       <PageHero
         eyebrow="Montage"
         title="Van kozijn tot sleutelklaar — wij regelen het."
