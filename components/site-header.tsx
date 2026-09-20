@@ -10,6 +10,7 @@ import { megaGroups, type MegaGroup, type MegaLink } from "@/lib/mega-menu";
 import { ProjectLink } from "@/components/offerte/project-link";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
+import { AanvraagDialog, AanvraagDialogPanel } from "@/components/aanvraag-dialog";
 
 // ─── Trust signals shown in the top bar ───────────────────────────────────────
 
@@ -117,7 +118,13 @@ function MegaItem({ link, onNavigate }: { link: MegaLink; onNavigate?: () => voi
 
 // ─── Mobile accordion ─────────────────────────────────────────────────────────
 
-function MobileMenu({ onClose }: { onClose: () => void }) {
+function MobileMenu({
+  onClose,
+  onAanvraag,
+}: {
+  onClose: () => void;
+  onAanvraag: () => void;
+}) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   return (
@@ -198,7 +205,12 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="w-full justify-center border border-mist px-4 py-3 text-sm font-medium text-ink"
           />
-          <Button href={primaryCta.href} className="w-full justify-center" onClick={onClose}>
+          {/* Opent de dialoog die in SiteHeader staat — dit menu verdwijnt hier. */}
+          <Button
+            aria-haspopup="dialog"
+            className="w-full justify-center"
+            onClick={onAanvraag}
+          >
             {primaryCta.label}
           </Button>
         </div>
@@ -225,6 +237,7 @@ function useScrolled(threshold = 16) {
 export function SiteHeader() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [aanvraagOpen, setAanvraagOpen] = useState(false);
   const scrolled = useScrolled();
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -338,9 +351,13 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-4 lg:flex">
             <ProjectLink className="text-sm font-medium text-ink/70 transition-colors hover:text-ink" />
-            <Button href={primaryCta.href} size="sm">
-              {primaryCta.label}
-            </Button>
+            <AanvraagDialog
+              renderTrigger={(trigger) => (
+                <Button {...trigger} size="sm">
+                  {primaryCta.label}
+                </Button>
+              )}
+            />
           </div>
 
           {/* Mobile toggle */}
@@ -374,7 +391,20 @@ export function SiteHeader() {
       </header>
 
       {/* Mobile menu */}
-      {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
+      {mobileOpen && (
+        <MobileMenu
+          onClose={() => setMobileOpen(false)}
+          onAanvraag={() => {
+            setMobileOpen(false);
+            setAanvraagOpen(true);
+          }}
+        />
+      )}
+
+      <AanvraagDialogPanel
+        open={aanvraagOpen}
+        onClose={() => setAanvraagOpen(false)}
+      />
     </div>
   );
 }

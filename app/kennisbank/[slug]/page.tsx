@@ -169,7 +169,7 @@ export default async function KennisbankArtikelPage({
                     Offerte aanvragen
                   </Button>
                   <Button href="/prijzen" variant="secondary" size="sm">
-                    Bekijk prijzen
+                    Bekijk montagekosten
                   </Button>
                 </div>
               </div>

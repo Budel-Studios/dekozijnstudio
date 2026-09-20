@@ -42,7 +42,7 @@ export function WireframeStub({
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href={primaryCta.href}>{primaryCta.label}</Button>
             <Button href="/prijzen" variant="secondary">
-              Bekijk prijzen
+              Bekijk montagekosten
             </Button>
           </div>
         </Container>

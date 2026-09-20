@@ -72,7 +72,7 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
         actions={
           <>
             <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk prijzen</Button>
+            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label={`Projectfoto ${data.naam} volgt`} className="min-h-72 lg:min-h-80" />}

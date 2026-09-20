@@ -20,7 +20,7 @@ export function FeaturedProducts() {
             </h2>
             <p className="mt-3 leading-relaxed text-ink/60">
               Kies een product en stel het in twee minuten samen — direct een
-              indicatieve richtprijs, daarna desgewenst een offerte op maat.
+              inzicht in de montagekosten, daarna uw prijs op maat.
             </p>
           </div>
           <Button href="/producten" variant="secondary">

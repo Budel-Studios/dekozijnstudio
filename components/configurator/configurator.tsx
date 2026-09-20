@@ -37,6 +37,7 @@ import { computeCheckout } from "@/lib/checkout";
 import { MontageEditor } from "@/components/offerte/montage-editor";
 import { PriceSummary } from "@/components/offerte/price-summary";
 import { isdeBerekening } from "@/data/subsidie";
+import { PRICE_ON_REQUEST, SHOW_PRODUCT_PRICES } from "@/lib/site";
 
 const STEPS = [
   "Materiaal",
@@ -509,16 +510,32 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
         {step === 8 && (
           <Step title="Uw projectoverzicht">
             <div className="rounded-card border border-forest/20 bg-forest/5 p-6 text-center">
-              <p className="text-sm text-ink/60">
-                {totals.isde.subsidie > 0 ? "Netto investering (na ISDE, incl. btw)" : "Geschat totaal (incl. btw)"}
-              </p>
-              <p className="mt-1 font-display text-4xl font-semibold text-ink">
-                {formatEuro(totals.nettoInvestering)}
-              </p>
-              <p className="mt-1 text-sm text-ink/55">
-                Bruto {formatEuro(totals.brutoInclBtw)}
-                {totals.isde.subsidie > 0 ? ` · ISDE − ${formatEuro(totals.isde.subsidie)}` : ""}
-              </p>
+              {SHOW_PRODUCT_PRICES ? (
+                <>
+                  <p className="text-sm text-ink/60">
+                    {totals.isde.subsidie > 0 ? "Netto investering (na ISDE, incl. btw)" : "Geschat totaal (incl. btw)"}
+                  </p>
+                  <p className="mt-1 font-display text-4xl font-semibold text-ink">
+                    {formatEuro(totals.nettoInvestering)}
+                  </p>
+                  <p className="mt-1 text-sm text-ink/55">
+                    Bruto {formatEuro(totals.brutoInclBtw)}
+                    {totals.isde.subsidie > 0 ? ` · ISDE − ${formatEuro(totals.isde.subsidie)}` : ""}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-ink/60">Kozijnprijs</p>
+                  <p className="mt-1 font-display text-2xl font-semibold text-ink">
+                    {PRICE_ON_REQUEST}
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink/55">
+                    Uw kozijnprijs stellen we op maat vast na uw aanvraag. De
+                    montagekosten ziet u hierboven al wel, gespecificeerd per
+                    werkzaamheid.
+                  </p>
+                </>
+              )}
             </div>
 
             {totals.isde.eligible && (
@@ -536,9 +553,19 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
             <Callout variant="disclaimer" className="mt-4">
               <p>
-                Dit is een <strong>richtprijs</strong> op basis van uw keuzes — niet
-                bindend. De definitieve prijs wordt vastgesteld na de inmeetservice
-                (€ 49, verrekend bij doorgang).
+                {SHOW_PRODUCT_PRICES ? (
+                  <>
+                    Dit is een <strong>richtprijs</strong> op basis van uw keuzes — niet
+                    bindend. De definitieve prijs wordt vastgesteld na de inmeetservice
+                    (€ 49, verrekend bij doorgang).
+                  </>
+                ) : (
+                  <>
+                    De getoonde montagekosten zijn <strong>indicatief</strong> en niet
+                    bindend. De definitieve prijs — inclusief kozijnen — wordt
+                    vastgesteld na de inmeetservice (€ 49, verrekend bij doorgang).
+                  </>
+                )}
               </p>
             </Callout>
 
@@ -652,7 +679,9 @@ function LiveSummary({
           <PriceSummary totals={totals} />
         ) : (
           <p className="text-xs text-ink/45">
-            Maak uw keuzes (materiaal, type en glas) voor een live prijsoverzicht.
+            {SHOW_PRODUCT_PRICES
+              ? "Maak uw keuzes (materiaal, type en glas) voor een live prijsoverzicht."
+              : "Maak uw keuzes (materiaal, type en glas) voor een overzicht van uw samenstelling en de montagekosten."}
           </p>
         )}
       </div>

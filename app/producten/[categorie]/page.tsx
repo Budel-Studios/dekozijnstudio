@@ -33,7 +33,7 @@ export async function generateMetadata({
   const meta = CATEGORIE_META[categorie];
   return {
     title: `${meta.title} — online samenstellen`,
-    description: `${meta.description} Stel online samen en ontvang direct een indicatieve richtprijs incl. btw.`,
+    description: `${meta.description} Stel online samen en vraag uw prijs op maat aan; montagekosten ziet u direct.`,
     alternates: { canonical: `/producten/${categorie}` },
   };
 }
