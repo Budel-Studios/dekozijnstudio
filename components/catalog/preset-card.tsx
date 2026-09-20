@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PresetPreview } from "@/components/configurator/preset-preview";
 import { ArrowRightIcon } from "@/components/icons";
 import { formatEuro } from "@/lib/configurator-price";
+import { PRICE_ON_REQUEST, SHOW_PRODUCT_PRICES } from "@/lib/site";
 import { presetVanafPrice, type PresetItem } from "@/data/preset-configuraties";
 
 /**
@@ -10,7 +11,7 @@ import { presetVanafPrice, type PresetItem } from "@/data/preset-configuraties";
  * Klik = naar de configurator met het dichtstbijzijnde basistype voorgeselecteerd.
  */
 export function PresetCard({ preset }: { preset: PresetItem }) {
-  const prijs = presetVanafPrice(preset);
+  const prijs = SHOW_PRODUCT_PRICES ? presetVanafPrice(preset) : 0;
 
   return (
     <Link
@@ -30,10 +31,21 @@ export function PresetCard({ preset }: { preset: PresetItem }) {
 
         <div className="mt-4 flex items-end justify-between">
           <div>
-            <p className="text-xs text-ink/45">vanaf (richtprijs, incl. btw)</p>
-            <p className="font-display text-xl font-semibold text-ink">
-              {formatEuro(prijs)}
-            </p>
+            {SHOW_PRODUCT_PRICES ? (
+              <>
+                <p className="text-xs text-ink/45">vanaf (richtprijs, incl. btw)</p>
+                <p className="font-display text-xl font-semibold text-ink">
+                  {formatEuro(prijs)}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-ink/45">Volledig op maat</p>
+                <p className="font-display text-base font-semibold text-ink">
+                  {PRICE_ON_REQUEST}
+                </p>
+              </>
+            )}
           </div>
           <span className="flex items-center gap-1.5 text-sm font-medium text-forest">
             Stel samen

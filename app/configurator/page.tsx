@@ -8,11 +8,11 @@ import { CONFIG_PRODUCTTYPES } from "@/data/configurator";
 export const metadata: Metadata = {
   title: "Kozijnconfigurator — stel uw kozijn samen",
   description:
-    "Stel online uw kozijn samen: materiaal, profiel, type, afmetingen, glas en afwerking. Ontvang direct een indicatieve richtprijs incl. btw — vrijblijvend.",
+    "Stel online uw kozijn samen: materiaal, profiel, type, afmetingen, glas en afwerking. Zie direct de montagekosten incl. btw — vrijblijvend.",
   alternates: { canonical: "/configurator" },
   openGraph: {
     title: "Kozijnconfigurator — De Kozijnstudio",
-    description: "Stel uw kozijn samen en ontvang direct een indicatieve richtprijs incl. btw.",
+    description: "Stel uw kozijn samen en vraag uw prijs op maat aan. Montagekosten direct zichtbaar, incl. btw.",
   },
 };
 
@@ -32,7 +32,7 @@ export default async function ConfiguratorPage({
       <PageHero
         eyebrow="Configurator"
         title="Stel uw kozijn samen."
-        lead="Kies materiaal, type, afmetingen en afwerking — en zie direct een indicatieve richtprijs. Tevreden? Stuur uw configuratie mee met de offerteaanvraag."
+        lead="Kies materiaal, type, afmetingen en afwerking — en zie direct de montagekosten incl. btw. Tevreden? Stuur uw configuratie mee met de offerteaanvraag."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Configurator" }]}
       />
 

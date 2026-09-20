@@ -18,6 +18,7 @@ import { buildProjectPdf, type PdfItem } from "@/lib/project-pdf";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
 import { computeProject } from "@/lib/checkout";
 import { isdeBerekening, isdeInfo } from "@/data/subsidie";
+import { PRICE_ON_REQUEST, SHOW_PRODUCT_PRICES } from "@/lib/site";
 import { submitProject } from "@/app/offerte/actions";
 import { MontageEditor } from "@/components/offerte/montage-editor";
 import { PriceSummary } from "@/components/offerte/price-summary";
@@ -155,22 +156,33 @@ export function Checkout() {
         imageRatio: ratio,
         titel: `Kozijn ${i + 1}`,
         rows,
-        prijs: formatEuro(project.perItem[i]?.brutoInclBtw ?? 0),
+        prijs: SHOW_PRODUCT_PRICES
+          ? formatEuro(project.perItem[i]?.brutoInclBtw ?? 0)
+          : PRICE_ON_REQUEST,
       });
     }
 
-    const overzicht: Array<[string, string]> = [
-      ["Kozijnen", formatEuro(totals.productInclBtw)],
-      ["Montage & werk", formatEuro(totals.montage.subtotaalInclBtw)],
-      ["*Bruto (incl. btw)", formatEuro(totals.brutoInclBtw)],
-      [`waarvan btw`, formatEuro(totals.btwBedrag)],
-    ];
+    const overzicht: Array<[string, string]> = SHOW_PRODUCT_PRICES
+      ? [
+          ["Kozijnen", formatEuro(totals.productInclBtw)],
+          ["Montage & werk", formatEuro(totals.montage.subtotaalInclBtw)],
+          ["*Bruto (incl. btw)", formatEuro(totals.brutoInclBtw)],
+          [`waarvan btw`, formatEuro(totals.btwBedrag)],
+        ]
+      : [
+          ["Kozijnen", PRICE_ON_REQUEST],
+          ["Montage & werk (indicatief)", formatEuro(totals.montage.subtotaalInclBtw)],
+        ];
     if (totals.isde.subsidie > 0) {
       overzicht.push(["ISDE-subsidie (indicatief)", `− ${formatEuro(totals.isde.subsidie)}`]);
-      overzicht.push(["*Netto investering", formatEuro(totals.nettoInvestering)]);
+      if (SHOW_PRODUCT_PRICES) {
+        overzicht.push(["*Netto investering", formatEuro(totals.nettoInvestering)]);
+      }
     }
-    overzicht.push(["Aanbetaling bij opdracht", formatEuro(totals.aanbetaling)]);
-    overzicht.push(["Restant bij oplevering", formatEuro(totals.restantBijOplevering)]);
+    if (SHOW_PRODUCT_PRICES) {
+      overzicht.push(["Aanbetaling bij opdracht", formatEuro(totals.aanbetaling)]);
+      overzicht.push(["Restant bij oplevering", formatEuro(totals.restantBijOplevering)]);
+    }
 
     const datum = new Date().toLocaleDateString("nl-NL", {
       day: "numeric",
@@ -397,7 +409,7 @@ export function Checkout() {
           <PriceSummary totals={totals} />
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink/45">
-          Vrijblijvende richtprijs op basis van uw keuzes — niet bindend. Definitieve prijs na de inmeetservice.
+          Indicatie van de montagekosten op basis van uw keuzes — niet bindend. Uw kozijnprijs en de definitieve prijs volgen na de inmeetservice.
         </p>
       </aside>
     </div>
@@ -445,8 +457,17 @@ function ProjectCard({
           <Row k="Glas" v={lbl(CONFIG_GLAS, c.glas)} />
           <Row k="Kleur" v={lbl(CONFIG_KLEUREN, c.kleur)} />
           <div className="mt-2 flex justify-between border-t border-mist pt-2 text-ink">
-            <dt className="font-medium">Kozijn + montage (incl. btw)</dt>
-            <dd className="font-semibold">{formatEuro(productPrijs + montagePrijs)}</dd>
+            {SHOW_PRODUCT_PRICES ? (
+              <>
+                <dt className="font-medium">Kozijn + montage (incl. btw)</dt>
+                <dd className="font-semibold">{formatEuro(productPrijs + montagePrijs)}</dd>
+              </>
+            ) : (
+              <>
+                <dt className="font-medium">Montage (incl. btw)</dt>
+                <dd className="font-semibold">{formatEuro(montagePrijs)}</dd>
+              </>
+            )}
           </div>
         </dl>
       </div>

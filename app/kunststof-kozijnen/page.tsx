@@ -52,7 +52,7 @@ export default function KunststofKozijnenPage() {
         actions={
           <>
             <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk prijzen</Button>
+            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Kunststof kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}

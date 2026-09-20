@@ -11,7 +11,7 @@ import { PRESET_FAMILIES } from "@/data/preset-configuraties";
 export const metadata: Metadata = {
   title: "Producten — kozijnen, deuren & schuifpuien",
   description:
-    "Bekijk onze voorgeconfigureerde kozijnen, deuren en schuifpuien en stel ze online samen. Direct een indicatieve richtprijs incl. btw, daarna een offerte op maat.",
+    "Bekijk onze voorgeconfigureerde kozijnen, deuren en schuifpuien en stel ze online samen. Montagekosten direct zichtbaar incl. btw, daarna een offerte op maat.",
   alternates: { canonical: "/producten" },
 };
 
@@ -21,7 +21,7 @@ export default function ProductenPage() {
       <PageHero
         eyebrow="Producten"
         title="Kies een samenstelling en stel het zelf samen."
-        lead="Van een enkel draaikiepraam tot een voordeur met boven- en zijlichten — kies een voorgeconfigureerd product, pas het aan in de configurator en ontvang direct een indicatieve richtprijs. Materiaal kiest u in de configurator."
+        lead="Van een enkel draaikiepraam tot een voordeur met boven- en zijlichten — kies een voorgeconfigureerd product, pas het aan in de configurator en vraag uw prijs op maat aan. Materiaal kiest u in de configurator."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Producten" }]}
         actions={
           <>

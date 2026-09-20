@@ -42,7 +42,7 @@ export function HeroSplit({ image = "/hero/hero-1.jpg" }: { image?: string }) {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button href="/configurator" size="lg">Stel uw kozijn samen</Button>
-            <Button href="/prijzen" variant="secondary" size="lg">Bekijk prijzen</Button>
+            <Button href="/prijzen" variant="secondary" size="lg">Bekijk montagekosten</Button>
           </div>
 
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
@@ -74,7 +74,7 @@ export function HeroSplit({ image = "/hero/hero-1.jpg" }: { image?: string }) {
           <div className="absolute -left-3 bottom-10 rounded-2xl border border-white/30 bg-white/85 px-5 py-3 shadow-soft backdrop-blur-md sm:-left-6">
             <p className="text-xs text-ink/55">Compleet, incl. montage</p>
             <p className="font-display text-2xl font-semibold text-ink">
-              vanaf <span className="text-forest">€ 480</span>
+              Prijs <span className="text-forest">op aanvraag</span>
             </p>
           </div>
 

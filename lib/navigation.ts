@@ -31,7 +31,7 @@ export const serviceLinks: NavLink[] = [
 
 export const infoLinks: NavLink[] = [
   { label: "Configurator", href: "/configurator" },
-  { label: "Prijzen", href: "/prijzen" },
+  { label: "Montagekosten", href: "/prijzen" },
   { label: "ISDE-subsidie", href: "/isde-subsidie" },
   { label: "Projecten", href: "/projecten" },
   { label: "Kennisbank", href: "/kennisbank" },
@@ -45,8 +45,9 @@ export const companyLinks: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+/** Hoofd-CTA in de header — opent de keuzedialoog (AanvraagDialog). */
 export const primaryCta: NavLink = {
-  label: "Offerte aanvragen",
+  label: "Aanvragen",
   href: "/offerte-aanvragen",
 };
 
@@ -77,7 +78,7 @@ export const headerGroups: NavGroup[] = [
 /** Direct (ungrouped) header links shown alongside the dropdowns. */
 export const headerDirectLinks: NavLink[] = [
   { label: "Configurator", href: "/configurator" },
-  { label: "Prijzen", href: "/prijzen" },
+  { label: "Montagekosten", href: "/prijzen" },
   { label: "ISDE-subsidie", href: "/isde-subsidie" },
   { label: "Kennisbank", href: "/kennisbank" },
 ];

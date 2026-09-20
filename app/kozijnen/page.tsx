@@ -70,7 +70,7 @@ export default function KozijnenGidsPage() {
         actions={
           <>
             <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk prijzen</Button>
+            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}

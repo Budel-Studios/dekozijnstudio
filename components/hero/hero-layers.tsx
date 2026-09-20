@@ -31,7 +31,7 @@ export function HeroLayers({
             <span className="text-forest">Zonder ruis.</span>
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-ink/65">
-            Stel uw kozijn samen, zie direct een eerlijke richtprijs incl. btw en
+            Stel uw kozijn samen, zie direct de montagekosten incl. btw en
             laat alles — van montage tot bouwkundig werk — in één hand regelen.
           </p>
 
@@ -80,7 +80,7 @@ export function HeroLayers({
               <div>
                 <p className="text-xs text-ink/55">HR++ · wit · incl. montage</p>
                 <p className="font-display text-xl font-semibold text-ink">
-                  vanaf <span className="text-forest">€ 480</span>
+                  Prijs <span className="text-forest">op aanvraag</span>
                 </p>
               </div>
             </div>

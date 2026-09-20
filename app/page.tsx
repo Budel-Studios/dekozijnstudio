@@ -143,12 +143,13 @@ export default function Home() {
               <span className="text-lime">Eerlijk geprijsd.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-paper/85 sm:text-lg">
-              Voor ieder huis en ieder budget. U ziet wat u kiest, wat het kost
-              en wie het maakt — alles incl. btw, zonder verborgen marges.
+              Voor ieder huis en ieder budget. U ziet wat u kiest, wat de
+              montage kost en wie het maakt — alles incl. btw, zonder verborgen
+              marges. Uw kozijnprijs stellen we op maat vast.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/prijzen" size="lg">
-                Bekijk prijzen <ArrowRightIcon />
+                Bekijk montagekosten <ArrowRightIcon />
               </Button>
               <Button href="/offerte-aanvragen" size="lg" variant="light">
                 Offerte aanvragen
@@ -422,7 +423,7 @@ export default function Home() {
               Offerte aanvragen <ArrowRightIcon />
             </Button>
             <Button href="/prijzen" size="lg" variant="secondary">
-              Bekijk prijzen
+              Bekijk montagekosten
             </Button>
           </div>
         </Container>

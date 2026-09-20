@@ -45,7 +45,7 @@ export default function HoutenKozijnenPage() {
         actions={
           <>
             <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk prijzen</Button>
+            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Houten kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}

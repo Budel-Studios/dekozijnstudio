@@ -8,16 +8,18 @@ import { PriceTable } from "@/components/ui/price-table";
 import { Callout } from "@/components/ui/callout";
 import { FeatureList } from "@/components/ui/feature-list";
 import { MateriaalVergelijking } from "@/components/prijzen/materiaal-vergelijking";
+import { MontageTarieven } from "@/components/prijzen/montage-tarieven";
 import { montageCategories, investmentExample, inmeetservice } from "@/data/prices";
+import { SHOW_PRODUCT_PRICES } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Prijzen",
+  title: "Montage & kosten",
   description:
-    "Transparante kozijnprijzen incl. btw — montage, levering en bouwkundige aanpassingen apart vermeld. Geen verborgen kosten. Twente & Oost-Nederland.",
+    "Montagetarieven en bouwkundige kosten incl. btw, apart gespecificeerd. Uw kozijnprijs stellen we op maat vast. Twente & Oost-Nederland.",
   alternates: { canonical: "/prijzen" },
   openGraph: {
-    title: "Prijzen — De Kozijnstudio",
-    description: "Alle kosten transparant: kozijnen, montage en bouwkundige aanpassingen incl. btw, geen verborgen marges.",
+    title: "Montage & kosten — De Kozijnstudio",
+    description: "Montage en bouwkundig werk transparant gespecificeerd incl. btw, geen verborgen marges.",
   },
 };
 
@@ -33,13 +35,13 @@ export default function PrijzenPage() {
   return (
     <>
       <PageHero
-        eyebrow="Transparante prijzen"
-        title="Wat kosten nieuwe kozijnen? Wij zijn eerlijk."
-        lead="De kozijnenmarkt staat bekend om onduidelijke offertes. Wij doen het anders: alle kosten transparant, gespecificeerd per onderdeel, altijd incl. btw."
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Prijzen" }]}
+        eyebrow="Montage & kosten"
+        title="Wat kost het plaatsen van kozijnen?"
+        lead="De montage- en bouwkundige kosten ziet u hier open en bloot, altijd incl. btw. Uw kozijnprijs stellen we op maat vast — elk huis en elke situatie is anders."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Montage & kosten" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte op maat</Button>
+            <Button href="/offerte-aanvragen">Prijs op maat aanvragen</Button>
             <Button href="/isde-subsidie" variant="secondary">ISDE-subsidie</Button>
           </>
         }
@@ -59,6 +61,14 @@ export default function PrijzenPage() {
               apart — materiaal, montage, bouwkundig werk en eventuele
               subsidie. Zo maakt u een weloverwogen beslissing.
             </p>
+            {!SHOW_PRODUCT_PRICES && (
+              <p className="mt-4 leading-relaxed text-ink/65">
+                Kozijnprijzen tonen we bewust nog niet online: een kozijn is
+                maatwerk, en een bedrag zonder uw situatie erbij zegt weinig.
+                De montage- en bouwkundige tarieven hieronder gelden wél voor
+                iedereen.
+              </p>
+            )}
             <FeatureList items={filosofie} className="mt-6" />
           </div>
           <div className="space-y-4">
@@ -79,42 +89,56 @@ export default function PrijzenPage() {
       {/* Tarieven */}
       <Section tone="soft">
         <Container width="narrow">
-          <Eyebrow>Tarieven</Eyebrow>
-          <h2 className="mt-4 mb-8 text-2xl text-ink sm:text-3xl">
-            Indicatieve tarieven (incl. btw)
+          <Eyebrow>Montagetarieven</Eyebrow>
+          <h2 className="mt-4 mb-3 text-2xl text-ink sm:text-3xl">
+            Wat montage kost, incl. btw
           </h2>
+          <p className="mb-8 leading-relaxed text-ink/65">
+            Dit zijn onze werkelijke tarieven per werkzaamheid. Welke regels
+            voor uw project gelden, hangt af van de situatie — dat rekenen we
+            samen met u door.
+          </p>
+          <MontageTarieven />
+
+          <h3 className="mt-14 mb-6 text-xl text-ink">
+            Bouwkundige aanpassingen
+          </h3>
           <div className="space-y-6">
-            {montageCategories.map((cat) => (
-              <PriceTable
-                key={cat.id}
-                caption={cat.title}
-                rows={cat.rows.map((r) => ({
-                  label: r.label,
-                  price: r.price,
-                  from: r.from,
-                  note: r.note,
-                }))}
-                footnote={cat.footnote}
-              />
-            ))}
+            {montageCategories
+              .filter((cat) => cat.id !== "montage-basis")
+              .map((cat) => (
+                <PriceTable
+                  key={cat.id}
+                  caption={cat.title}
+                  rows={cat.rows.map((r) => ({
+                    label: r.label,
+                    price: r.price,
+                    from: r.from,
+                    note: r.note,
+                  }))}
+                  footnote={cat.footnote}
+                />
+              ))}
           </div>
         </Container>
       </Section>
 
-      {/* Materiaalvergelijking */}
-      <Section>
-        <Container>
-          <Eyebrow>Vergelijk materialen</Eyebrow>
-          <h2 className="mt-4 mb-3 text-2xl text-ink sm:text-3xl">
-            Kunststof, hout of aluminium — wat kost het?
-          </h2>
-          <p className="mb-8 max-w-2xl leading-relaxed text-ink/65">
-            Zo ziet u in één oogopslag het prijsverschil tussen de materialen
-            voor dezelfde voorbeeldconfiguraties.
-          </p>
-          <MateriaalVergelijking />
-        </Container>
-      </Section>
+      {/* Materiaalvergelijking — alleen met zichtbare productprijzen */}
+      {SHOW_PRODUCT_PRICES && (
+        <Section>
+          <Container>
+            <Eyebrow>Vergelijk materialen</Eyebrow>
+            <h2 className="mt-4 mb-3 text-2xl text-ink sm:text-3xl">
+              Kunststof, hout of aluminium — wat kost het?
+            </h2>
+            <p className="mb-8 max-w-2xl leading-relaxed text-ink/65">
+              Zo ziet u in één oogopslag het prijsverschil tussen de materialen
+              voor dezelfde voorbeeldconfiguraties.
+            </p>
+            <MateriaalVergelijking />
+          </Container>
+        </Section>
+      )}
 
       {/* Investeringsoverzicht */}
       <Section tone="soft">
