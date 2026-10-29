@@ -21,11 +21,23 @@ const redirects: Array<{ source: string; destination: string }> = [
   { source: "/referral", destination: "/aanbrengbonus" },
 ];
 
+/**
+ * GitHub Codespaces preview (.devcontainer): the dev server is reached via
+ * <codespace>-3000.app.github.dev, so that host must be allowed for dev
+ * assets and server actions. Only set inside a codespace.
+ */
+const codespacesHosts =
+  process.env.CODESPACES === "true"
+    ? [`*.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || "app.github.dev"}`]
+    : [];
+
 const nextConfig: NextConfig = {
+  ...(codespacesHosts.length ? { allowedDevOrigins: codespacesHosts } : {}),
   // Server actions receive photos and the project PDF as attachments.
   experimental: {
     serverActions: {
       bodySizeLimit: "6mb",
+      ...(codespacesHosts.length ? { allowedOrigins: codespacesHosts } : {}),
     },
   },
   async redirects() {
