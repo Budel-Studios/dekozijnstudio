@@ -28,7 +28,7 @@ export function ProjectLink({
 
   return (
     <Link
-      href="/offerte"
+      href="/project"
       onClick={onClick}
       className={cn("inline-flex items-center gap-1.5", className)}
     >

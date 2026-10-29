@@ -44,8 +44,8 @@ export default function HoutenKozijnenPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kozijnen" }, { label: "Houten kozijnen" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
+            <Button href="/kosten" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Houten kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}
@@ -100,7 +100,7 @@ export default function HoutenKozijnenPage() {
             offerte incl. montage.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/kunststof-kozijnen" variant="secondary">Vergelijk met kunststof</Button>
           </div>
         </Container>

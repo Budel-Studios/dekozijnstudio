@@ -39,7 +39,7 @@ const MATERIALEN = [
 export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
   const inNaam = `in ${data.naam}`;
   // Chips die zelf een landingspagina hebben, worden interne links
-  // (bv. "Hengelo" op de Twente-pagina → /kozijnen-hengelo).
+  // (bv. "Hengelo" op de Twente-pagina → /werkgebied/hengelo).
   const plaatsSlug = new Map(
     REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r) => [r.naam, r.slug]),
   );
@@ -71,8 +71,8 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
         ]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
+            <Button href="/kosten" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label={`Projectfoto ${data.naam} volgt`} className="min-h-72 lg:min-h-80" />}
@@ -153,7 +153,7 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button href="/montage" variant="secondary" size="sm">Over de montage</Button>
-          <Button href="/isde-subsidie" variant="secondary" size="sm">ISDE-subsidie</Button>
+          <Button href="/subsidie" variant="secondary" size="sm">ISDE-subsidie</Button>
         </div>
       </MateriaalSectie>
 
@@ -172,7 +172,7 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
         lead="Vraag een vrijblijvende offerte aan of plan de inmeetservice (€ 49, volledig verrekend bij doorgang). U ontvangt een offerte waarin elk onderdeel apart en incl. btw is gespecificeerd."
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/contact" variant="secondary">Plan een inmeetafspraak</Button>
           </>
         }

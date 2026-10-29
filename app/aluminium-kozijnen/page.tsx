@@ -56,8 +56,8 @@ export default function AluminiumKozijnenPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kozijnen" }, { label: "Aluminium kozijnen" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
+            <Button href="/kosten" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Aluminium kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}
@@ -112,7 +112,7 @@ export default function AluminiumKozijnenPage() {
             doorgang) en bespreken welk systeem het best past bij uw bouwproject.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/bouwkundige-aanpassingen" variant="secondary">Bouwkundige aanpassingen</Button>
           </div>
         </Container>

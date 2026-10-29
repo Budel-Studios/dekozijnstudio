@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/logo";
 import { footerGroups, legalLinks, werkgebiedLinks } from "@/lib/navigation";
+import { company } from "@/data/company";
+import { ContactLink } from "@/components/contact-link";
 
 export function SiteFooter() {
   return (
@@ -33,7 +35,18 @@ export function SiteFooter() {
                 </a>
               </p>
             </div>
-            <nav aria-label="Werkgebied" className="mt-4">
+            <address className="mt-5 space-y-1 text-sm not-italic text-paper/70">
+              <p>
+                <ContactLink kind="phone" className="hover:text-lime">{company.telefoon}</ContactLink>
+              </p>
+              <p>
+                <a href={`mailto:${company.email}`} className="hover:text-lime">{company.email}</a>
+              </p>
+              <p className="text-paper/50">
+                {company.adres}, {company.postcodePlaats} · bezoek op afspraak
+              </p>
+            </address>
+            <nav aria-label="Werkgebied" className="mt-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-paper/40">
                 Werkgebied
               </p>
@@ -87,7 +100,7 @@ export function SiteFooter() {
             ))}
           </nav>
           <p className="mt-4 text-xs text-paper/40">
-            © {new Date().getFullYear()} De Kozijnstudio — onderdeel van MTB Bouw.
+            © {new Date().getFullYear()} {company.naam} is een handelsnaam van {company.entiteit} · KvK {company.kvk}
           </p>
         </div>
       </Container>

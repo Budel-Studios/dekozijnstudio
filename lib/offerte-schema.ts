@@ -1,123 +1,138 @@
 import { z } from "zod";
 
 /**
- * Offerte (quote request) schema — shared between the client wizard and the
- * server action so validation rules live in one place.
+ * "Vraag een voorstel" — request schema shared by the client form and the
+ * server action (docs/seo-strategie-2026-10.md, h13: three short steps —
+ * wens, situatie, contact).
  *
- * AVG/GDPR: we only collect what's needed to make an offer and contact the
- * customer. A privacy consent checkbox is required before submitting.
+ * AVG/GDPR: only what is needed to respond. Photos and exact measurements are
+ * optional. E-mail OR phone is enough to be contacted.
  */
 
-// ─── Option lists (also used to render the wizard choices) ───────────────────
+// ─── Option lists (also used to render the form and the e-mail) ─────────────
+
+export const WAT_OPTIONS = [
+  { value: "kozijnen", label: "Kozijnen en ramen" },
+  { value: "schuifpui", label: "Schuifpui" },
+  { value: "deur", label: "Voordeur, achterdeur of tuindeuren" },
+] as const;
+
+export const SITUATIE_OPTIONS = [
+  { value: "vervangen", label: "Bestaande kozijnen vervangen" },
+  { value: "nieuwe-opening", label: "Nieuwe of grotere opening" },
+  { value: "onbekend", label: "Weet ik nog niet" },
+] as const;
 
 export const MATERIAAL_OPTIONS = [
-  { value: "kunststof", label: "Kunststof kozijnen" },
-  { value: "hout", label: "Houten kozijnen" },
-  { value: "aluminium", label: "Aluminium kozijnen" },
-  { value: "onbekend", label: "Weet ik nog niet / advies gewenst" },
+  { value: "kunststof", label: "Kunststof" },
+  { value: "hout", label: "Hout" },
+  { value: "aluminium", label: "Aluminium" },
+  { value: "onbekend", label: "Weet ik nog niet" },
 ] as const;
 
-export const PRODUCTTYPE_OPTIONS = [
-  { value: "vaste-ramen", label: "Vaste ramen" },
-  { value: "draaikiepramen", label: "Draaikiepramen" },
-  { value: "voordeur", label: "Voordeur" },
-  { value: "achterdeur", label: "Achterdeur" },
-  { value: "schuifpui", label: "Schuifpui / vouwwand" },
-  { value: "beglazing", label: "Complete beglazing" },
+export const AANTAL_OPTIONS = [
+  { value: "1", label: "1" },
+  { value: "2-3", label: "2 tot 3" },
+  { value: "4-6", label: "4 tot 6" },
+  { value: "7-10", label: "7 tot 10" },
+  { value: "10+", label: "Meer dan 10" },
+  { value: "onbekend", label: "Weet ik nog niet" },
 ] as const;
 
-export const UITVOERING_OPTIONS = [
-  { value: "montage", label: "Inclusief montage", description: "Wij plaatsen de kozijnen vakkundig." },
-  { value: "levering", label: "Alleen levering (DIY)", description: "U plaatst zelf, wij leveren aan huis." },
-  { value: "onbekend", label: "Weet ik nog niet", description: "Ik laat me graag adviseren." },
+export const CONTACTVOORKEUR_OPTIONS = [
+  { value: "geen", label: "Geen voorkeur" },
+  { value: "telefoon", label: "Bellen" },
+  { value: "email", label: "E-mail" },
+  { value: "whatsapp", label: "WhatsApp" },
 ] as const;
 
-export const BOUWKUNDIG_OPTIONS = [
-  { value: "nee", label: "Nee", description: "Openingen blijven gelijk." },
-  { value: "ja", label: "Ja", description: "Bijv. opening vergroten of latei." },
-  { value: "misschien", label: "Misschien / weet ik niet", description: "Graag advies hierover." },
+export const PERIODE_OPTIONS = [
+  { value: "", label: "Geen voorkeur" },
+  { value: "snel", label: "Zo snel mogelijk" },
+  { value: "3-maanden", label: "Binnen 3 maanden" },
+  { value: "3-6-maanden", label: "Over 3 tot 6 maanden" },
+  { value: "orienterend", label: "Later, ik oriënteer me nog" },
 ] as const;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+/** sessionStorage key read by /bedankt to show what was sent (no contact data). */
+export const BEVESTIGING_KEY = "voorstel-bevestiging";
+
+/** Photo limits — client compresses to JPEG first; the server re-checks. */
+export const FOTO_LIMIETEN = {
+  maxAantal: 6,
+  maxBytesPerFoto: 2 * 1024 * 1024,
+  maxBytesTotaal: 5 * 1024 * 1024,
+  types: ["image/jpeg", "image/png", "image/webp"] as readonly string[],
+};
 
 const valuesOf = <T extends readonly { value: string }[]>(opts: T) =>
   opts.map((o) => o.value) as [string, ...string[]];
 
-// ─── Schema ──────────────────────────────────────────────────────────────────
+// ─── Per-step schemas ───────────────────────────────────────────────────────
 
-export const offerteSchema = z.object({
-  // Step 1 — product
-  materiaal: z.enum(valuesOf(MATERIAAL_OPTIONS), {
-    message: "Kies een materiaal of 'advies gewenst'.",
-  }),
-  producttypes: z
-    .array(z.enum(valuesOf(PRODUCTTYPE_OPTIONS)))
-    .min(1, "Selecteer minimaal één producttype."),
-
-  // Step 2 — size & quantity
-  aantal: z
-    .number({ message: "Vul een aantal in." })
-    .int("Vul een heel getal in.")
-    .min(1, "Minimaal 1 kozijn.")
-    .max(200, "Voor zeer grote projecten: neem direct contact op."),
-  afmetingen: z
-    .string()
-    .max(1000, "Maximaal 1000 tekens.")
-    .optional()
-    .or(z.literal("")),
-
-  // Step 3 — execution
-  uitvoering: z.enum(valuesOf(UITVOERING_OPTIONS), {
-    message: "Maak een keuze.",
-  }),
-
-  // Step 4 — structural work
-  bouwkundig: z.enum(valuesOf(BOUWKUNDIG_OPTIONS), {
-    message: "Maak een keuze.",
-  }),
-  bouwkundigToelichting: z
-    .string()
-    .max(1000, "Maximaal 1000 tekens.")
-    .optional()
-    .or(z.literal("")),
-
-  // Step 5 — contact details
-  naam: z.string().min(2, "Vul uw naam in.").max(120),
-  email: z.string().email("Vul een geldig e-mailadres in.").max(160),
-  telefoon: z
-    .string()
-    .min(8, "Vul een geldig telefoonnummer in.")
-    .max(25, "Telefoonnummer is te lang.")
-    .regex(/^[0-9+()\s-]+$/, "Alleen cijfers en + ( ) - zijn toegestaan."),
-  postcode: z
-    .string()
-    .regex(/^\d{4}\s?[A-Za-z]{2}$/, "Vul een geldige postcode in (bijv. 7500 AA).")
-    .max(8),
-  plaats: z.string().min(2, "Vul uw plaats in.").max(120),
-  opmerkingen: z
-    .string()
-    .max(2000, "Maximaal 2000 tekens.")
-    .optional()
-    .or(z.literal("")),
-
-  // Step 6 — consent (AVG)
-  privacyAkkoord: z.literal(true, {
-    message: "U dient akkoord te gaan met de privacyverklaring.",
-  }),
-
-  // Optional: configuration summary handed over from the configurator (fase 5).
-  configuratie: z.string().max(4000).optional().or(z.literal("")),
-
-  // Honeypot — must stay empty (anti-spam). Real users never see this field.
-  website: z.string().max(0).optional().or(z.literal("")),
+export const wensSchema = z.object({
+  wat: z.array(z.enum(valuesOf(WAT_OPTIONS))).min(1, "Kies waar je vraag over gaat."),
+  situatie: z.enum(valuesOf(SITUATIE_OPTIONS), { message: "Kies wat het beste past." }),
+  materiaal: z.enum(valuesOf(MATERIAAL_OPTIONS), { message: "Kies een materiaal of 'weet ik nog niet'." }),
 });
 
-export type OfferteData = z.infer<typeof offerteSchema>;
+export const situatieSchema = z.object({
+  locatie: z
+    .string()
+    .trim()
+    .min(2, "Vul je woonplaats of postcode in.")
+    .max(80, "Dat is te lang voor een woonplaats of postcode."),
+  aantal: z.enum(valuesOf(AANTAL_OPTIONS), { message: "Kies een globaal aantal." }),
+  toelichting: z.string().trim().max(2000, "Maximaal 2000 tekens.").optional().default(""),
+});
 
-// Label lookups for rendering the summary and email
-export function labelFor(
-  options: readonly { value: string; label: string }[],
-  value: string,
-): string {
+export const contactSchema = z
+  .object({
+    naam: z.string().trim().min(2, "Vul je naam in.").max(120),
+    email: z
+      .string()
+      .trim()
+      .max(160)
+      .optional()
+      .default("")
+      .refine((v) => v === "" || z.email().safeParse(v).success, "Vul een geldig e-mailadres in."),
+    telefoon: z
+      .string()
+      .trim()
+      .max(25, "Dat telefoonnummer is te lang.")
+      .optional()
+      .default("")
+      .refine((v) => v === "" || /^[0-9+()\s-]{8,}$/.test(v), "Vul een geldig telefoonnummer in."),
+    contactvoorkeur: z.enum(valuesOf(CONTACTVOORKEUR_OPTIONS)).default("geen"),
+    periode: z.enum(valuesOf(PERIODE_OPTIONS)).optional().default(""),
+    privacyAkkoord: z.literal(true, { message: "Ga akkoord met de privacyverklaring om te versturen." }),
+    // Honeypot — must stay empty. Real visitors never see this field.
+    website: z.string().max(0).optional().default(""),
+  })
+  .refine((d) => d.email !== "" || d.telefoon !== "", {
+    message: "Vul een e-mailadres of telefoonnummer in, zodat we je kunnen bereiken.",
+    path: ["email"],
+  });
+
+export const voorstelSchema = z.object({
+  ...wensSchema.shape,
+  ...situatieSchema.shape,
+  contact: contactSchema,
+});
+
+export type VoorstelData = z.infer<typeof voorstelSchema>;
+
+export function labelFor(options: readonly { value: string; label: string }[], value: string): string {
   return options.find((o) => o.value === value)?.label ?? value;
+}
+
+/** Plain-language summary of a request — shown on /bedankt and in the e-mail. */
+export function summarize(d: Pick<VoorstelData, "wat" | "situatie" | "materiaal" | "locatie" | "aantal">) {
+  return [
+    ["Waarover", d.wat.map((w) => labelFor(WAT_OPTIONS, w)).join(", ")],
+    ["Situatie", labelFor(SITUATIE_OPTIONS, d.situatie)],
+    ["Materiaal", labelFor(MATERIAAL_OPTIONS, d.materiaal)],
+    ["Woonplaats of postcode", d.locatie],
+    ["Globaal aantal", labelFor(AANTAL_OPTIONS, d.aantal)],
+  ] as Array<[string, string]>;
 }

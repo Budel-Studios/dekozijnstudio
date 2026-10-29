@@ -58,8 +58,8 @@ export function MontageTarieven() {
       <p className="mt-3 text-xs leading-relaxed text-ink/50">
         Tarieven incl. {MONTAGE.btwPercentage}% btw · prijslijst bijgewerkt{" "}
         {MONTAGE.laatstBijgewerkt}. Welke werkzaamheden nodig zijn, hangt af van
-        uw situatie — in de configurator rekenen we de hoeveelheden automatisch
-        uit.
+        je situatie. In de configurator worden de hoeveelheden automatisch
+        berekend.
       </p>
 
       <Callout variant="warning" className="mt-4" title="Hoogwerker">

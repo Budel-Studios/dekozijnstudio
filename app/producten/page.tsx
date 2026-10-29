@@ -26,7 +26,7 @@ export default function ProductenPage() {
         actions={
           <>
             <Button href="/configurator">Naar de configurator</Button>
-            <Button href="/offerte-aanvragen" variant="secondary">Offerte aanvragen</Button>
+            <Button href="/offerte" variant="secondary">Offerte aanvragen</Button>
           </>
         }
       />
@@ -63,7 +63,7 @@ export default function ProductenPage() {
             graag met u mee.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/contact" variant="secondary">Contact</Button>
           </div>
         </Container>

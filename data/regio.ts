@@ -1,14 +1,15 @@
 /**
  * Lokale SEO-landingspagina's — content per regio/plaats.
  *
- * Elke entry voedt één landingspagina (bv. /kozijnen-twente) via de
- * RegioPaginaTemplate. Belangrijk: content is per pagina UNIEK geschreven
+ * Elke entry voedt één landingspagina via de RegioPaginaTemplate: de regio-hub
+ * op /werkgebied en plaatsen op /werkgebied/<slug>. Belangrijk: content is per pagina UNIEK geschreven
  * (geen gedeelde alinea's) om dunne doorway-pages te voorkomen. Teksten
  * noemen doelkeywords natuurlijk; geen prijzen/bedragen behalve de vaste
  * inmeetservice (€ 49, CMS-instelbaar feit uit CLAUDE.md).
  *
- * Nieuwe plaats toevoegen = één entry hier + een dun page-bestand
- * (app/kozijnen-<plaats>/page.tsx) + sitemap-regel + footerlink.
+ * Nieuwe plaats toevoegen = één entry hier (soort "plaats"). Route, sitemap en
+ * footerlink volgen automatisch. Alleen toevoegen met eigen lokaal bewijs
+ * (docs/seo-strategie-2026-10.md, h10).
  */
 
 export type RegioPagina = {
@@ -30,7 +31,7 @@ export type RegioPagina = {
 
 export const REGIO_PAGINAS: RegioPagina[] = [
   {
-    slug: "kozijnen-twente",
+    slug: "twente",
     naam: "Twente",
     soort: "regio",
     metaTitle: "Kozijnen in Twente | kunststof, hout & aluminium op maat",
@@ -92,7 +93,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     ],
   },
   {
-    slug: "kozijnen-enschede",
+    slug: "enschede",
     naam: "Enschede",
     soort: "plaats",
     metaTitle: "Kozijnen in Enschede | op maat geleverd en gemonteerd",
@@ -154,7 +155,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     ],
   },
   {
-    slug: "kozijnen-hengelo",
+    slug: "hengelo",
     naam: "Hengelo",
     soort: "plaats",
     metaTitle: "Kozijnen in Hengelo | op maat, geleverd en vakkundig gemonteerd",
@@ -216,7 +217,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     ],
   },
   {
-    slug: "kozijnen-almelo",
+    slug: "almelo",
     naam: "Almelo",
     soort: "plaats",
     metaTitle: "Kozijnen in Almelo | transparante prijzen, levering & montage",
@@ -278,7 +279,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     ],
   },
   {
-    slug: "kozijnen-oldenzaal",
+    slug: "oldenzaal",
     naam: "Oldenzaal",
     soort: "plaats",
     metaTitle: "Kozijnen in Oldenzaal | maatwerk in kunststof, hout & aluminium",
@@ -340,7 +341,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     ],
   },
   {
-    slug: "kozijnen-haaksbergen",
+    slug: "haaksbergen",
     naam: "Haaksbergen",
     soort: "plaats",
     metaTitle: "Kozijnen in Haaksbergen | voor dorp, erf en buitengebied",
@@ -406,3 +407,11 @@ export const REGIO_PAGINAS: RegioPagina[] = [
 export function regioBySlug(slug: string): RegioPagina | undefined {
   return REGIO_PAGINAS.find((r) => r.slug === slug);
 }
+
+/** Public path of a regio page: the hub lives at /werkgebied, places below it. */
+export function regioPad(r: Pick<RegioPagina, "slug" | "soort">): string {
+  return r.soort === "regio" ? "/werkgebied" : `/werkgebied/${r.slug}`;
+}
+
+/** Place pages (soort "plaats") — used for static params, sitemap and footer. */
+export const PLAATS_PAGINAS = REGIO_PAGINAS.filter((r) => r.soort === "plaats");

@@ -42,7 +42,7 @@ export function HeroSplit({ image = "/hero/hero-1.jpg" }: { image?: string }) {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button href="/configurator" size="lg">Stel uw kozijn samen</Button>
-            <Button href="/prijzen" variant="secondary" size="lg">Bekijk montagekosten</Button>
+            <Button href="/kosten" variant="secondary" size="lg">Bekijk montagekosten</Button>
           </div>
 
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">

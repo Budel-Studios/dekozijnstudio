@@ -69,8 +69,8 @@ export default function KozijnenGidsPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kozijnen" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
+            <Button href="/kosten" variant="secondary">Bekijk montagekosten</Button>
           </>
         }
         media={<Placeholder label="Kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}
@@ -176,7 +176,7 @@ export default function KozijnenGidsPage() {
         lead="Vraag een vrijblijvende prijsindicatie aan of plan een inmeetafspraak. Na de inmeetservice (€ 49, verrekend bij doorgang) ontvangt u een volledig gespecificeerde offerte — in heel Twente en Oost-Nederland."
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/contact" variant="secondary">Plan een inmeetafspraak</Button>
           </>
         }

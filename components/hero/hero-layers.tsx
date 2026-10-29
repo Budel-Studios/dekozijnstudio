@@ -37,7 +37,7 @@ export function HeroLayers({
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button href="/configurator" size="lg">Start de configurator</Button>
-            <Button href="/offerte-aanvragen" variant="secondary" size="lg">Offerte aanvragen</Button>
+            <Button href="/offerte" variant="secondary" size="lg">Offerte aanvragen</Button>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink/70">

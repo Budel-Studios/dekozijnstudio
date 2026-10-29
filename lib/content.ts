@@ -1,12 +1,12 @@
 /**
  * Content layer for the kennisbank (knowledge base).
- * Articles are stored as MDX files in /content/kennisbank/*.mdx.
+ * Articles are stored as MDX files in /content/kennis/*.mdx.
  * This file is the single interface between the filesystem and the pages —
  * swap the implementation (e.g. Supabase, a headless CMS) here without
  * touching any page components.
  *
  * How to add an article:
- *   1. Create /content/kennisbank/<slug>.mdx
+ *   1. Create /content/kennis/<slug>.mdx
  *   2. Add the required frontmatter fields (see ArticleMeta below).
  *   3. The article auto-appears in the kennisbank index and gets its own page.
  */
@@ -15,7 +15,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-const CONTENT_DIR = path.join(process.cwd(), "content", "kennisbank");
+const CONTENT_DIR = path.join(process.cwd(), "content", "kennis");
 
 export type ArticleMeta = {
   slug: string;
@@ -63,7 +63,7 @@ function estimateReadTime(content: string): number {
   return Math.max(1, Math.ceil(words / 230)); // ~230 Dutch words/min
 }
 
-/** Returns all article slugs derived from filenames in /content/kennisbank. */
+/** Returns all article slugs derived from filenames in /content/kennis. */
 export function getAllSlugs(): string[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
   return fs

@@ -156,7 +156,7 @@ export default function AanbrengbonusPage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button href="/configurator">Naar de configurator</Button>
-            <Button href="/offerte-aanvragen" variant="secondary">Offerte aanvragen</Button>
+            <Button href="/offerte" variant="secondary">Offerte aanvragen</Button>
           </div>
         </Container>
       </Section>

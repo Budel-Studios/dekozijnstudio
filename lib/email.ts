@@ -1,12 +1,11 @@
 import "server-only";
 import nodemailer from "nodemailer";
-import type { OfferteData } from "@/lib/offerte-schema";
+import type { VoorstelData } from "@/lib/offerte-schema";
 import {
-  MATERIAAL_OPTIONS,
-  PRODUCTTYPE_OPTIONS,
-  UITVOERING_OPTIONS,
-  BOUWKUNDIG_OPTIONS,
+  CONTACTVOORKEUR_OPTIONS,
+  PERIODE_OPTIONS,
   labelFor,
+  summarize,
 } from "@/lib/offerte-schema";
 import {
   computeCheckout,
@@ -62,36 +61,7 @@ export function isEmailConfigured(): boolean {
   return readSmtpConfig() !== null;
 }
 
-// ─── Content rendering ───────────────────────────────────────────────────────
-
-function renderFields(data: OfferteData): Array<[string, string]> {
-  const producttypes = data.producttypes
-    .map((t) => labelFor(PRODUCTTYPE_OPTIONS, t))
-    .join(", ");
-
-  const fields: Array<[string, string]> = [
-    ["Materiaal", labelFor(MATERIAAL_OPTIONS, data.materiaal)],
-    ["Producttype(s)", producttypes],
-    ["Aantal kozijnen", String(data.aantal)],
-    ["Globale afmetingen", data.afmetingen?.trim() || "—"],
-    ["Uitvoering", labelFor(UITVOERING_OPTIONS, data.uitvoering)],
-    ["Bouwkundige aanpassingen", labelFor(BOUWKUNDIG_OPTIONS, data.bouwkundig)],
-    ["Toelichting bouwkundig", data.bouwkundigToelichting?.trim() || "—"],
-    ["Naam", data.naam],
-    ["E-mail", data.email],
-    ["Telefoon", data.telefoon],
-    ["Postcode", data.postcode.toUpperCase()],
-    ["Plaats", data.plaats],
-    ["Opmerkingen", data.opmerkingen?.trim() || "—"],
-  ];
-
-  // Configurator handoff (fase 5) — only included when present.
-  if (data.configuratie && data.configuratie.trim().length > 0) {
-    fields.push(["Configurator", data.configuratie.trim()]);
-  }
-
-  return fields;
-}
+// ─── "Vraag een voorstel" (aanvraagformulier /offerte) ──────────────────────
 
 function escapeHtml(value: string): string {
   return value
@@ -101,8 +71,24 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function buildHtml(data: OfferteData): string {
-  const rows = renderFields(data)
+export type VoorstelFoto = { filename: string; contentType: string; content: Buffer };
+
+function voorstelFields(data: VoorstelData, fotoCount: number): Array<[string, string]> {
+  const c = data.contact;
+  return [
+    ...summarize(data),
+    ["Toelichting / globale maten", data.toelichting?.trim() || "—"],
+    ["Foto's", fotoCount > 0 ? `${fotoCount} als bijlage` : "Geen"],
+    ["Naam", c.naam],
+    ["E-mail", c.email || "—"],
+    ["Telefoon", c.telefoon || "—"],
+    ["Contactvoorkeur", labelFor(CONTACTVOORKEUR_OPTIONS, c.contactvoorkeur)],
+    ["Gewenste periode", c.periode ? labelFor(PERIODE_OPTIONS, c.periode) : "Geen voorkeur"],
+  ];
+}
+
+function voorstelHtml(fields: Array<[string, string]>, replyHint: string): string {
+  const rows = fields
     .map(
       ([label, value]) => `
       <tr>
@@ -111,46 +97,47 @@ function buildHtml(data: OfferteData): string {
       </tr>`,
     )
     .join("");
-
   return `<!doctype html>
 <html lang="nl">
 <body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
   <div style="max-width:640px;margin:0 auto;padding:24px;">
     <div style="background:#23272a;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0;">
-      <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe offerte-aanvraag</p>
+      <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe aanvraag: voorstel</p>
       <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio &middot; via website</p>
     </div>
     <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;border-radius:0 0 12px 12px;padding:8px 0;">
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        ${rows}
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}
       </table>
     </div>
-    <p style="font-size:12px;color:#6b6b6b;margin-top:16px;">
-      Verzonden via het offerteformulier op de website. Antwoord op deze e-mail
-      gaat rechtstreeks naar de klant (${escapeHtml(data.email)}).
-    </p>
+    <p style="font-size:12px;color:#6b6b6b;margin-top:16px;">${escapeHtml(replyHint)}</p>
   </div>
 </body>
 </html>`;
 }
 
-function buildText(data: OfferteData): string {
-  const lines = renderFields(data).map(([label, value]) => `${label}: ${value}`);
-  return `Nieuwe offerte-aanvraag — De Kozijnstudio\n\n${lines.join("\n")}\n`;
-}
-
-// ─── Send ────────────────────────────────────────────────────────────────────
-
-export async function sendOfferteEmail(
-  data: OfferteData,
+/**
+ * Sends a "Vraag een voorstel" request to the De Kozijnstudio mailbox.
+ * Photos travel as e-mail attachments only — they are never stored or
+ * published by the website. Resolves ok only after the SMTP server accepted
+ * the message, so the visitor never sees a false success.
+ */
+export async function sendVoorstelEmail(
+  data: VoorstelData,
+  fotos: VoorstelFoto[],
 ): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
   const config = readSmtpConfig();
   if (!config) {
     console.error(
-      "[offerte] SMTP is niet geconfigureerd. Stel SMTP_HOST/SMTP_USER/SMTP_PASS/OFFERTE_TO_EMAIL in (.env.local).",
+      "[voorstel] SMTP is niet geconfigureerd. Stel SMTP_HOST/SMTP_USER/SMTP_PASS/OFFERTE_TO_EMAIL in.",
     );
     return { ok: false, reason: "not_configured" };
   }
+
+  const c = data.contact;
+  const fields = voorstelFields(data, fotos.length);
+  const replyHint = c.email
+    ? `Antwoorden op deze e-mail gaat rechtstreeks naar ${c.email}.`
+    : `Geen e-mailadres opgegeven — bel of app ${c.telefoon}.`;
 
   const transporter = nodemailer.createTransport({
     host: config.host,
@@ -163,14 +150,21 @@ export async function sendOfferteEmail(
     await transporter.sendMail({
       from: `"De Kozijnstudio — website" <${config.from}>`,
       to: config.to,
-      replyTo: `"${data.naam}" <${data.email}>`,
-      subject: `Offerte-aanvraag — ${data.naam} (${data.plaats})`,
-      text: buildText(data),
-      html: buildHtml(data),
+      ...(c.email ? { replyTo: `"${c.naam}" <${c.email}>` } : {}),
+      subject: `Aanvraag voorstel — ${c.naam} (${data.locatie})`,
+      text: `Nieuwe aanvraag: voorstel — De Kozijnstudio\n\n${fields
+        .map(([l, v]) => `${l}: ${v}`)
+        .join("\n")}\n\n${replyHint}\n`,
+      html: voorstelHtml(fields, replyHint),
+      attachments: fotos.map((f) => ({
+        filename: f.filename,
+        content: f.content,
+        contentType: f.contentType,
+      })),
     });
     return { ok: true };
   } catch (error) {
-    console.error("[offerte] Versturen mislukt:", error);
+    console.error("[voorstel] Versturen mislukt:", error);
     return { ok: false, reason: "send_failed" };
   }
 }

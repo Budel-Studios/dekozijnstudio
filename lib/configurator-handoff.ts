@@ -27,7 +27,7 @@ export type OfferteHandoff = {
     aantal?: number;
     uitvoering?: string;
   };
-  /** Volledige configuratie — gebruikt door de checkout (/offerte). */
+  /** Volledige configuratie — gebruikt door de projectoverzicht (/project). */
   config: KozijnConfig;
   /** Aangevinkte montage-regel-ids (hoeveelheden zijn automatisch). */
   montageChecked: string[];

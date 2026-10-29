@@ -41,7 +41,7 @@ export default function MtbBouwPage() {
               <span>Bezoek mtbbouw.com</span>
               <ArrowUpRightIcon className="size-3.5" />
             </Button>
-            <Button href="/offerte-aanvragen" variant="secondary">Offerte aanvragen</Button>
+            <Button href="/offerte" variant="secondary">Offerte aanvragen</Button>
           </>
         }
         media={<Placeholder label="MTB Bouw — beeld / logo" className="min-h-72 lg:min-h-80" />}
@@ -153,7 +153,7 @@ export default function MtbBouwPage() {
             het bouwkundige werk — in één heldere offerte.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button
               href={MTB_URL}
               variant="secondary"

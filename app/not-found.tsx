@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 const suggesties = [
-  { label: "Configurator", href: "/configurator", note: "Stel uw kozijn samen" },
-  { label: "Producten", href: "/producten", note: "Ramen, deuren & schuifpuien" },
-  { label: "Prijzen", href: "/prijzen", note: "Transparant, incl. btw" },
-  { label: "Kennisbank", href: "/kennisbank", note: "Alles over kozijnen" },
-  { label: "ISDE-subsidie", href: "/isde-subsidie", note: "Bespaar op energiezuinig glas" },
-  { label: "Contact", href: "/contact", note: "We helpen u graag verder" },
+  { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", note: "Keuzes, glas en onderhoud" },
+  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen", note: "Zo gaat het in je woning" },
+  { label: "Kosten", href: "/kosten", note: "Waar de prijs van afhangt" },
+  { label: "Montage", href: "/montage", note: "Wat bij het monteren hoort" },
+  { label: "Kennis", href: "/kennis", note: "Uitleg over kozijnen en glas" },
+  { label: "Contact", href: "/contact", note: "We helpen je verder" },
 ];
 
 export default function NotFound() {
@@ -41,13 +41,13 @@ export default function NotFound() {
           Dit raam kijkt uit op niets.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink/65">
-          De pagina die u zoekt bestaat niet (meer). Maar geen zorgen — we helpen
-          u graag aan een beter uitzicht. Kies hieronder waar u naartoe wilt.
+          De pagina die je zoekt bestaat niet (meer). Kies hieronder waar je
+          naartoe wilt, of ga terug naar de homepage.
         </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button href="/" size="lg">Terug naar home</Button>
-          <Button href="/offerte-aanvragen" variant="secondary" size="lg">Offerte aanvragen</Button>
+          <Button href="/offerte" variant="secondary" size="lg">Vraag een voorstel</Button>
         </div>
 
         <div className="mx-auto mt-12 grid max-w-3xl gap-3 sm:grid-cols-2 lg:grid-cols-3">

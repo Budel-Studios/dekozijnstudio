@@ -146,7 +146,7 @@ export default function FaqPage() {
         title="Antwoorden op uw vragen."
         lead="Alles wat u wilt weten over kozijnen, prijzen, montage, subsidie en hoe wij werken — eerlijk en zonder omwegen beantwoord."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Veelgestelde vragen" }]}
-        actions={<Button href="/offerte-aanvragen">Offerte aanvragen</Button>}
+        actions={<Button href="/offerte">Offerte aanvragen</Button>}
       />
 
       <Section>

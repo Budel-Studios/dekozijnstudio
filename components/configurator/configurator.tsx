@@ -147,7 +147,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
   function addToProject(navigate: boolean) {
     addKozijnToProject(config, montageChecked);
     if (navigate) {
-      router.push("/offerte");
+      router.push("/project");
     } else {
       // Nog een kozijn: configurator resetten naar een schone start.
       setConfig(emptyConfig);

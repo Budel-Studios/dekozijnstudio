@@ -48,7 +48,7 @@ export default function BouwkundigeAanpassingenPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Bouwkundige aanpassingen" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/montage" variant="secondary">Over de montage</Button>
           </>
         }
@@ -110,7 +110,7 @@ export default function BouwkundigeAanpassingenPage() {
             in één helder overzicht.
           </p>
           <div className="mt-8">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
           </div>
         </Container>
       </Section>

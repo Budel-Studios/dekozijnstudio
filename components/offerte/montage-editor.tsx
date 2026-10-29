@@ -34,7 +34,7 @@ export function MontageEditor({
   if (regels.length === 0) {
     return (
       <p className="rounded-xl border border-mist bg-paper-soft px-4 py-3 text-sm text-ink/55">
-        Geen montage-werkzaamheden van toepassing (u plaatst zelf / nog geen
+        Geen montagewerkzaamheden van toepassing (zonder montage of nog geen
         configuratie).
       </p>
     );
