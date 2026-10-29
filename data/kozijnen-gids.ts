@@ -1,20 +1,26 @@
 /**
  * Content voor de overkoepelende kozijnengids (/kozijnen).
  *
- * Volledig data-driven en losgekoppeld van de componenten. De prozaïsche
- * specificaties hieronder zijn in eigen woorden geschreven op basis van
- * publieke fabrikant-/leveranciersinformatie (Toeleveringonline e.a.); exacte
- * mm-maten komen single-source uit `data/configurator.ts` via `findProfiel`.
+ * Volledig data-driven en losgekoppeld van de componenten. De specificaties
+ * hieronder zijn in eigen woorden geschreven op basis van publieke
+ * fabrikant-/leveranciersinformatie (Toeleveringonline e.a.); exacte mm-maten
+ * komen single-source uit `data/configurator.ts` via `findProfiel`.
  *
- * ⚠️ Waar exacte technische waarden of garantietermijnen (nog) ontbreken, staat
- * een `TODO:`-waarde — die mag niet als feit worden gepresenteerd (CLAUDE.md).
- * Prijzen worden hier NIET genoemd; de vergelijkingstabel gebruikt enkel een
- * indicatieve prijsklasse (€ / €€ / €€€).
+ * Publicatieregels (docs/schrijfwijzer.md, data/feiten.ts):
+ *  - Geen keurmerken (KOMO, SKG, Politiekeurmerk), U-/Uf-waarden, RC-klassen,
+ *    draaggewichten of garantietermijnen in publieke tekst zolang er geen
+ *    productbron + bevestiging is.
+ *  - Zulke gegevens staan hieronder als interne notitie achter `TODO:` in een
+ *    `waarde`. `components/kozijnen/product-specs.tsx` knipt alles vanaf
+ *    "TODO" weg en verbergt een rij als er niets overblijft — de notities zijn
+ *    dus de checklist voor de eigenaar en worden nooit getoond.
+ *  - Prijzen worden hier NIET genoemd; de vergelijkingstabel gebruikt enkel een
+ *    indicatieve prijsklasse (€ / €€ / €€€).
  */
 
 export type SpecRow = {
   label: string;
-  /** Mag "TODO: …" bevatten wanneer de exacte waarde nog ontbreekt. */
+  /** Mag eindigen op "TODO: …" (interne notitie, wordt niet getoond). */
   waarde: string;
 };
 
@@ -27,7 +33,7 @@ export type ProductGids = {
   titel: string;
   leverancier: string;
   leverancierUrl: string;
-  /** Pad in /public; valt terug op een Placeholder als leeg. */
+  /** Pad in /public; zonder beeld wordt het beeldvak weggelaten. */
   afbeelding?: string;
   intro: string;
   /** Niet-dimensionele rubrieken; mm-maten komen uit findProfiel. */
@@ -46,32 +52,32 @@ export const HOUT_PRODUCTEN: ProductGids[] = [
     leverancierUrl: "",
     afbeelding: "/profielen/mahonie.webp",
     intro:
-      "Voor onze houten kozijnen werken wij met Sapeli mahonie: een warm, fijn van structuur hardhout met weinig houtporiën en nerven. Dat geeft een gladde, hoogwaardige afwerking en een stabiel kozijn dat jarenlang meegaat. Mahonie combineert een klassieke, natuurlijke uitstraling met de stevigheid die een goed kozijn nodig heeft.",
+      "Sapeli mahonie is een warm, fijn gestructureerd hardhout met weinig poriën. Het laat zich glad afwerken en blijft goed op maat. Daardoor past het bij een klassieke uitstraling en bij kozijnen die strak geprofileerd moeten worden.",
     specs: [
       {
         label: "Eigenschappen mahonie",
         waarde:
-          "Sapeli mahonie hardhout — fijne nerf, weinig poriën, goede maatvastheid en een warme natuurlijke uitstraling. TODO: duurzaamheidsklasse + FSC-status bevestigen.",
+          "Hardhout met een fijne nerf en weinig poriën, goed maatvast, met een warme natuurlijke kleur. TODO: duurzaamheidsklasse + FSC-status bevestigen.",
       },
       {
         label: "Hang- en sluitwerk",
         waarde:
-          "Beslag van o.a. AXA, GU, HABO, FUHR en Voslux. Draairaambeslag met remschaar en stormvaste vergrendeling; deuren met driepuntssluiting en kerntrekbeveiliging. Standaard aluminium F1, optioneel zwart (RAL 9005) of RVS. Voldoet aan het SKG**-keurmerk / Politiekeurmerk Veilig Wonen.",
+          "Beslag van onder meer AXA, GU, HABO, FUHR en Voslux. Draairamen met remschaar en stormvaste vergrendeling; deuren met driepuntssluiting en kerntrekbeveiliging. Standaard aluminium F1, optioneel zwart (RAL 9005) of rvs. TODO: keurmerk (eerder genoemd: SKG** / Politiekeurmerk Veilig Wonen) alleen tonen met productbron.",
       },
       {
         label: "Glas",
         waarde:
-          "HR++ (U-waarde ± 1,1 W/m²K) of HR+++ triple (± 0,6 W/m²K). Houten glaslatten 17 × 17 mm. Doorvalveilig/gelaagd glas conform NEN 3569 en NEN 6702 leverbaar. Onbeglaasd geschikt tot ± 32 mm (triple tot ± 46 mm).",
+          "HR++ of triple glas, met houten glaslatten van 17 × 17 mm. Gelaagd veiligheidsglas is mogelijk. De glassponning is geschikt voor glas tot ± 32 mm dik (voor triple tot ± 46 mm). TODO: U-waarden (eerder: HR++ ± 1,1 en triple ± 0,6 W/m²K) en NEN 3569 / NEN 6702 alleen tonen met productbron.",
       },
       {
         label: "Paneelvulling",
         waarde:
-          "Geïsoleerd paneel: twee Trespa-platen (elk 3 mm) met een PIR-kern, volvlakverlijmd. Kerndikte 24 of 40 mm (U-waarde ± 1,1 resp. 0,6 W/m²K).",
+          "Geïsoleerd paneel: twee Trespa-platen van 3 mm met een PIR-kern, volvlak verlijmd. Kerndikte 24 of 40 mm. TODO: U-waarden (eerder ± 1,1 resp. 0,6 W/m²K) alleen tonen met productbron.",
       },
       {
         label: "Onderdorpels",
         waarde:
-          "Houten onderdorpel (67 mm) of onderhoudsarme DTS TimberPlus (52 mm, biobased/circulair). Voor schuifpuien de Easy-Ent onderdorpel.",
+          "Houten onderdorpel (67 mm) of een onderhoudsarme DTS TimberPlus-dorpel (52 mm, biobased). Voor schuifpuien de Easy-Ent onderdorpel.",
       },
       {
         label: "Ventilatieroosters",
@@ -81,7 +87,7 @@ export const HOUT_PRODUCTEN: ProductGids[] = [
       {
         label: "Scharnieren",
         waarde:
-          "AXA opdek-veiligheidsscharnieren (Topcoat® verzinkt). Aantal scharnieren naar hoogte en gewicht, minimaal 3 per draaiend deel.",
+          "AXA opdek-veiligheidsscharnieren (Topcoat® verzinkt). Het aantal hangt af van hoogte en gewicht, met minimaal drie per draaiend deel.",
       },
       {
         label: "Roeden",
@@ -94,7 +100,7 @@ export const HOUT_PRODUCTEN: ProductGids[] = [
       {
         label: "Detaillering",
         waarde:
-          "Strakke profilering met fijne afwerking dankzij de gladde houtstructuur. Op maat geschilderd/gebeitst in de gewenste kleur. TODO: standaard profilering/afronding specificeren.",
+          "Strakke profilering met een fijne afwerking dankzij de gladde houtstructuur. Geschilderd of gebeitst in de kleur die je kiest. TODO: standaard profilering/afronding specificeren.",
       },
     ],
   },
@@ -112,27 +118,27 @@ export const KUNSTSTOF_PRODUCTEN: ProductGids[] = [
     leverancierUrl: "https://www.gealan.nl",
     afbeelding: "/profielen/gealan-s9000.webp",
     intro:
-      "De Gealan S 9000 NL is een hoogwaardig kunststof profiel met een drievoudige dichting en uitstekende thermische eigenschappen. Een sterke prijs-kwaliteitkeuze voor zowel renovatie als nieuwbouw, met een breed scala aan kleuren.",
+      "De Gealan S 9000 NL is een kunststof profiel met drie dichtingen en 120 mm inbouwdiepte. Het wordt gebruikt bij renovatie en nieuwbouw en is er in veel kleuren en folies, ook met een houtnerf.",
     specs: [
       {
         label: "Profiel",
         waarde:
-          "Kunststof profiel met drievoudige dichting, KOMO-gecertificeerd. Tussenstijl 94 × 120 mm. TODO: aantal kamers + Uf-waarde bevestigen.",
+          "Kunststof profiel met drievoudige dichting. Tussenstijl 94 × 120 mm. TODO: KOMO-certificaat, aantal kamers en Uf-waarde bevestigen met productbron.",
       },
       {
         label: "Hang- en sluitwerk",
         waarde:
-          "Verdekt liggend GU-beslag voor ramen; Hoppe Liège deurkrukken met kerntrekbeveiliging en driepuntssluiting. Standaard aluminium F1, optioneel zwart. SKG** / Politiekeurmerk Veilig Wonen.",
+          "Verdekt liggend GU-beslag voor ramen; Hoppe Liège-deurkrukken met kerntrekbeveiliging en driepuntssluiting. Standaard aluminium F1, optioneel zwart. TODO: keurmerk (eerder genoemd: SKG** / Politiekeurmerk Veilig Wonen) alleen tonen met productbron.",
       },
       {
         label: "Kleuren",
         waarde:
-          "Folie in glad, houtnerf of acryl. Binnen- en buitenzijde apart in te stellen. Het actuele kleurenpalet kies je in de configurator.",
+          "Folie in glad, houtnerf of acryl. Binnen- en buitenzijde kunnen een andere kleur krijgen. Het actuele kleurenpalet kies je in de configurator.",
       },
       {
         label: "Glas",
         waarde:
-          "HR++ (4-16-4, U ± 1,1 W/m²K) of HR+++ triple (4-18-4-18-4, U ± 0,6 W/m²K). Glaslat 35 × 26 mm. Gelaagd/veiligheidsglas conform NEN 3569 en NEN 6702 leverbaar.",
+          "HR++ (opbouw 4-16-4) of triple glas (4-18-4-18-4). Glaslat 35 × 26 mm. Gelaagd veiligheidsglas is mogelijk. TODO: U-waarden (eerder: ± 1,1 en ± 0,6 W/m²K) en NEN 3569 / NEN 6702 alleen tonen met productbron.",
       },
       {
         label: "Ventilatieroosters",
@@ -141,30 +147,30 @@ export const KUNSTSTOF_PRODUCTEN: ProductGids[] = [
       },
       {
         label: "Dorpels",
-        waarde: "Onderdorpel op maat van de situatie. TODO: exacte dorpeltypen/materialen bevestigen.",
+        waarde: "Onderdorpel passend bij de situatie. TODO: exacte dorpeltypen/materialen bevestigen.",
       },
       {
         label: "Roeden",
-        waarde: "Roeden leverbaar. TODO: roede-typen (opgeplakt / Wienersprosse / tussen glas) bevestigen.",
+        waarde: "Roeden zijn mogelijk. TODO: roede-typen (opgeplakt / Wienersprosse / tussen glas) bevestigen.",
       },
       {
         label: "Paneelvulling",
-        waarde: "Geïsoleerde panelen leverbaar. TODO: diktes/kern bevestigen.",
+        waarde: "Geïsoleerde panelen zijn mogelijk. TODO: diktes/kern bevestigen.",
       },
       {
         label: "Scharnieren",
         waarde:
-          "Dr. Hahn KT-EV opdekscharnieren voor deuren (tot ± 120 kg, zesvoudig verstelbaar). Kleur passend bij het gekozen beslag (F1 of zwart).",
+          "Dr. Hahn KT-EV opdekscharnieren voor deuren, in zes richtingen verstelbaar. Kleur passend bij het gekozen beslag (F1 of zwart). TODO: draaggewicht (eerder genoemd: ± 120 kg) alleen tonen met productbron.",
       },
       {
         label: "Garantie",
         waarde:
-          "Kunststof kozijn 10 jaar, hang- en sluitwerk 2 jaar, beglazing en ventilatieroosters 10 jaar (bij correct gebruik en onderhoud).",
+          "TODO: garantietermijnen bevestigen (eerder genoemd: kozijn 10 jaar, hang- en sluitwerk 2 jaar, beglazing en ventilatieroosters 10 jaar, bij correct gebruik en onderhoud).",
       },
       {
         label: "Detaillering",
         waarde:
-          "KOMO-gecertificeerd op isolatie, geluid, sterkte en inbraakwerendheid. Strak profiel met drievoudige dichting voor optimaal comfort.",
+          "Strak profiel met drie dichtingen tegen tocht en vocht. TODO: KOMO-certificering (isolatie, geluid, sterkte, inbraakwerendheid) alleen tonen met productbron.",
       },
     ],
   },
@@ -175,30 +181,30 @@ export const KUNSTSTOF_PRODUCTEN: ProductGids[] = [
     titel: "Schüco (Living & EasySlide)",
     leverancier: "Schüco",
     leverancierUrl: "https://www.schueco.com/nl",
-    // Schüco Living heeft nog geen eigen beeld → Placeholder. TODO: beeld toevoegen.
+    // Schüco Living heeft nog geen eigen beeld; het beeldvak wordt dan weggelaten.
     afbeelding: undefined,
     intro:
-      "Schüco staat voor Duitse topkwaliteit. Het Living-profiel is een 6-kamer kunststof systeem met 120 mm inbouwdiepte en een Uf-waarde tot 1,1 W/m²K — uitstekend geïsoleerd en degelijk afgewerkt. Voor schuifpuien leveren wij het Schüco EasySlide-systeem (RC2, inbouwdiepte 167 mm).",
+      "Schüco Living is een kunststof systeem met zes kamers en 120 mm inbouwdiepte. Voor schuifpuien is er het Schüco EasySlide-systeem, met een inbouwdiepte van 167 mm.",
     specs: [
       {
         label: "Profiel",
         waarde:
-          "Schüco Living: 6-kamer kunststof, inbouwdiepte 120 mm, Uf tot ± 1,1 W/m²K, glaslat 29,5 × 28 mm, tussenstijl 92 × 120 mm. EasySlide schuifpui: inbouwdiepte 167 mm, 2-, 3- of 4-delig.",
+          "Schüco Living: kunststof met zes kamers, inbouwdiepte 120 mm, glaslat 29,5 × 28 mm, tussenstijl 92 × 120 mm. EasySlide schuifpui: inbouwdiepte 167 mm, 2-, 3- of 4-delig. TODO: Uf-waarde (eerder genoemd: tot ± 1,1 W/m²K) alleen tonen met productbron.",
       },
       {
         label: "Hang- en sluitwerk",
         waarde:
-          "Ramen met Siegenia Titan AF beslag (SKG**); deuren met FKS-beslag en Winkhaus autoLock AV3 automatische driepuntsvergrendeling (SKG***). Aluminium F1 of zwart.",
+          "Ramen met Siegenia Titan AF-beslag; deuren met FKS-beslag en Winkhaus autoLock AV3, een automatische driepuntsvergrendeling. Aluminium F1 of zwart. TODO: keurmerken (eerder genoemd: SKG** ramen, SKG*** deuren) alleen tonen met productbron.",
       },
       {
         label: "Kleuren",
         waarde:
-          "Folie in glad, houtnerf of metallic; binnen- en buitenzijde apart in te stellen. Het actuele kleurenpalet kies je in de configurator.",
+          "Folie in glad, houtnerf of metallic; binnen- en buitenzijde kunnen een andere kleur krijgen. Het actuele kleurenpalet kies je in de configurator.",
       },
       {
         label: "Glas",
         waarde:
-          "HR++ (U ± 1,1 W/m²K) of HR+++ triple (± 0,6 W/m²K), ook 1- of 2-zijdig gelaagd/veiligheidsglas (NEN 3569 / NEN 6702).",
+          "HR++ of triple glas, ook enkel- of dubbelzijdig gelaagd veiligheidsglas. TODO: U-waarden (eerder: ± 1,1 en ± 0,6 W/m²K) en NEN 3569 / NEN 6702 alleen tonen met productbron.",
       },
       {
         label: "Ventilatieroosters",
@@ -208,7 +214,7 @@ export const KUNSTSTOF_PRODUCTEN: ProductGids[] = [
       {
         label: "Dorpels",
         waarde:
-          "IsoStone onderdorpel: glasvezelversterkt, 50 mm, rot- en slijtvast, isolerend, standaard zwart. EasySlide met volledig aluminium, thermisch onderbroken dorpel.",
+          "IsoStone onderdorpel: glasvezelversterkt, 50 mm, rot- en slijtvast, isolerend, standaard zwart. EasySlide met een volledig aluminium, thermisch onderbroken dorpel.",
       },
       {
         label: "Roeden",
@@ -216,21 +222,21 @@ export const KUNSTSTOF_PRODUCTEN: ProductGids[] = [
       },
       {
         label: "Paneelvulling",
-        waarde: "Geïsoleerde deurpanelen leverbaar. TODO: diktes/kern bevestigen.",
+        waarde: "Geïsoleerde deurpanelen zijn mogelijk. TODO: diktes/kern bevestigen.",
       },
       {
         label: "Scharnieren",
-        waarde: "Bij het beslag inbegrepen, kleur passend bij de gekozen greep (F1 of zwart).",
+        waarde: "Onderdeel van het beslag, in de kleur van de gekozen greep (F1 of zwart).",
       },
       {
         label: "Garantie",
         waarde:
-          "Kunststof kozijn 10 jaar, hang- en sluitwerk 2 jaar, beglazing en ventilatieroosters 10 jaar (bij correct gebruik en onderhoud).",
+          "TODO: garantietermijnen bevestigen (eerder genoemd: kozijn 10 jaar, hang- en sluitwerk 2 jaar, beglazing en ventilatieroosters 10 jaar, bij correct gebruik en onderhoud).",
       },
       {
         label: "Detaillering",
         waarde:
-          "KOMO / Politiekeurmerk Veilig Wonen. EasySlide schuifpui met inbraakwerendheid RC2 en een thermische isolatie tot ± 1,5 W/m²K.",
+          "TODO: KOMO / Politiekeurmerk Veilig Wonen en EasySlide RC2 + isolatie tot ± 1,5 W/m²K alleen tonen met productbron.",
       },
     ],
   },
@@ -248,32 +254,32 @@ export const ALUMINIUM_PRODUCTEN: ProductGids[] = [
     leverancierUrl: "https://www.reynaers.nl",
     afbeelding: "/profielen/reynaers-sl38.webp",
     intro:
-      "De Reynaers SL 38 is een bijzonder slank aluminium gevelsysteem met een zichtbreedte van slechts 52 mm — strak, modern en met veel glas. KOMO-gecertificeerd en hoogwaardig afgewerkt.",
+      "De Reynaers SL 38 is een slank aluminium systeem met een zichtbreedte van 52 mm en een strakke, cubic vormgeving. Smalle profielen laten veel glas over en geven een moderne uitstraling.",
     specs: [
       {
         label: "Profiel",
         waarde:
-          "Slank aluminium gevelkozijn, cubic vormgeving, KOMO-gecertificeerd. Tussenstijl/-dorpel 52 mm. TODO: thermische onderbreking + Uf-waarde bevestigen.",
+          "Slank aluminium kozijn met cubic vormgeving. Tussenstijl en -dorpel 52 mm. TODO: KOMO-certificaat, thermische onderbreking en Uf-waarde bevestigen met productbron.",
       },
       {
         label: "Coating",
         waarde:
-          "Standaard geanodiseerd (20 µm); voor kust- of industrielocaties (< 10 km van de kust) 25 µm. TODO: poedercoating-/RAL-opties en dual-color bevestigen (in configurator).",
+          "Standaard geanodiseerd (20 µm); binnen 10 km van de kust of bij industrie 25 µm. TODO: poedercoating-/RAL-opties en dual-color bevestigen (in configurator).",
       },
       {
         label: "Hang- en sluitwerk",
         waarde:
-          "Reynaers-beslag, aluminium F1. Driepuntssluiting met kerntrekbeveiliging en cilinder (30/45) bij deuren. SKG** / Politiekeurmerk Veilig Wonen.",
+          "Reynaers-beslag, aluminium F1. Deuren met driepuntssluiting, kerntrekbeveiliging en cilinder (30/45). TODO: keurmerk (eerder genoemd: SKG** / Politiekeurmerk Veilig Wonen) alleen tonen met productbron.",
       },
       {
         label: "Scharnieren",
         waarde:
-          "Sobinco opdek-rollenbandscharnieren, RVS met zelfsmerende bussen, tot ± 250 kg deurgewicht. Kleur aluminium F1.",
+          "Sobinco opdek-rollenbandscharnieren in rvs met zelfsmerende bussen. Kleur aluminium F1. TODO: draaggewicht (eerder genoemd: ± 250 kg) alleen tonen met productbron.",
       },
       {
         label: "Glas",
         waarde:
-          "HR++ (4-20-4, U ± 1,1 W/m²K) of HR+++ triple (± 0,6 W/m²K). Gelaagd/veiligheidsglas conform NEN 3569 en NEN 6702 leverbaar.",
+          "HR++ (opbouw 4-20-4) of triple glas. Gelaagd veiligheidsglas is mogelijk. TODO: U-waarden (eerder: ± 1,1 en ± 0,6 W/m²K) en NEN 3569 / NEN 6702 alleen tonen met productbron.",
       },
       {
         label: "Ventilatieroosters",
@@ -282,17 +288,18 @@ export const ALUMINIUM_PRODUCTEN: ProductGids[] = [
       },
       {
         label: "Dorpels",
-        waarde: "Aluminium onderdorpel met laag reliëf (18 mm), voldoet aan het Bouwbesluit.",
+        waarde:
+          "Aluminium onderdorpel met laag reliëf (18 mm). TODO: 'voldoet aan het Bouwbesluit' alleen tonen met productbron (Bouwbesluit is sinds 2024 vervangen door het Bbl).",
       },
       {
         label: "Garantie",
         waarde:
-          "Aluminium kozijn 5 jaar, hang- en sluitwerk 2 jaar, beglazing 5 jaar (bij correct gebruik en onderhoud).",
+          "TODO: garantietermijnen bevestigen (eerder genoemd: kozijn 5 jaar, hang- en sluitwerk 2 jaar, beglazing 5 jaar, bij correct gebruik en onderhoud).",
       },
       {
         label: "Detaillering",
         waarde:
-          "Zeer slanke zichtbreedte (52 mm) voor maximale lichtinval. TODO: RC-klasse en maximale afmetingen/gewicht uit de detailbladen bevestigen.",
+          "Slanke zichtbreedte van 52 mm, waardoor er relatief veel glas overblijft. TODO: RC-klasse en maximale afmetingen/gewicht uit de detailbladen bevestigen.",
       },
     ],
   },
@@ -305,32 +312,32 @@ export const ALUMINIUM_PRODUCTEN: ProductGids[] = [
     leverancierUrl: "https://aluprof.com/nl",
     afbeelding: "/profielen/aluprof/mb-79n-doorsnede-si.webp",
     intro:
-      "De Aluprof MB-79N is een modern, thermisch onderbroken aluminium systeem met 70 mm inbouwdiepte. Geschikt voor grote, slanke kozijnen met uitstekende isolatie en een hoogwaardige afwerking.",
+      "De Aluprof MB-79N is een thermisch onderbroken aluminium systeem met 70 mm inbouwdiepte. Met verstevigingsprofielen blijft het ook bij grotere kozijnen slank.",
     specs: [
       {
         label: "Profiel",
         waarde:
-          "Thermisch onderbroken aluminium, inbouwdiepte 70 mm, aanslag 25 mm, tussenstijl/-dorpel 75,5 mm. Verstevigingsprofielen voor grote maten. TODO: Uf-waarde bevestigen.",
+          "Thermisch onderbroken aluminium, inbouwdiepte 70 mm, aanslag 25 mm, tussenstijl en -dorpel 75,5 mm. Verstevigingsprofielen voor grote maten. TODO: Uf-waarde bevestigen met productbron.",
       },
       {
         label: "Coating",
         waarde:
-          "Geanodiseerd (25 µm) of structuurcoating voor een luxe uitstraling. TODO: RAL-opties en dual-color bevestigen (in configurator).",
+          "Geanodiseerd (25 µm) of een structuurlak. TODO: RAL-opties en dual-color bevestigen (in configurator).",
       },
       {
         label: "Hang- en sluitwerk",
         waarde:
-          "Aluprof-beslag, aluminium F1. Ramen met verdekt liggend beslag; deuren met driepuntssluiting en kerntrekbeveiliging, standaard voorgemonteerd. SKG** / Politiekeurmerk Veilig Wonen.",
+          "Aluprof-beslag, aluminium F1. Ramen met verdekt liggend beslag; deuren met driepuntssluiting en kerntrekbeveiliging, voorgemonteerd. TODO: keurmerk (eerder genoemd: SKG** / Politiekeurmerk Veilig Wonen) alleen tonen met productbron.",
       },
       {
         label: "Scharnieren",
         waarde:
-          "WALA opdek-rollenbandscharnieren, RVS, tot ± 250 kg deurgewicht, onderhoudsvrij. Kleur aluminium F1.",
+          "WALA opdek-rollenbandscharnieren in rvs. Kleur aluminium F1. TODO: draaggewicht (eerder genoemd: ± 250 kg) alleen tonen met productbron.",
       },
       {
         label: "Glas",
         waarde:
-          "HR++ (U ± 1,1 W/m²K) of HR+++ triple (± 0,6 W/m²K), ook 1- of 2-zijdig gelaagd/veiligheidsglas (NEN 3569 / NEN 6702).",
+          "HR++ of triple glas, ook enkel- of dubbelzijdig gelaagd veiligheidsglas. TODO: U-waarden (eerder: ± 1,1 en ± 0,6 W/m²K) en NEN 3569 / NEN 6702 alleen tonen met productbron.",
       },
       {
         label: "Ventilatieroosters",
@@ -339,17 +346,18 @@ export const ALUMINIUM_PRODUCTEN: ProductGids[] = [
       },
       {
         label: "Dorpels",
-        waarde: "Aluminium onderdorpel met laag reliëf (10 mm), voldoet aan het Bouwbesluit.",
+        waarde:
+          "Aluminium onderdorpel met laag reliëf (10 mm). TODO: 'voldoet aan het Bouwbesluit' alleen tonen met productbron (Bouwbesluit is sinds 2024 vervangen door het Bbl).",
       },
       {
         label: "Garantie",
         waarde:
-          "Aluminium kozijn 5 jaar, hang- en sluitwerk 2 jaar, beglazing 5 jaar (bij correct gebruik en onderhoud).",
+          "TODO: garantietermijnen bevestigen (eerder genoemd: kozijn 5 jaar, hang- en sluitwerk 2 jaar, beglazing 5 jaar, bij correct gebruik en onderhoud).",
       },
       {
         label: "Detaillering",
         waarde:
-          "Modern systeem dat ook bij grote afmetingen slank blijft dankzij verstevigingsprofielen. TODO: RC-klasse en maximale afmetingen/gewicht uit de detailbladen bevestigen.",
+          "Blijft ook bij grotere afmetingen slank dankzij verstevigingsprofielen. TODO: RC-klasse en maximale afmetingen/gewicht uit de detailbladen bevestigen.",
       },
     ],
   },
@@ -362,10 +370,10 @@ export type VergelijkRij = {
   materiaal: string;
   uitstraling: string;
   onderhoud: string;
-  isolatie: string;
+  /** Feitelijke opbouw van het profiel (maten uit data/configurator.ts). */
+  opbouw: string;
   /** Indicatieve prijsklasse — nooit een bedrag. */
   prijsklasse: "€" | "€€" | "€€€";
-  levensduur: string;
   geschiktVoor: string;
 };
 
@@ -373,52 +381,47 @@ export const VERGELIJK_RIJEN: VergelijkRij[] = [
   {
     product: "Mahonie hout",
     materiaal: "Hout",
-    uitstraling: "Warm, natuurlijk, klassiek",
-    onderhoud: "Periodiek schilderen/beitsen",
-    isolatie: "Goed (HR++ / HR+++)",
+    uitstraling: "Warm en natuurlijk, klassiek te profileren",
+    onderhoud: "Periodiek schilderen of beitsen",
+    opbouw: "Hardhout, 114 mm inbouwdiepte",
     prijsklasse: "€€€",
-    levensduur: "Decennia bij goed onderhoud",
-    geschiktVoor: "Klassieke en monumentale woningen",
+    geschiktVoor: "Klassieke woningen, bestaande houten kozijnen namaken",
   },
   {
     product: "Gealan S 9000 NL",
     materiaal: "Kunststof",
-    uitstraling: "Strak, veel kleuren/folies",
-    onderhoud: "Onderhoudsarm",
-    isolatie: "Zeer goed (3 dichtingen)",
+    uitstraling: "Strak, veel kleuren en houtnerffolies",
+    onderhoud: "Weinig: schoonmaken, beslag en rubbers nalopen",
+    opbouw: "Drie dichtingen, 120 mm inbouwdiepte",
     prijsklasse: "€€",
-    levensduur: "Tot 50 jaar of meer",
-    geschiktVoor: "Renovatie en nieuwbouw, scherpe prijs",
+    geschiktVoor: "Renovatie en nieuwbouw als het budget zwaar weegt",
   },
   {
     product: "Schüco",
     materiaal: "Kunststof",
-    uitstraling: "Strak, premium afwerking",
-    onderhoud: "Onderhoudsarm",
-    isolatie: "Zeer goed (6-kamer, Uf ± 1,1)",
+    uitstraling: "Strak, veel kleuren en folies",
+    onderhoud: "Weinig: schoonmaken, beslag en rubbers nalopen",
+    opbouw: "Living: zes kamers, 120 mm; EasySlide: 167 mm",
     prijsklasse: "€€",
-    levensduur: "Tot 50 jaar of meer",
-    geschiktVoor: "Wie premium kunststof en schuifpuien wil",
+    geschiktVoor: "Kunststof ramen, deuren en schuifpuien",
   },
   {
     product: "Reynaers SL 38",
     materiaal: "Aluminium",
-    uitstraling: "Zeer slank en modern (52 mm)",
-    onderhoud: "Nagenoeg onderhoudsvrij",
-    isolatie: "Goed (HR++ / HR+++)",
+    uitstraling: "Zeer slank en modern, 52 mm zichtbreedte",
+    onderhoud: "Weinig: coating schoonmaken, beslag nalopen",
+    opbouw: "Slank systeem, 76 mm inbouwdiepte",
     prijsklasse: "€€€",
-    levensduur: "Tot 50 jaar of meer",
-    geschiktVoor: "Moderne woningen, maximale lichtinval",
+    geschiktVoor: "Moderne woningen met veel glas",
   },
   {
     product: "Aluprof MB-79N",
     materiaal: "Aluminium",
-    uitstraling: "Modern, slank, strak",
-    onderhoud: "Nagenoeg onderhoudsvrij",
-    isolatie: "Zeer goed (thermisch onderbroken)",
+    uitstraling: "Modern en strak",
+    onderhoud: "Weinig: coating schoonmaken, beslag nalopen",
+    opbouw: "Thermisch onderbroken, 70 mm inbouwdiepte",
     prijsklasse: "€€€",
-    levensduur: "Tot 50 jaar of meer",
-    geschiktVoor: "Grote kozijnen, moderne nieuwbouw",
+    geschiktVoor: "Grotere kozijnen en moderne architectuur",
   },
 ];
 
@@ -426,20 +429,24 @@ export const VERGELIJK_RIJEN: VergelijkRij[] = [
 
 export const KEUZEHULP: Array<{ situatie: string; advies: string }> = [
   {
-    situatie: "Klassieke woning of warme, natuurlijke uitstraling",
-    advies: "Kies voor mahonie houten kozijnen — tijdloos en authentiek.",
+    situatie: "Klassieke woning of een warme, natuurlijke uitstraling",
+    advies:
+      "Kijk naar hout. Het laat zich klassiek profileren en kan bestaande houten kozijnen goed volgen. Reken wel op periodiek schilderwerk.",
   },
   {
-    situatie: "Betaalbaar en onderhoudsarm",
-    advies: "Kunststof (Gealan S 9000 NL of Schüco) — uitstekende prijs-kwaliteit en nauwelijks onderhoud.",
+    situatie: "Weinig onderhoud en een overzichtelijk budget",
+    advies:
+      "Kijk naar kunststof. Het vraagt weinig onderhoud en is er in veel kleuren, ook met een houtnerf.",
   },
   {
-    situatie: "Modern en strak",
-    advies: "Aluminium (Reynaers SL 38 of Aluprof MB-79N) — slanke profielen en veel glas.",
+    situatie: "Modern en strak, met veel glas",
+    advies:
+      "Kijk naar aluminium. Slanke profielen laten veel glas over, ook bij grote puien.",
   },
   {
-    situatie: "Beste isolatie / premium afwerking",
-    advies: "Afhankelijk van profiel én glas: combineer een goed geïsoleerd profiel met HR+++ triple glas.",
+    situatie: "Zo goed mogelijk isoleren",
+    advies:
+      "Kijk naar het geheel: profiel, glas en de aansluiting op de muur. Triple glas isoleert beter dan HR++, maar is dikker en zwaarder. Het profiel moet daarop berekend zijn.",
   },
 ];
 
@@ -449,65 +456,61 @@ export const LEVERANCIERS: Array<{ naam: string; url: string; intro: string }> =
   {
     naam: "Gealan",
     url: "https://www.gealan.nl",
-    intro:
-      "Duitse fabrikant van hoogwaardige kunststof profielsystemen met een sterke focus op isolatie en duurzaamheid.",
+    intro: "Duitse fabrikant van kunststof profielsystemen voor ramen en deuren.",
   },
   {
     naam: "Schüco",
     url: "https://www.schueco.com/nl",
-    intro:
-      "Internationaal toonaangevend in raam-, deur- en gevelsystemen in kunststof en aluminium, bekend om kwaliteit en innovatie.",
+    intro: "Duitse fabrikant van raam-, deur- en gevelsystemen in kunststof en aluminium.",
   },
   {
     naam: "Reynaers Aluminium",
     url: "https://www.reynaers.nl",
-    intro:
-      "Specialist in slanke, duurzame aluminium raam-, deur- en schuifsystemen voor woning- en utiliteitsbouw.",
+    intro: "Belgische fabrikant van aluminium raam-, deur- en schuifsystemen.",
   },
   {
     naam: "Aluprof",
     url: "https://aluprof.com/nl",
-    intro:
-      "Europese aluminiumfabrikant met moderne, thermisch onderbroken systemen voor ramen, deuren en gevels.",
+    intro: "Poolse fabrikant van aluminium systemen voor ramen, deuren en gevels.",
   },
 ];
 
-// ─── FAQ (voedt zowel de FAQ-sectie als het FAQPage-schema) ──────────────────
+// ─── Veelgestelde vragen (alleen zichtbaar; geen FAQPage-schema) ─────────────
 
 export const FAQ_ITEMS: Array<{ question: string; answer: string }> = [
   {
-    question: "Welk kozijn is het meest onderhoudsarm?",
+    question: "Welk kozijn vraagt het minste onderhoud?",
     answer:
-      "Kunststof en aluminium kozijnen zijn nagenoeg onderhoudsvrij: af en toe schoonmaken volstaat. Houten (mahonie) kozijnen vragen periodiek schilder- of beitswerk, maar gaan bij goed onderhoud decennia mee.",
+      "Kunststof en aluminium vragen het minste onderhoud: af en toe schoonmaken en het beslag en de rubbers nalopen. Hout heeft periodiek schilder- of beitswerk nodig. Hoe vaak, hangt af van de verf, de kleur en hoeveel zon en regen het kozijn krijgt.",
   },
   {
-    question: "Wat is het verschil tussen HR++ en HR+++ (triple) glas?",
+    question: "Wat is het verschil tussen HR++ en triple glas?",
     answer:
-      "HR++ is dubbel glas met een U-waarde van ongeveer 1,1 W/m²K en de standaardkeuze voor de meeste woningen. HR+++ (triple) glas heeft drie glasbladen, isoleert beter (± 0,6 W/m²K) en dempt meer geluid. Beide komen in aanmerking voor ISDE-subsidie bij vervanging van enkel- of dubbelglas.",
+      "HR++ is dubbel isolatieglas en bij veel woningen de gangbare keuze. Triple glas heeft drie glasbladen, isoleert beter en is dikker en zwaarder. Het kozijn moet daarop berekend zijn. Welk glas je krijgt en welke isolatiewaarde daarbij hoort, staat in de specificatie van je voorstel.",
   },
   {
     question: "Welk materiaal past het beste bij mijn woning?",
     answer:
-      "Mahonie past bij een klassieke, warme uitstraling; kunststof is betaalbaar en onderhoudsarm; aluminium is strak en modern met slanke profielen. De beste isolatie hangt af van de combinatie van profiel en glas. Onze keuzehulp en een vrijblijvend adviesgesprek helpen u verder.",
+      "Dat hangt af van de uitstraling die je zoekt, hoeveel onderhoud je wilt doen en je budget. Hout past vaak bij een klassieke woning, kunststof bij wie weinig onderhoud wil, aluminium bij een moderne gevel met veel glas. Hoe goed een kozijn isoleert, hangt vooral af van de combinatie van profiel, glas en de aansluiting op de muur.",
   },
   {
-    question: "Leveren en plaatsen jullie kozijnen in Twente en Enschede?",
+    question: "Waar werken jullie?",
     answer:
-      "Ja. De Kozijnstudio levert en monteert kozijnen in heel Twente en Oost-Nederland, waaronder Enschede, Hengelo en Almelo. We werken vanuit één planning en één aanspreekpunt, samen met moederbedrijf MTB Bouw voor eventueel bouwkundig werk.",
+      "We werken vanuit Enschede in Twente. De montage regelen we. Is er bouwkundig werk nodig, zoals een opening vergroten, dan doet MTB Bouw dat. De Kozijnstudio is een handelsnaam van MTB Bouw B.V.",
   },
   {
-    question: "Komen nieuwe kozijnen in aanmerking voor ISDE-subsidie?",
+    question: "Kom ik met nieuwe kozijnen in aanmerking voor subsidie?",
     answer:
-      "Bij het vervangen van enkel- of dubbelglas door HR++ of HR+++ glas kunt u in aanmerking komen voor de ISDE-subsidie. De hoogte wordt jaarlijks door de overheid vastgesteld; wij vermelden altijd een indicatieve subsidie op basis van de actuele regels.",
+      "Misschien. Vervang je bestaand glas door HR++ of triple glas en voldoen je woning en het werk aan de voorwaarden van RVO, dan kun je ISDE-subsidie aanvragen. Niet elk nieuw kozijn komt automatisch in aanmerking. Kijk voor de actuele voorwaarden en bedragen op rvo.nl.",
   },
   {
-    question: "Welke merken profielen gebruiken jullie?",
+    question: "Welke profielen kan ik kiezen?",
     answer:
-      "Kunststof: Gealan S 9000 NL en Schüco. Aluminium: Reynaers SL 38 en Aluprof MB-79N. Hout: mahonie. Zo combineren we voor elk type woning de juiste uitstraling, isolatie en prijs.",
+      "In de configurator en in deze gids staan profielen van Gealan en Schüco (kunststof), Reynaers en Aluprof (aluminium) en mahonie (hout). Welk profiel bij jouw woning past, bespreken we bij je voorstel.",
   },
   {
     question: "Hoe lang gaan kozijnen mee?",
     answer:
-      "Kunststof en aluminium kozijnen gaan doorgaans 50 jaar of langer mee. Houten kozijnen van mahonie gaan bij periodiek onderhoud eveneens vele decennia mee.",
+      "Dat hangt af van het materiaal, de ligging en het onderhoud. Bij hout is op tijd schilderen het belangrijkst. Bij kunststof en aluminium bepalen vooral het beslag, de rubbers en de aansluitingen hoe goed een kozijn blijft werken.",
   },
 ];

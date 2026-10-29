@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { CheckIcon } from "@/components/icons";
@@ -194,7 +195,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 1: Materiaal + profiel ── */}
         {step === 0 && (
-          <Step title="Kies uw materiaal" hint="Elk materiaal heeft eigen voordelen. Daarna kiest u het profiel.">
+          <Step title="Kies je materiaal" hint="Elk materiaal heeft eigen voordelen. Daarna kies je het profiel.">
             <div className="grid gap-3 sm:grid-cols-3">
               {CONFIG_MATERIALEN.map((m) => (
                 <SelectCard
@@ -242,7 +243,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 3: Afmetingen ── */}
         {step === 2 && (
-          <Step title="Afmetingen & aantal" hint="Een globale maat volstaat — exacte maten nemen we op tijdens de inmeetservice.">
+          <Step title="Afmetingen & aantal" hint="Een globale maat is genoeg. De exacte maten nemen we op als we bij je thuis inmeten.">
             <div className="grid gap-5 sm:grid-cols-3">
               <NumberField
                 label="Breedte (cm)"
@@ -293,7 +294,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 4: Glas ── */}
         {step === 3 && (
-          <Step title="Type beglazing" hint="Beide typen komen in aanmerking voor ISDE-subsidie.">
+          <Step title="Type beglazing" hint="Twijfel je? Bij je voorstel bespreken we welk glas bij je woning past.">
             <div className="grid gap-3 sm:grid-cols-2">
               {CONFIG_GLAS.map((g) => (
                 <SelectCard
@@ -310,7 +311,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 5: Kleur + opties ── */}
         {step === 4 && (
-          <Step title="Kleur & opties" hint="De tekening werkt direct bij — zo ziet u uw kleur live.">
+          <Step title="Kleur & opties" hint="De tekening past zich direct aan, zo zie je je kleur meteen.">
             <fieldset>
               <legend className="mb-3 text-sm font-medium text-ink">Kleur</legend>
               {(["standaard", "ral", "hout"] as KleurCategorie[]).map((cat) => (
@@ -404,7 +405,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 6: Ventilatie ── */}
         {step === 5 && (
-          <Step title="Ventilatierooster" hint="Optioneel — voor gezonde luchtcirculatie. U bepaalt de positie en kleur.">
+          <Step title="Ventilatierooster" hint="Optioneel, voor frisse lucht in huis. Je kiest zelf de positie en de kleur.">
             <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-mist p-4 transition-colors hover:bg-paper-soft">
               <input
                 type="checkbox"
@@ -483,13 +484,13 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
         {step === 7 && (
           <Step
             title="Montage & werkzaamheden"
-            hint="Standaard zijn de relevante werkzaamheden aangevinkt. Vink aan of uit — hoeveelheden en prijs berekenen we automatisch. Alle bedragen incl. btw."
+            hint="De werkzaamheden die meestal nodig zijn, staan al aangevinkt. Vink aan of uit; aantallen en prijs rekenen we automatisch uit. Alle bedragen zijn inclusief btw."
           >
             {config.uitvoering === "levering" ? (
-              <Callout variant="info" title="U plaatst zelf (alleen levering)">
+              <Callout variant="info" title="Je plaatst zelf (alleen levering)">
                 <p>
-                  U heeft gekozen voor levering zonder montage, dus er zijn geen
-                  montagekosten. Wilt u toch montage? Ga terug naar de stap
+                  Je hebt gekozen voor levering zonder montage, dus er zijn geen
+                  montagekosten. Wil je toch montage? Ga terug naar de stap
                   &lsquo;Uitvoering&rsquo;.
                 </p>
               </Callout>
@@ -509,7 +510,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 9: Resultaat / projectoverzicht ── */}
         {step === 8 && (
-          <Step title="Uw projectoverzicht">
+          <Step title="Je projectoverzicht">
             <div className="rounded-card border border-forest/20 bg-forest/5 p-6 text-center">
               {SHOW_PRODUCT_PRICES ? (
                 <>
@@ -531,23 +532,28 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
                     {PRICE_ON_REQUEST}
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-ink/55">
-                    Uw kozijnprijs stellen we op maat vast na uw aanvraag. De
-                    montagekosten ziet u hierboven al wel, gespecificeerd per
-                    werkzaamheid.
+                    Je kozijnprijs stellen we op maat vast na je aanvraag. De
+                    montagekosten zie je hierboven al wel, per werkzaamheid.
                   </p>
                 </>
               )}
             </div>
 
             {totals.isde.eligible && (
-              <Callout variant="info" className="mt-4" title="ISDE-subsidie via MTB Bouw">
+              <Callout variant="info" className="mt-4" title="Subsidie (ISDE)">
                 <p>
-                  Indicatieve ISDE-subsidie: <strong>{formatEuro(totals.isde.subsidie)}</strong>{" "}
-                  (± {totals.isde.glasM2.toFixed(1)} m²). Glas komt zelfstandig in
-                  aanmerking; combineren met een andere isolatiemaatregel kan dit bedrag
-                  bijna verdubbelen — onze vaste bouwpartner{" "}
-                  <a href="/mtb-bouw" className="font-semibold underline underline-offset-2">MTB Bouw</a>{" "}
-                  voert die graag uit. Indicatief, bijgewerkt {isdeBerekening.lastUpdated}.
+                  {totals.isde.subsidie > 0 && (
+                    <>
+                      Indicatieve ISDE-subsidie: <strong>{formatEuro(totals.isde.subsidie)}</strong>{" "}
+                      (± {totals.isde.glasM2.toFixed(1)} m², bijgewerkt {isdeBerekening.lastUpdated}).{" "}
+                    </>
+                  )}
+                  Met HR++- of triple glas kom je mogelijk in aanmerking voor de ISDE. Of dat zo is,
+                  hangt af van je woning, het glasoppervlak en de uitvoering. Lees{" "}
+                  <Link href="/subsidie" className="font-semibold underline underline-offset-2">
+                    waar je op let bij subsidie
+                  </Link>
+                  .
                 </p>
               </Callout>
             )}
@@ -556,15 +562,15 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
               <p>
                 {SHOW_PRODUCT_PRICES ? (
                   <>
-                    Dit is een <strong>richtprijs</strong> op basis van uw keuzes — niet
-                    bindend. De definitieve prijs wordt vastgesteld na de inmeetservice
-                    (€ 49, verrekend bij doorgang).
+                    Dit is een <strong>richtprijs</strong> op basis van je keuzes en
+                    niet bindend. De definitieve prijs staat in je voorstel, nadat we
+                    bij je thuis hebben ingemeten.
                   </>
                 ) : (
                   <>
                     De getoonde montagekosten zijn <strong>indicatief</strong> en niet
-                    bindend. De definitieve prijs — inclusief kozijnen — wordt
-                    vastgesteld na de inmeetservice (€ 49, verrekend bij doorgang).
+                    bindend. De definitieve prijs, ook van de kozijnen, staat in je
+                    voorstel, nadat we bij je thuis hebben ingemeten.
                   </>
                 )}
               </p>
@@ -572,7 +578,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Button onClick={() => addToProject(true)} className="flex-1 justify-center">
-                Toevoegen aan project &amp; afronden →
+                Voeg toe en bekijk je project →
               </Button>
               <Button variant="secondary" onClick={() => addToProject(false)} className="justify-center">
                 + Nog een kozijn
@@ -664,7 +670,7 @@ function LiveSummary({
       </div>
 
       <p className="text-xs font-semibold uppercase tracking-widest text-wood">
-        Uw samenstelling
+        Je samenstelling
       </p>
       <dl className="mt-4 space-y-2 text-sm">
         {rows.map(([label, value]) => (
@@ -681,8 +687,8 @@ function LiveSummary({
         ) : (
           <p className="text-xs text-ink/45">
             {SHOW_PRODUCT_PRICES
-              ? "Maak uw keuzes (materiaal, type en glas) voor een live prijsoverzicht."
-              : "Maak uw keuzes (materiaal, type en glas) voor een overzicht van uw samenstelling en de montagekosten."}
+              ? "Kies materiaal, type en glas voor een live prijsoverzicht."
+              : "Kies materiaal, type en glas voor een overzicht van je samenstelling en de montagekosten."}
           </p>
         )}
       </div>

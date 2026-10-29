@@ -1,31 +1,54 @@
 /**
- * Lokale SEO-landingspagina's — content per regio/plaats.
+ * Werkgebied — content for the regio hub (/werkgebied) and the place pages
+ * (/werkgebied/<slug>), rendered by RegioPaginaTemplate.
  *
- * Elke entry voedt één landingspagina via de RegioPaginaTemplate: de regio-hub
- * op /werkgebied en plaatsen op /werkgebied/<slug>. Belangrijk: content is per pagina UNIEK geschreven
- * (geen gedeelde alinea's) om dunne doorway-pages te voorkomen. Teksten
- * noemen doelkeywords natuurlijk; geen prijzen/bedragen behalve de vaste
- * inmeetservice (€ 49, CMS-instelbaar feit uit CLAUDE.md).
+ * Rules (docs/schrijfwijzer.md + docs/seo-strategie-2026-10.md, h5 and h10):
+ *  - Je-vorm, calm tone, no superlatives.
+ *  - Only verified claims (data/feiten.ts). No inspection price, delivery or
+ *    installation times, reaction times, "own fitters" or subsidy amounts.
+ *  - Every page is written UNIQUELY: never reuse paragraphs, USPs or FAQ
+ *    answers between pages (doorway / scaled-content risk).
+ *  - A place page is a service area served from Enschede, never a branch.
+ *    Make that explicit in the hero lead.
+ *  - No invented local projects, addresses or customer stories.
+ *  - No Enschede page: the homepage serves "kozijnen Enschede".
+ *  - metaTitle is the FULL title incl. " | De Kozijnstudio" (the route files
+ *    use `title: { absolute: metaTitle }`).
  *
- * Nieuwe plaats toevoegen = één entry hier (soort "plaats"). Route, sitemap en
- * footerlink volgen automatisch. Alleen toevoegen met eigen lokaal bewijs
- * (docs/seo-strategie-2026-10.md, h10).
+ * Adding a place = one entry here (soort "plaats"). Route, sitemap and footer
+ * link follow automatically. Only add a place with real local evidence and
+ * genuinely local information (h10, "Wanneer een eigen plaatspagina zin heeft").
  */
+
+import { isdeInfo } from "@/data/subsidie";
+import { company } from "@/data/company";
+import { isVerified } from "@/data/feiten";
+
+/** Visit policy — only shown while the claim is verified in data/feiten.ts. */
+const BEZOEK = isVerified("bezoekOpAfspraak")
+  ? ` Wil je langskomen? Een bezoek aan de ${company.adres} in ${company.plaats} kan alleen op afspraak.`
+  : "";
 
 export type RegioPagina = {
   slug: string;
   naam: string;
   soort: "regio" | "plaats";
+  /** Full title, ending in " | De Kozijnstudio". */
   metaTitle: string;
+  /** ~140–160 characters, je-vorm, unique per page. */
   metaDescription: string;
   heroTitel: string;
   heroLead: string;
+  /**
+   * Hub: what you can expect from us. Place: what we pay attention to in this
+   * place. Short lines, unique per page.
+   */
   lokaleUsps: string[];
-  /** Bediende plaatsen — getoond als chips onder "Werkgebied". */
+  /** Places (hub) or neighbourhoods/villages (place) — shown as chips. */
   plaatsen: string[];
-  /** Unieke lokale alinea's (2–3) — regio- of stadscontext. */
+  /** Unique local paragraphs (2–3). */
   lokaleContext: string[];
-  /** Lokale FAQ — voedt zowel de FAQ-sectie als het FAQPage-schema. */
+  /** Visible FAQ on the page (no FAQPage schema). */
   faq: Array<{ question: string; answer: string }>;
 };
 
@@ -34,19 +57,19 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     slug: "twente",
     naam: "Twente",
     soort: "regio",
-    metaTitle: "Kozijnen in Twente | kunststof, hout & aluminium op maat",
+    metaTitle: "Kozijnen in Twente en ons werkgebied | De Kozijnstudio",
     metaDescription:
-      "Kozijnen kopen in Twente? Kunststof, houten en aluminium kozijnen op maat, incl. montage door eigen monteurs. Transparante prijzen incl. btw. Vraag een offerte aan.",
-    heroTitel: "Kozijnen in Twente — op maat, transparant en dichtbij",
+      "De Kozijnstudio werkt vanuit Enschede in Twente. Bekijk ons werkgebied en bespreek de mogelijkheden voor jouw adres en project.",
+    heroTitel: "Vanuit Enschede aan het werk in Twente",
     heroLead:
-      "De Kozijnstudio is dé kozijnleverancier van Twente. Kunststof, houten en aluminium kozijnen op maat, geplaatst door eigen monteurs uit de regio — met transparante prijzen incl. btw en één aanspreekpunt via ons moederbedrijf MTB Bouw.",
+      "De Kozijnstudio werkt vanuit Enschede. Van daaruit leveren we kunststof, houten en aluminium kozijnen in Twente en regelen we de montage. Twijfel je of jouw adres bij ons werkgebied hoort? Vraag het ons gerust.",
     lokaleUsps: [
-      "Eigen monteurs uit Twente — korte lijnen, snel ter plaatse",
-      "Transparante prijzen incl. btw, geen verborgen kosten",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "Montage doorgaans binnen één week, meerdere kozijnen per dag",
-      "Bouwkundig werk (openingen vergroten, lateien) via MTB Bouw",
-      "ISDE-subsidie: wij rekenen de indicatie voor u mee",
+      "We werken vanuit Enschede; ons werkgebied is Twente",
+      "Voordat er iets besteld wordt, meten we bij je thuis in",
+      "Een voorstel waarin kozijn, glas, montage en eventueel bouwkundig werk apart staan",
+      "We regelen de montage van je kozijnen",
+      "Bouwkundig werk, zoals een opening vergroten of een nieuwe latei, via MTB Bouw",
+      "Uitleg over subsidie, met een verwijzing naar de actuele voorwaarden bij RVO",
     ],
     plaatsen: [
       "Enschede",
@@ -61,96 +84,38 @@ export const REGIO_PAGINAS: RegioPagina[] = [
       "Denekamp",
     ],
     lokaleContext: [
-      "Twente kent een gevarieerde woningvoorraad: van karakteristieke boerderijen en jaren-30-woningen tot naoorlogse rijwoningen en moderne nieuwbouw. Dat vraagt om maatwerk per woning — een monumentaal pand in het buitengebied stelt andere eisen aan kozijnen dan een tussenwoning in de stad. Omdat wij uit de regio komen, kennen we deze bouwstijlen door en door en adviseren we welk materiaal en profiel bij uw woning past.",
-      "Doordat ons werkgebied compact is, plannen we efficiënt: inmeten, leveren en monteren gebeurt door hetzelfde team, en bij meerdere kozijnen plaatsen we er meerdere per dag om de overlast te beperken. Voor bouwkundige aanpassingen — een opening vergroten, een nieuwe latei of metselwerk — schakelen we naadloos ons moederbedrijf MTB Bouw in. Eén bedrijf, één planning, één verantwoordelijkheid.",
+      "Twente heeft geen eenvormige woningvoorraad. In de steden staan vooroorlogse arbeiderswoningen en tuindorpen naast naoorlogse rijwoningen en uitbreidingswijken; in het buitengebied vind je boerderijen, erven en veel vrijstaande huizen. Welk kozijn verstandig is, hangt daardoor meer af van je woning dan van je postcode: de bouwperiode, de staat van de gevel en wat je zelf belangrijk vindt, zoals uitstraling, onderhoud of isolatie.",
+      "We hebben geen vestigingen buiten Enschede. Ook Hengelo, Almelo, Oldenzaal en Haaksbergen bedienen we vanaf daar; op hun eigen pagina lees je wat er aan de woningen opvalt. Woon je in een andere plaats in Twente of net daarbuiten, neem dan contact op. Dan bespreken we of we jouw project kunnen oppakken.",
     ],
     faq: [
       {
-        question: "In welke plaatsen in Twente plaatsen jullie kozijnen?",
+        question: "In welke plaatsen werken jullie?",
         answer:
-          "In heel Twente, waaronder Enschede, Hengelo, Almelo, Oldenzaal, Losser, Haaksbergen, Borne, Rijssen en omliggende dorpen. Ook net buiten Twente denken we graag mee — neem gerust contact op.",
+          "Ons werkgebied is Twente, vanuit Enschede. Denk aan Enschede, Hengelo, Almelo, Oldenzaal, Losser, Haaksbergen, Borne, Rijssen, Wierden en Denekamp, en de dorpen daaromheen. Woon je net buiten Twente? Vraag het ons; dan kijken we samen of het voor jouw project haalbaar is.",
       },
       {
-        question: "Wat kosten nieuwe kozijnen in Twente?",
-        answer:
-          "Dat hangt af van materiaal, afmeting, glas en montage. Wij werken met transparante richtprijzen incl. btw — bekijk de prijzenpagina of stel uw kozijn samen in de configurator voor een directe indicatie. De definitieve prijs volgt na de inmeetservice (€ 49, verrekend bij doorgang).",
+        question: "Hebben jullie een vestiging in Hengelo, Almelo of Oldenzaal?",
+        answer: `Nee. We werken vanuit Enschede, en die plaatsen horen bij ons werkgebied. Voor het inmeten komen we bij je thuis.${BEZOEK}`,
       },
       {
-        question: "Hoe snel kunnen jullie in Twente leveren en monteren?",
+        question: "Wat kosten nieuwe kozijnen?",
         answer:
-          "De levertijd van maatwerk kozijnen is vanaf circa 8 weken na de opmeting. De montage zelf duurt doorgaans minder dan een week; meerdere kozijnen plaatsen we op één dag.",
+          "Dat hangt af van je woning en je keuzes: het materiaal, de maten en de indeling, het glas, en het werk in je woning, zoals demontage, afwerking en eventueel bouwkundig werk. Op de pagina Kosten lees je wat de prijs bepaalt. Met de configurator krijg je een indicatie voor een samenstelling. De prijs voor jouw situatie staat in je voorstel, na het inmeten.",
       },
       {
         question: "Doen jullie ook het bouwkundige werk?",
         answer:
-          "Ja. Via ons moederbedrijf MTB Bouw verzorgen wij ook openingen vergroten, lateien, metselwerk en binnenafwerking — alles in één planning en met één aanspreekpunt.",
+          "Ja, als je woning dat vraagt. De Kozijnstudio is een handelsnaam van MTB Bouw B.V., een bouwbedrijf. Een opening vergroten, een nieuwe latei plaatsen, metselwerk herstellen of de binnenafwerking: dat kan MTB Bouw uitvoeren. In je voorstel staat het bouwkundige werk apart, zodat je ziet wat waarvoor is.",
       },
       {
-        question: "Kan ik ISDE-subsidie krijgen op kozijnen in Twente?",
+        question: "Hoe gaat het verder na mijn aanvraag?",
         answer:
-          "Bij vervanging van enkel- of dubbelglas door HR++ of triple glas kunt u in aanmerking komen voor de landelijke ISDE-subsidie. De regels worden jaarlijks bijgesteld; wij vermelden altijd een indicatie op basis van de actuele voorwaarden en helpen bij de aanvraag.",
-      },
-    ],
-  },
-  {
-    slug: "enschede",
-    naam: "Enschede",
-    soort: "plaats",
-    metaTitle: "Kozijnen in Enschede | op maat geleverd en gemonteerd",
-    metaDescription:
-      "Nieuwe kozijnen in Enschede: kunststof, hout of aluminium, op maat en vakkundig gemonteerd. Eerlijke prijzen incl. btw en hulp bij ISDE-subsidie. Plan een inmeetafspraak.",
-    heroTitel: "Kozijnen in Enschede — voor elke woning en elke wijk",
-    heroLead:
-      "Van jaren-30-woning tot nieuwbouw: De Kozijnstudio levert en monteert kunststof, houten en aluminium kozijnen in heel Enschede. Eerlijke prijzen incl. btw, vakkundige montage en hulp bij de ISDE-subsidie.",
-    lokaleUsps: [
-      "Actief in alle Enschedese wijken en Glanerbrug",
-      "Advies op maat per woningtype — van vooroorlogs tot nieuwbouw",
-      "Prijzen altijd incl. btw, vooraf gespecificeerd",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "Eén aanspreekpunt, ook voor bouwkundig werk (MTB Bouw)",
-      "Hulp bij ISDE-subsidie, incl. indicatieberekening",
-    ],
-    plaatsen: [
-      "Centrum",
-      "Roombeek",
-      "Twekkelerveld",
-      "Stadsveld",
-      "Hogeland",
-      "Velve-Lindenhof",
-      "Wesselerbrink",
-      "Stroinkslanden",
-      "Glanerbrug",
-      "Lonneker",
-    ],
-    lokaleContext: [
-      "Enschede heeft een bijzonder gemengde woningvoorraad. In vooroorlogse wijken staan veel karakteristieke jaren-20- en jaren-30-woningen met houten kozijnen en fijne roedeverdelingen — daar luistert de detaillering nauw en is hout of een kunststof profiel met authentieke uitstraling vaak de beste keuze. In de naoorlogse wijken in Zuid domineren rijwoningen waar onderhoudsarme kunststof kozijnen met HR++ of triple glas het meeste comfort- en energievoordeel opleveren.",
-      "In nieuwere delen van de stad en bij moderne (ver)bouwprojecten kiezen bewoners juist vaak voor strakke aluminium kozijnen met veel glas. Welke situatie u ook heeft: we komen langs voor de inmeetservice, bekijken de bouwkundige staat ter plekke en maken een offerte waarin elk onderdeel — kozijn, glas, montage en eventueel bouwkundig werk — apart en incl. btw is gespecificeerd.",
-    ],
-    faq: [
-      {
-        question: "Plaatsen jullie kozijnen in heel Enschede?",
-        answer:
-          "Ja, in alle wijken — van het centrum en Roombeek tot Wesselerbrink, Stroinkslanden, Glanerbrug en Lonneker. Ook buurgemeenten zoals Hengelo, Oldenzaal, Losser en Haaksbergen horen bij ons werkgebied.",
+          "We nemen contact met je op om je wensen en je woning te bespreken. Voordat er iets besteld wordt, meten we bij je thuis in; wat het inmeten kost, hoor je vooraf. Daarna krijg je een voorstel. De planning stemmen we met je af; de levertijd staat in je voorstel.",
       },
       {
-        question: "Welke kozijnen passen bij een jaren-30-woning in Enschede?",
+        question: "Kan ik subsidie krijgen op nieuwe kozijnen?",
         answer:
-          "Bij vooroorlogse woningen adviseren we vaak houten kozijnen (mahonie) of een kunststof profiel met verdiept, authentiek aanzicht en eventueel roeden — zo blijft het karakter van de gevel behouden terwijl u profiteert van moderne isolatie.",
-      },
-      {
-        question: "Wat kost het vervangen van kozijnen in Enschede?",
-        answer:
-          "De prijs hangt af van materiaal, afmetingen, glaskeuze en montage. Onze richtprijzen staan incl. btw op de prijzenpagina en in de configurator. Na de inmeetservice (€ 49, verrekend bij doorgang) ontvangt u een volledig gespecificeerde offerte.",
-      },
-      {
-        question: "Moet mijn muuropening aangepast worden — kan dat ook?",
-        answer:
-          "Ja. Openingen vergroten, een nieuwe latei plaatsen of metselwerk herstellen doen we via ons moederbedrijf MTB Bouw, in dezelfde planning als de kozijnmontage.",
-      },
-      {
-        question: "Helpen jullie met de ISDE-subsidie in Enschede?",
-        answer:
-          "Ja. Vervangt u enkel- of dubbelglas door HR++ of triple glas, dan komt u mogelijk in aanmerking voor de landelijke ISDE-subsidie. Wij leveren de benodigde gegevens (zoals meldcodes en specificaties) aan en rekenen vooraf een indicatie voor u mee.",
+          "Dat kan, als je woning en het werk aan de voorwaarden van de ISDE voldoen. Die regeling is er voor isolatieglas, en in combinatie met dat glas ook voor isolerende deuren en panelen. Op de pagina Subsidie lees je waar je op let. De actuele voorwaarden en bedragen staan bij RVO.",
       },
     ],
   },
@@ -158,19 +123,18 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     slug: "hengelo",
     naam: "Hengelo",
     soort: "plaats",
-    metaTitle: "Kozijnen in Hengelo | op maat, geleverd en vakkundig gemonteerd",
+    metaTitle: "Kozijnen in Hengelo | De Kozijnstudio",
     metaDescription:
-      "Kozijnen vervangen in Hengelo? Kunststof, houten en aluminium kozijnen op maat — van wederopbouwwoning tot Hasseler Es. Transparante prijzen incl. btw.",
-    heroTitel: "Kozijnen in Hengelo — maatwerk voor elke bouwperiode",
+      "Nieuwe kozijnen in Hengelo? Lees waar je op let bij een wederopbouwpand, een huis in Tuindorp 't Lansink of een woning uit de jaren 70. Vraag een voorstel aan.",
+    heroTitel: "Kozijnen in Hengelo, passend bij de bouwperiode van je woning",
     heroLead:
-      "Hengelo is gebouwd in lagen: van het tuindorp en de wederopbouw tot de grote uitbreidingswijken. De Kozijnstudio levert en monteert kunststof, houten en aluminium kozijnen die daarbij passen — met transparante prijzen incl. btw en montage door eigen monteurs.",
+      "We werken vanuit Enschede; Hengelo hoort bij ons werkgebied. De stad is in lagen gebouwd, van tuindorp en wederopbouw tot grote uitbreidingswijken, en dat zie je terug in de gevels. Hier lees je waar je op let bij nieuwe kozijnen voor een woning in Hengelo.",
     lokaleUsps: [
-      "Vanuit Enschede in een kwartier ter plaatse",
-      "Advies afgestemd op bouwperiode en gevelbeeld",
-      "Elke offerte vooraf gespecificeerd, incl. btw",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "Meerdere kozijnen op één dag geplaatst",
-      "Bouwkundige aanpassingen via moederbedrijf MTB Bouw",
+      "De bouwperiode van je woning: tuindorp, wederopbouw of uitbreidingswijk",
+      "Het gevelbeeld in Tuindorp 't Lansink, een beschermd stadsgezicht",
+      "Eerst nagaan of een omgevingsvergunning nodig is, dan pas bestellen",
+      "De verhouding tussen profiel en glas bij strakke, regelmatige gevels",
+      "Bij een tweede generatie kozijnen: meteen het glas heroverwegen",
     ],
     plaatsen: [
       "Binnenstad",
@@ -185,34 +149,30 @@ export const REGIO_PAGINAS: RegioPagina[] = [
       "Beckum",
     ],
     lokaleContext: [
-      "Hengelo laat als geen andere Twentse stad zien hoe bouwperiodes elkaar opvolgen. Het centrum is na de oorlog grotendeels herbouwd — wederopbouwwoningen met vaak grote, strakke gevelopeningen waar kunststof of aluminium kozijnen uitstekend tot hun recht komen. Tuindorp 't Lansink is juist een beschermd stadsgezicht met karakteristieke vroeg-twintigste-eeuwse architectuur: daar luistert de detaillering nauw en denken we mee over profielen die het oorspronkelijke gevelbeeld respecteren. Let op: in een beschermd stadsgezicht kan voor het wijzigen van kozijnen een omgevingsvergunning nodig zijn — we wijzen u daar tijdig op.",
-      "In de grote uitbreidingswijken zoals de Hasseler Es en Slangenbeek staan veel woningen uit de jaren zeventig tot negentig die toe zijn aan hun tweede generatie kozijnen. Vaak is dat het moment om meteen de stap naar HR++ of triple glas te maken: minder stoken, meer comfort en mogelijk ISDE-subsidie. Tijdens de inmeetafspraak bekijken we de bouwkundige staat en krijgt u een offerte waarin kozijn, glas en montage stuk voor stuk zijn uitgesplitst.",
+      "Hengelo laat goed zien hoe bouwperiodes elkaar opvolgen. Het centrum werd in oktober 1944 bij bombardementen grotendeels verwoest en is daarna volgens een wederopbouwplan opnieuw opgezet. Panden uit die tijd hebben vaak een strakke, regelmatige gevel. Bij nieuwe kozijnen telt daar vooral de verhouding: hoe breed het profiel is, hoe het glas is verdeeld en waar de delen zitten die open kunnen. Kunststof, hout en aluminium kunnen alle drie, elk met een eigen uitstraling.",
+      "Tuindorp 't Lansink is het tegenovergestelde. Het werd begin twintigste eeuw aangelegd op initiatief van de familie Stork en is sinds 2003 een beschermd stadsgezicht. De detaillering van de gevels hoort daar bij het beschermde beeld. Wil je er kozijnen vervangen, zoek dan eerst uit of je een omgevingsvergunning nodig hebt en welke eisen de gemeente stelt. Wij denken mee over profielen en indelingen die bij het oorspronkelijke beeld passen.",
+      "In uitbreidingswijken als de Hasseler Es, Groot Driene en Slangenbeek staan veel woningen uit de tweede helft van de twintigste eeuw. Daar zitten soms nog de eerste kozijnen in, of kozijnen die al eens zijn vervangen maar met glas dat niet meer van deze tijd is. Vervang je ze nu, kijk dan ook naar het glas: HR++ of triple, en wat het extra gewicht betekent voor het profiel en de delen die open kunnen.",
     ],
     faq: [
       {
-        question: "In welke wijken van Hengelo werken jullie?",
+        question: "Komen jullie in heel Hengelo?",
         answer:
-          "In heel Hengelo — van de binnenstad en Tuindorp 't Lansink tot de Hasseler Es, Groot Driene, Slangenbeek en Beckum. Ook in buurgemeenten zoals Borne, Delden en Enschede zijn we actief.",
+          "Ja. Hengelo hoort bij ons werkgebied, van de binnenstad en 't Lansink tot de Hasseler Es, Groot Driene, Slangenbeek en Beckum. We hebben geen vestiging in Hengelo: je hebt contact met ons in Enschede, en voor het inmeten komen we bij je thuis.",
       },
       {
-        question: "Ik woon in Tuindorp 't Lansink — mag ik zomaar mijn kozijnen vervangen?",
+        question: "Ik woon in Tuindorp 't Lansink. Mag ik mijn kozijnen zomaar vervangen?",
         answer:
-          "Tuindorp 't Lansink is een beschermd stadsgezicht; voor het wijzigen van kozijnen kan daar een omgevingsvergunning nodig zijn. Wij adviseren profielen die passen bij het oorspronkelijke gevelbeeld en raden aan de vergunningplicht vooraf bij de gemeente te checken — daar helpen we u bij.",
+          "Niet zonder het eerst na te gaan. 't Lansink is een beschermd stadsgezicht, en daar kan voor het veranderen van kozijnen een omgevingsvergunning nodig zijn, zeker als het materiaal, de profilering of de indeling verandert. Check dit via het Omgevingsloket of bij de gemeente Hengelo voordat je iets bestelt. Wij helpen je met een kozijn dat bij het oorspronkelijke gevelbeeld past.",
       },
       {
-        question: "Wat kosten nieuwe kozijnen in Hengelo?",
+        question: "Mijn woning is uit de jaren 70. Wat levert vervangen op?",
         answer:
-          "De prijs hangt af van materiaal, afmetingen, glas en montage. In onze configurator stelt u uw kozijn samen en ziet u direct een richtprijs incl. btw. De definitieve prijs volgt na de inmeetservice (€ 49, volledig verrekend bij doorgang).",
+          "In een deel van de woningen uit die tijd zitten nog de eerste kozijnen, soms met vroeg dubbelglas. Nieuwe kozijnen met HR++- of triple glas voelen meestal merkbaar comfortabeler: minder koude bij het raam en minder tocht. Hoeveel je op energie bespaart, hangt af van je woning en hoe je stookt; dat kunnen we vooraf niet beloven. Voor isolatieglas bestaat een landelijke regeling, de ISDE; de voorwaarden staan bij RVO.",
       },
       {
-        question: "Mijn woning is uit de jaren 70 — wat levert kozijnvervanging op?",
+        question: "Kan ik bij nieuwe kozijnen de indeling van mijn ramen veranderen?",
         answer:
-          "Woningen uit die periode hebben vaak nog de eerste kozijnen met enkel of vroeg dubbelglas. Nieuwe kozijnen met HR++ of triple glas schelen merkbaar in comfort, geluid en stookkosten, en bij glasvervanging komt u mogelijk in aanmerking voor ISDE-subsidie — wij rekenen de indicatie voor u mee.",
-      },
-      {
-        question: "Hoe verloopt de montage?",
-        answer:
-          "Na de opmeting worden uw kozijnen op maat gemaakt (levertijd vanaf circa 8 weken). Onze monteurs plaatsen meerdere kozijnen per dag, zodat de montage doorgaans binnen één week klaar is — inclusief nette afwerking binnen en buiten.",
+          "Meestal wel. Nieuwe kozijnen zijn een goed moment om de indeling te heroverwegen: een raam dat open kan om te luchten of schoon te maken, een vast raam waar je toch nooit aankomt, of juist een bovenlicht. Let er wel op dat de gevel rustig blijft, zeker in een rij woningen waar de buren hun oorspronkelijke indeling houden.",
       },
     ],
   },
@@ -220,19 +180,18 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     slug: "almelo",
     naam: "Almelo",
     soort: "plaats",
-    metaTitle: "Kozijnen in Almelo | transparante prijzen, levering & montage",
+    metaTitle: "Kozijnen in Almelo en West-Twente | De Kozijnstudio",
     metaDescription:
-      "Nieuwe kozijnen in Almelo en West-Twente: kunststof, hout of aluminium op maat. Eerlijk gespecificeerde prijzen incl. btw en hulp bij ISDE-subsidie.",
-    heroTitel: "Kozijnen in Almelo — verduurzamen zonder verrassingen",
+      "Kozijnen vervangen in Almelo of West-Twente? Lees hoe je een oudere woning stap voor stap verduurzaamt met nieuwe kozijnen en glas, en vraag een voorstel aan.",
+    heroTitel: "Kozijnen in Almelo: verduurzamen met een duidelijk plan",
     heroLead:
-      "Veel Almelose woningen dateren uit de textiel- en wederopbouwjaren en zijn toe aan beter geïsoleerde kozijnen. De Kozijnstudio levert en monteert kunststof, houten en aluminium kozijnen in heel Almelo en West-Twente — met een offerte waarin elke kostenpost vooraf zichtbaar is.",
+      "We werken vanuit Enschede; Almelo en West-Twente horen bij ons werkgebied. Veel woningen hier stammen uit de textieltijd en de naoorlogse jaren. Nieuwe kozijnen zijn dan vaak een logische stap in het verduurzamen. We helpen je kiezen wat bij jouw woning past.",
     lokaleUsps: [
-      "Actief in heel Almelo én West-Twente (Wierden, Rijssen, Vriezenveen)",
-      "Sterk in verduurzaming van naoorlogse woningen",
-      "Prijzen incl. btw, per onderdeel gespecificeerd",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "ISDE-indicatie standaard meegerekend bij HR++/triple glas",
-      "Eén planning voor kozijnen én bouwkundig werk (MTB Bouw)",
+      "Waar je woning nu warmte verliest: glas, kozijn of aansluiting op de muur",
+      "Ventilatie: een beter afgesloten woning moet goed kunnen luchten",
+      "In één keer of in fases, met een profiel en kleur die blijven aansluiten",
+      "Karakteristieke details bij oudere woningen rond het centrum",
+      "Ook in West-Twente: Wierden, Rijssen en Vriezenveen",
     ],
     plaatsen: [
       "Centrum",
@@ -247,34 +206,29 @@ export const REGIO_PAGINAS: RegioPagina[] = [
       "Bornerbroek",
     ],
     lokaleContext: [
-      "Almelo groeide groot met de textielindustrie, en dat zie je terug in de woningvoorraad: karakteristieke arbeiderswoningen rond het centrum, ruime volkswijken uit de wederopbouw en grote uitbreidingen zoals Schelfhorst en Windmolenbroek uit de jaren zeventig en tachtig. Juist in deze woningen valt met nieuwe kozijnen veel te winnen — oude kozijnen met enkel of verouderd dubbelglas zijn er de grootste warmtelekken. Wij adviseren per woning wat verstandig is: compleet vervangen, en welk materiaal en glas daarbij past.",
-      "Transparantie is daarbij ons uitgangspunt. U ziet in de offerte precies wat het kozijn kost, wat het glas kost en wat de montage kost — alles incl. btw. Komt uw project in aanmerking voor ISDE-subsidie, dan rekenen we de indicatie direct mee, en voor bouwkundig werk zoals het vergroten van een opening of een nieuwe latei schakelen we ons moederbedrijf MTB Bouw in. Zo houdt u één aanspreekpunt, ook in Wierden, Rijssen en Vriezenveen.",
+      "Almelo groeide vanaf het eind van de negentiende eeuw mee met de textielindustrie. Rond het centrum staan nog woningen uit die tijd, daaromheen naoorlogse wijken en grotere uitbreidingen zoals Schelfhorst en Windmolenbroek. Wat ze vaak gemeen hebben: de kozijnen en het glas zijn het zwakke punt in de isolatie, zeker als er nog enkel glas of vroeg dubbelglas in zit. Bij de oudere woningen let je daarnaast op details als de profilering en de verdeling van het glas, zodat de gevel zijn karakter houdt.",
+      "Verduurzamen met nieuwe kozijnen heeft een keerzijde die je vooraf wilt kennen. Oude kozijnen laten vaak ongemerkt lucht door; nieuwe kozijnen sluiten veel beter. Daarom hoort bij het plan ook de vraag hoe je woning ventileert: via roosters in de kozijnen, of via een ventilatiesysteem dat al in huis zit. Zo voorkom je condens en een bedompt binnenklimaat.",
     ],
     faq: [
       {
-        question: "Werken jullie in heel Almelo?",
+        question: "Werken jullie ook in Wierden, Rijssen en Vriezenveen?",
         answer:
-          "Ja — van het centrum en het Nieuwstraatkwartier tot Schelfhorst, Windmolenbroek, Aadorp en Bornerbroek. Ook West-Twente rekenen we tot ons werkgebied: Wierden, Rijssen, Vriezenveen en omliggende dorpen.",
+          "Ja. Naast Almelo zelf, met dorpen als Aadorp en Bornerbroek, horen ook Wierden, Rijssen en Vriezenveen bij ons werkgebied. We werken vanuit Enschede. Twijfel je over jouw adres, stuur ons dan een bericht.",
       },
       {
-        question: "Wat kost kozijnvervanging in Almelo?",
+        question: "Mijn rijwoning uit de jaren 60 is tochtig. Helpen nieuwe kozijnen?",
         answer:
-          "Dat verschilt per woning en wens. Onze richtprijzen zijn altijd incl. btw en per onderdeel uitgesplitst — bekijk de prijzenpagina of gebruik de configurator voor een directe indicatie. Na de inmeetservice (€ 49, verrekend bij doorgang) volgt de definitieve offerte.",
+          "Vaak wel, maar kijk verder dan het glas. Tocht ontstaat bij oudere woningen ook door ramen en deuren die niet meer goed sluiten en door kieren tussen het kozijn en de muur. Bij nieuwe kozijnen wordt die aansluiting opnieuw gemaakt en afgedicht. Bij het inmeten bekijken we jouw situatie, zodat je weet wat je kunt verwachten.",
       },
       {
-        question: "Mijn rijwoning uit de jaren 60 is tochtig — helpen nieuwe kozijnen?",
+        question: "Moet ik alle kozijnen in één keer vervangen?",
         answer:
-          "In de meeste gevallen merkbaar. Naoorlogse rijwoningen verliezen veel warmte via verouderde kozijnen en beglazing. Nieuwe kozijnen met HR++ of triple glas verbeteren comfort en geluidsisolatie en verlagen het energieverbruik — tijdens de inmeetafspraak beoordelen we uw specifieke situatie.",
+          "Nee, dat kan ook in fases, bijvoorbeeld eerst de achtergevel en later de voorkant. In één keer betekent één keer overlast en één keer afwerken; in fases spreid je de kosten. Kies je voor fases, leg dan vooraf het profiel, de kleur en het glas vast, zodat de volgende ronde netjes aansluit.",
       },
       {
-        question: "Kan ik subsidie krijgen op nieuwe kozijnen in Almelo?",
+        question: "Kan ik in Almelo subsidie krijgen op nieuwe kozijnen?",
         answer:
-          "Bij vervanging van enkel- of dubbelglas door HR++ of triple glas komt u mogelijk in aanmerking voor de landelijke ISDE-subsidie. De voorwaarden wijzigen jaarlijks; wij rekenen een actuele indicatie voor u mee en leveren de gegevens voor de aanvraag aan.",
-      },
-      {
-        question: "Doen jullie ook het metsel- en breekwerk?",
-        answer:
-          "Ja. Via ons moederbedrijf MTB Bouw verzorgen we openingen vergroten, lateien, metselwerk en binnenafwerking — in dezelfde planning als de kozijnmontage, met één verantwoordelijke partij.",
+          "De ISDE is een landelijke regeling, dus in Almelo gelden dezelfde voorwaarden als overal. Of je in aanmerking komt, hangt af van je woning, het glastype, het oppervlak en wie het werk uitvoert. Vraag daarnaast bij de gemeente Almelo na of er lokale regelingen voor verduurzaming zijn.",
       },
     ],
   },
@@ -282,26 +236,25 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     slug: "oldenzaal",
     naam: "Oldenzaal",
     soort: "plaats",
-    metaTitle: "Kozijnen in Oldenzaal | maatwerk in kunststof, hout & aluminium",
+    metaTitle: "Kozijnen in Oldenzaal en Noordoost-Twente | De Kozijnstudio",
     metaDescription:
-      "Kozijnen op maat in Oldenzaal en Noordoost-Twente: kunststof, hout of aluminium, geleverd en gemonteerd. Heldere prijzen incl. btw. Vraag een offerte aan.",
-    heroTitel: "Kozijnen in Oldenzaal — van Boeskoolstad tot buitengebied",
+      "Kozijnen in Oldenzaal of Noordoost-Twente? Lees waar je op let bij een pand in de binnenstad, bij roeden en bij de bereikbaarheid, en vraag een voorstel aan.",
+    heroTitel: "Kozijnen in Oldenzaal, van binnenstad tot Noordoost-Twente",
     heroLead:
-      "Van de historische binnenstad rond de Plechelmusbasiliek tot De Thij en De Graven Es: De Kozijnstudio levert en monteert kozijnen in heel Oldenzaal en Noordoost-Twente. Kunststof, hout of aluminium — altijd op maat en met heldere prijzen incl. btw.",
+      "We werken vanuit Enschede; Oldenzaal en de dorpen in Noordoost-Twente horen bij ons werkgebied. Rond de Plechelmusbasiliek staan panden waar de detaillering telt, in de wijken daaromheen heb je meer vrijheid. Op deze pagina lees je waar je op let.",
     lokaleUsps: [
-      "Ook actief in Losser, De Lutte, Denekamp en Weerselo",
-      "Passende profielen voor karakteristieke panden in de binnenstad",
-      "Transparant prijsoverzicht incl. btw, geen verrassingen",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "Montage door eigen monteurs, meerdere kozijnen per dag",
-      "Ook bouwkundig werk via MTB Bouw — één aanspreekpunt",
+      "Klassieke detaillering bij panden in en rond de binnenstad",
+      "Roeden en een indeling die bij de oorspronkelijke gevel passen",
+      "Bereikbaarheid in smalle straten: steiger, hoogwerker en parkeren",
+      "In de woonwijken: een profiel dat past bij de rest van de straat",
+      "Ook in Losser, De Lutte, Denekamp, Weerselo en Rossum",
     ],
     plaatsen: [
       "Binnenstad",
       "De Thij",
-      "Zuid-Berghuizen",
+      "Berghuizen",
       "De Essen",
-      "De Graven Es",
+      "Graven Es",
       "De Lutte",
       "Losser",
       "Denekamp",
@@ -309,34 +262,25 @@ export const REGIO_PAGINAS: RegioPagina[] = [
       "Rossum",
     ],
     lokaleContext: [
-      "Oldenzaal — de Boeskoolstad — heeft een compacte historische kern met daaromheen duidelijk herkenbare uitbreidingsringen: Zuid-Berghuizen en De Thij uit de naoorlogse decennia, De Essen daarna en De Graven Es als jongste wijk. Elke ring vraagt om een eigen aanpak. Bij panden in en rond de binnenstad adviseren we profielen met een klassieke, verdiepte detaillering; in de jongere wijken kiezen bewoners vaker voor strakke kunststof of aluminium kozijnen met maximale isolatie.",
-      "Daarnaast is Oldenzaal onze uitvalsbasis richting Noordoost-Twente: Losser, De Lutte, Denekamp, Weerselo en Rossum horen volop bij het werkgebied. In het landelijke buitengebied — met veel vrijstaande woningen en erven — is de combinatie van een onderhoudsarm kunststof kozijn met houtnerf-afwerking populair: de warme uitstraling van hout, zonder het schilderwerk. We laten tijdens de inmeetafspraak graag voorbeelden zien.",
+      "Oldenzaal heeft een compacte historische binnenstad rond de Plechelmusbasiliek. Bij oudere en beeldbepalende panden daar valt een kozijn snel op: de profilering, de verdeling van het glas en de kleur bepalen samen of de gevel klopt. Hout ligt dan voor de hand, maar een kunststof profiel met een verdiept, klassiek aanzicht kan ook passen. Welke keuze verstandig is, hangt af van het pand en van wat de gemeente op die plek toestaat.",
+      "Werken in een binnenstad vraagt ook om praktische voorbereiding. Hoe komen de kozijnen bij de gevel, is er ruimte voor een steiger of hoogwerker, en mag de straat tijdelijk worden gebruikt? Voor een steiger of container op de openbare weg vraagt de gemeente soms een melding of vergunning. Daarom kijken we bij het inmeten niet alleen naar de maten, maar ook naar de straat.",
+      "Buiten de binnenstad speelt het historische gevelbeeld meestal een kleinere rol. In de woonwijken rond het centrum en in de dorpen richting Losser, De Lutte en Denekamp draait de keuze vaker om isolatie, onderhoud en wat bij de rest van de straat past. Ook die dorpen bedienen we vanuit Enschede.",
     ],
     faq: [
       {
         question: "Werken jullie ook buiten Oldenzaal, in Noordoost-Twente?",
         answer:
-          "Zeker. Naast alle Oldenzaalse wijken bedienen we onder meer Losser, De Lutte, Denekamp, Weerselo, Rossum en het omliggende buitengebied.",
+          "Ja. Naast de wijken van Oldenzaal horen onder meer Losser, De Lutte, Denekamp, Weerselo, Rossum en het buitengebied daaromheen bij ons werkgebied. We werken vanuit Enschede en hebben geen vestiging in Oldenzaal.",
       },
       {
         question: "Welke kozijnen passen bij een karakteristiek pand in de binnenstad?",
         answer:
-          "Voor oudere en beeldbepalende panden adviseren we houten kozijnen of kunststof profielen met een verdiept, klassiek aanzicht — eventueel met roedes — zodat het gevelbeeld intact blijft terwijl u moderne isolatie krijgt. We stemmen het ontwerp af op de stijl van uw pand.",
+          "Bij oudere en beeldbepalende panden liggen houten kozijnen of kunststof profielen met een verdiept, klassiek aanzicht voor de hand, eventueel met roeden. Zo blijft het gevelbeeld intact terwijl je beter isoleert. In en rond een historische binnenstad kan de gemeente eisen stellen aan het uiterlijk; vraag dat bij de gemeente Oldenzaal na voordat je bestelt.",
       },
       {
-        question: "Wat kosten nieuwe kozijnen in Oldenzaal?",
+        question: "Kan ik roeden terugbrengen in mijn ramen?",
         answer:
-          "Dat hangt af van materiaal, maatvoering, glaskeuze en montage. Stel uw kozijn samen in de configurator voor een directe richtprijs incl. btw, of vraag een offerte aan. De inmeetservice kost € 49 en wordt bij doorgang volledig verrekend.",
-      },
-      {
-        question: "Wij wonen landelijk — is hout dan de beste keuze?",
-        answer:
-          "Hout past mooi bij landelijke architectuur, maar vraagt periodiek schilderwerk. Veel bewoners in het buitengebied kiezen daarom voor kunststof kozijnen met houtnerf-folie: nauwelijks onderhoud met een warme uitstraling. We leggen beide opties met plussen en minnen naast elkaar.",
-      },
-      {
-        question: "Hoe lang duurt het van offerte tot geplaatste kozijnen?",
-        answer:
-          "Na de opmeting gaan uw kozijnen in maatwerkproductie; reken op een levertijd vanaf circa 8 weken. De montage zelf is doorgaans binnen één week afgerond, omdat we meerdere kozijnen per dag plaatsen.",
+          "Dat kan vaak, ook als ze bij een eerdere vervanging zijn verdwenen. Bij echte roeden is het glas verdeeld in losse ruiten. Bij opliggende roeden zitten de roeden op één doorlopende ruit, wat voor de isolatie meestal gunstiger is. Welke uitvoering bij het gekozen profiel mogelijk is, bespreken we bij het advies.",
       },
     ],
   },
@@ -344,19 +288,18 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     slug: "haaksbergen",
     naam: "Haaksbergen",
     soort: "plaats",
-    metaTitle: "Kozijnen in Haaksbergen | voor dorp, erf en buitengebied",
+    metaTitle: "Kozijnen in Haaksbergen | De Kozijnstudio",
     metaDescription:
-      "Kozijnen in Haaksbergen, Buurse en Sint Isidorushoeve: kunststof, hout of aluminium op maat, incl. montage. Transparante prijzen incl. btw uit de regio.",
-    heroTitel: "Kozijnen in Haaksbergen — dorps karakter, moderne isolatie",
+      "Kozijnen of een schuifpui in Haaksbergen, Buurse of Sint Isidorushoeve? Lees waar je op let bij grote raampartijen en erven, en vraag een voorstel aan.",
+    heroTitel: "Kozijnen in Haaksbergen: ruim wonen, grote ramen",
     heroLead:
-      "In de Ster van Twente staan veel vrijstaande en twee-onder-een-kapwoningen met royale raampartijen — en in het buitengebied karakteristieke erven. De Kozijnstudio levert en monteert er kozijnen op maat, vanuit onze thuisbasis in Enschede om de hoek.",
+      "We werken vanuit Enschede, en Haaksbergen ligt daar direct naast. Het hoort bij ons werkgebied, net als Buurse, Sint Isidorushoeve en het buitengebied. Hier staan veel vrijstaande woningen met grote raampartijen, en daar komt bij nieuwe kozijnen net wat meer bij kijken.",
     lokaleUsps: [
-      "Thuisbasis Enschede — snel ter plaatse, korte lijnen",
-      "Ervaring met grote raampartijen en schuifpuien",
-      "Ook in Buurse, Sint Isidorushoeve en het buitengebied",
-      "Prijzen vooraf gespecificeerd, altijd incl. btw",
-      "Inmeetservice € 49 — volledig verrekend bij doorgang",
-      "Constructieve aanpassingen via MTB Bouw geregeld",
+      "Grote raampartijen: glasgewicht, indeling en zon",
+      "Schuifpuien: past de pui in de bestaande opening of wordt die groter?",
+      "Erven en boerderijen: hout of kunststof met houtnerf",
+      "Bouwkundig werk bij een nieuwe opening, via MTB Bouw",
+      "Ook in de kerkdorpen Buurse en Sint Isidorushoeve",
     ],
     plaatsen: [
       "Haaksbergen-centrum",
@@ -371,34 +314,28 @@ export const REGIO_PAGINAS: RegioPagina[] = [
       "Markelo",
     ],
     lokaleContext: [
-      "Haaksbergen woont ruim: veel vrijstaande woningen en twee-onder-een-kappers met grote gevelopeningen, en een uitgestrekt buitengebied richting Buurse en Sint Isidorushoeve met boerderijen en erven. Grote raampartijen stellen hogere eisen aan kozijnen — aan de constructie, het glasgewicht en de isolatie. Wij zijn daarop ingericht: van brede schuifpuien tot complete gevelpartijen, inclusief het constructieve werk dat daar via MTB Bouw bij komt kijken.",
-      "Voor karakteristieke panden en erven in het buitengebied denken we mee over de uitstraling: houten kozijnen voor een authentiek beeld, of onderhoudsarm kunststof met houtnerf-afwerking als u niet elke paar jaar wilt schilderen. En omdat Enschede letterlijk naast de deur ligt, zijn de lijnen kort — van inmeetafspraak tot montage werken we met hetzelfde team uit de regio.",
+      "Haaksbergen woont ruim. In het dorp en de kerkdorpen staan veel vrijstaande woningen en twee-onder-een-kappers, vaak met grote raampartijen of een schuifpui naar de tuin. Groot glas stelt eisen: het is zwaar, zeker als triple glas, en het profiel en het hang- en sluitwerk moeten dat gewicht dragen. Ook de zon telt mee. Grote ramen op het zuiden of westen laten in de zomer veel warmte binnen; zonwerend glas of buitenzonwering kan dan helpen.",
+      "In het buitengebied richting Buurse en Sint Isidorushoeve staan boerderijen en woningen op erven, waar vaak een warme, traditionele uitstraling bij past. Hout geeft die het meest direct, maar moet periodiek worden geschilderd. Kunststof met een houtnerfstructuur oogt ook warm en hoeft niet geschilderd te worden, al zie je van dichtbij dat het geen hout is. We leggen beide opties met hun voor- en nadelen naast elkaar.",
     ],
     faq: [
       {
-        question: "Komen jullie ook in Buurse en Sint Isidorushoeve?",
+        question: "Komen jullie ook in Buurse, Sint Isidorushoeve en het buitengebied?",
         answer:
-          "Ja, het hele werkgebied van de gemeente Haaksbergen hoort erbij — inclusief het buitengebied. Ook omliggende plaatsen zoals Boekelo, Beckum, Hengevelde en Goor bedienen we regelmatig.",
+          "Ja. Haaksbergen grenst aan de gemeente Enschede, waar we vandaan werken. De kerkdorpen en het buitengebied horen bij ons werkgebied, net als plaatsen in de buurt zoals Boekelo, Beckum en Hengevelde.",
       },
       {
-        question: "Kunnen jullie een brede schuifpui in een bestaande gevel plaatsen?",
+        question: "Kan ik een raam vervangen door een schuifpui?",
         answer:
-          "Ja. Vaak moet daarvoor de gevelopening worden vergroot en een nieuwe latei worden geplaatst — dat constructieve werk verzorgt ons moederbedrijf MTB Bouw, in dezelfde planning als de montage van de pui. U houdt één aanspreekpunt.",
+          "Vaak wel. Meestal verdwijnt dan het muurtje onder het raam en wordt de opening soms ook breder. Daarvoor is bouwkundig werk nodig, zoals een nieuwe latei; dat kan MTB Bouw uitvoeren. Of je voor de nieuwe opening een vergunning nodig hebt, hangt af van de plek in de gevel en de regels van de gemeente. Check dat via het Omgevingsloket voordat je bestelt.",
       },
       {
-        question: "Wat past bij een boerderij of landelijk erf?",
+        question: "Past een nieuwe schuifpui in de opening van mijn oude pui?",
         answer:
-          "Traditioneel is dat hout, maar kunststof kozijnen met houtnerf-folie zijn een populair alternatief: dezelfde warme uitstraling, nauwelijks onderhoud. Tijdens de inmeetafspraak bekijken we de stijl van uw pand en laten we voorbeelden van beide zien.",
+          "Als de maat en de constructie het toelaten wel. Let erop dat een nieuw systeem een andere inbouwdiepte of onderdorpel kan hebben, en dat de aansluiting op de vloer en de drempel aandacht vraagt. Bij het inmeten zien we of de pui past, of dat er aan de opening iets moet gebeuren.",
       },
       {
-        question: "Wat kosten nieuwe kozijnen in Haaksbergen?",
-        answer:
-          "De prijs is afhankelijk van materiaal, afmetingen, glas en montage. In de configurator ziet u direct een richtprijs incl. btw voor uw samenstelling; de definitieve prijs volgt na de inmeetservice (€ 49, volledig verrekend bij doorgang).",
-      },
-      {
-        question: "Hoe snel kunnen jullie plaatsen?",
-        answer:
-          "Maatwerk kozijnen hebben een levertijd vanaf circa 8 weken na de opmeting. De montage plannen we aansluitend in en is doorgaans binnen één week gereed — meerdere kozijnen per dag, zodat uw woning niet onnodig lang open ligt.",
+        question: "Telt glas in een nieuwe aanbouw mee voor subsidie?",
+        answer: `Nee, volgens de voorwaarden van RVO zoals wij die op ${isdeInfo.gecontroleerd} hebben gecontroleerd. De ISDE gaat over bestaand glasoppervlak; glas in een nieuwe aanbouw, dakkapel of garage telt niet mee. Vervang je ook glas in de bestaande woning, dan kan dat deel wel in aanmerking komen. Controleer de actuele voorwaarden altijd op rvo.nl.`,
       },
     ],
   },

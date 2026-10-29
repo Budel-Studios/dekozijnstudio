@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { findProfiel } from "@/data/configurator";
-import { Placeholder } from "@/components/ui/placeholder";
 import type { ProductGids } from "@/data/kozijnen-gids";
 
 /** Bouwt de mm-maatrijen uit de single-source profieldata (configurator). */
@@ -20,8 +19,10 @@ function maatRows(materiaal?: string, profielValue?: string): Array<[string, str
 
 /**
  * Strips internal "TODO: …" notes from a spec value before it reaches visitors.
- * The notes stay in data/kozijnen-gids.ts as a to-confirm checklist.
- * Returns null when nothing publishable is left (row is then hidden).
+ * Everything from the first "TODO" onwards is cut, so a note must always come
+ * last in the value. The notes stay in data/kozijnen-gids.ts as a
+ * to-confirm checklist. Returns null when nothing publishable is left (row is
+ * then hidden).
  */
 function publicWaarde(waarde: string): string | null {
   const idx = waarde.search(/\bTODO\b/i);
@@ -41,22 +42,20 @@ export function ProductSpecs({ product }: { product: ProductGids }) {
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         {/* Beeld + kerngegevens */}
         <div>
-          {product.afbeelding ? (
-            <div className="relative aspect-square w-full overflow-hidden border border-mist bg-paper">
+          {product.afbeelding && (
+            <div className="relative mb-4 aspect-square w-full overflow-hidden border border-mist bg-paper">
               <Image
                 src={product.afbeelding}
-                alt={`Profiel ${product.titel}`}
+                alt={`Doorsnede van het profiel ${product.titel}`}
                 fill
                 sizes="260px"
                 className="object-contain p-3"
               />
             </div>
-          ) : (
-            <Placeholder label={`Beeld ${product.titel}`} className="min-h-52" />
           )}
 
           {maten.length > 0 && (
-            <dl className="mt-4 space-y-1.5 border-t border-mist pt-4 text-sm">
+            <dl className="space-y-1.5 border-t border-mist pt-4 text-sm">
               {maten.map(([label, waarde]) => (
                 <div key={label} className="flex justify-between gap-3">
                   <dt className="text-ink/55">{label}</dt>
