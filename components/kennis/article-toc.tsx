@@ -4,7 +4,7 @@ import type { TocItem } from "@/lib/toc";
 import { cn } from "@/lib/utils";
 
 /**
- * Sticky table-of-contents sidebar for kennisbank articles.
+ * Sticky table-of-contents sidebar for kennis articles.
  * Client component so it can highlight the active section as the user scrolls
  * (scroll-tracking added in a future iteration — for now: static list).
  */

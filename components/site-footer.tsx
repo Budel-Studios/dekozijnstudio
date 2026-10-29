@@ -24,7 +24,7 @@ export function SiteFooter() {
                 </Link>
               </p>
               <p className="mt-1 text-xs leading-relaxed text-paper/55">
-                Uw bouwpartner voor renovatie, verbouw en aanbouw.{" "}
+                Het bouwbedrijf voor renovatie, verbouw en aanbouw.{" "}
                 <a
                   href="https://www.mtbbouw.com"
                   target="_blank"

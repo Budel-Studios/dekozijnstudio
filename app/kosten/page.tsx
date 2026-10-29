@@ -89,7 +89,7 @@ const vragen: FaqItem[] = [
         <Link href="/offerte" className={link}>
           Vraag een voorstel aan
         </Link>{" "}
-        met je wensen en eventueel foto's. Na het inmeten krijg je een voorstel waarin elk onderdeel apart en inclusief
+        met je wensen en eventueel foto&apos;s. Na het inmeten krijg je een voorstel waarin elk onderdeel apart en inclusief
         btw staat.
         {MODULES.configurator && (
           <>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { RegioPaginaTemplate } from "@/components/regio/regio-pagina";
 import { PLAATS_PAGINAS, regioBySlug, regioPad } from "@/data/regio";
 import { MODULES } from "@/lib/site";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ plaats: string }> };
 
@@ -16,12 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { plaats } = await params;
   const data = regioBySlug(plaats);
   if (!data || data.soort !== "plaats") return {};
-  return {
-    title: { absolute: data.metaTitle },
+  return pageMetadata({
+    absoluteTitle: data.metaTitle,
     description: data.metaDescription,
-    alternates: { canonical: regioPad(data) },
-    openGraph: { title: data.metaTitle, description: data.metaDescription, url: regioPad(data) },
-  };
+    path: regioPad(data),
+  });
 }
 
 export default async function PlaatsPage({ params }: Props) {

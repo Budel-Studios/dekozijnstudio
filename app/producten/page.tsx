@@ -52,6 +52,24 @@ export default function ProductenPage() {
         }
       />
 
+      <nav aria-label="Productcategorieën" className="border-b border-mist bg-paper">
+        <Container className="flex flex-wrap gap-3 py-5">
+          {[
+            { label: "Ramen", href: "/producten/ramen" },
+            { label: "Deuren", href: "/producten/deuren" },
+            { label: "Schuifpuien en vouwwanden", href: "/producten/schuifpuien" },
+          ].map((c) => (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="rounded-pill border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-forest hover:text-forest"
+            >
+              {c.label}
+            </Link>
+          ))}
+        </Container>
+      </nav>
+
       {PRESET_FAMILIES.map((familie, index) => (
         <Section key={familie.key} id={familie.key} tone={index % 2 === 0 ? "paper" : "soft"}>
           <Container>

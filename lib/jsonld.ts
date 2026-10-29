@@ -1,8 +1,8 @@
 /**
  * JSON-LD schema helpers.
  * Returns plain objects — serialize with JSON.stringify in <script> tags.
- * Schemas: Organization/LocalBusiness (site-wide), FAQPage (FAQ/product pages),
- * BreadcrumbList (all inner pages).
+ * Schemas: organisation (site-wide), BreadcrumbList (inner pages), Article (kennis).
+ * No FAQPage: Google no longer shows FAQ results (docs/seo-strategie-2026-10.md, h12).
  */
 
 import { SITE_URL } from "@/lib/site";
@@ -58,25 +58,6 @@ export function organizationSchema() {
       { "@type": "City", name: "Enschede" },
       { "@type": "AdministrativeArea", name: "Twente" },
     ],
-  };
-}
-
-// ─── FAQPage ─────────────────────────────────────────────────────────────────
-
-export type FaqSchemaItem = { question: string; answer: string };
-
-export function faqPageSchema(items: FaqSchemaItem[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
   };
 }
 

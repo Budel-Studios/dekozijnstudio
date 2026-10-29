@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
@@ -16,9 +17,10 @@ import { RelatedArticles } from "@/components/kennis/related-articles";
 import { getAllSlugs, getArticle, getRelatedArticles } from "@/lib/content";
 import { extractToc } from "@/lib/toc";
 import { articleSchema, breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { pageMetadata } from "@/lib/seo";
 
 // Custom MDX components — injects brand components into article prose.
-// Externe links openen automatisch in een nieuw tabblad.
+// External links open in a new tab.
 const mdxComponents = {
   Callout,
   FeatureList,
@@ -45,14 +47,17 @@ export async function generateMetadata({
   const article = getArticle(slug);
   if (!article) return { title: "Niet gevonden" };
 
-  return {
+  const base = pageMetadata({
     title: article.title,
     description: article.description,
-    keywords: article.keywords,
-    alternates: { canonical: `/kennis/${slug}` },
+    path: `/kennis/${slug}`,
+    type: "article",
+  });
+
+  return {
+    ...base,
     openGraph: {
-      title: `${article.title} — De Kozijnstudio`,
-      description: article.description,
+      ...base.openGraph,
       type: "article",
       publishedTime: article.date,
       modifiedTime: article.dateModified ?? article.date,
@@ -60,7 +65,15 @@ export async function generateMetadata({
   };
 }
 
-export default async function KennisbankArtikelPage({
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+export default async function KennisArtikelPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -72,11 +85,16 @@ export default async function KennisbankArtikelPage({
   const toc = extractToc(article.content);
   const related = getRelatedArticles(article.related);
 
-  const publishedFormatted = new Date(article.date).toLocaleDateString("nl-NL", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const crumbs = [
+    { label: "Home", href: "/" },
+    { label: "Kennis", href: "/kennis" },
+    { label: article.title, href: `/kennis/${slug}` },
+  ];
+
+  const updated =
+    article.dateModified && article.dateModified !== article.date
+      ? article.dateModified
+      : null;
 
   return (
     <>
@@ -92,11 +110,7 @@ export default async function KennisbankArtikelPage({
               datePublished: article.date,
               dateModified: article.dateModified,
             }),
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: "Kennisbank", href: "/kennis" },
-              { label: article.title, href: `/kennis/${slug}` },
-            ]),
+            breadcrumbSchema(crumbs),
           ),
         }}
       />
@@ -108,7 +122,7 @@ export default async function KennisbankArtikelPage({
             <Breadcrumbs
               items={[
                 { label: "Home", href: "/" },
-                { label: "Kennisbank", href: "/kennis" },
+                { label: "Kennis", href: "/kennis" },
                 { label: article.title },
               ]}
             />
@@ -120,8 +134,17 @@ export default async function KennisbankArtikelPage({
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink/60">
             {article.description}
           </p>
-          <p className="mt-5 text-sm text-ink/40">
-            Gepubliceerd op {publishedFormatted} &middot; {article.readTime} min leestijd
+          <p className="mt-5 text-sm text-ink/55">
+            {updated ? (
+              <>
+                Bijgewerkt op <time dateTime={updated}>{formatDate(updated)}</time>
+              </>
+            ) : (
+              <>
+                Gepubliceerd op <time dateTime={article.date}>{formatDate(article.date)}</time>
+              </>
+            )}{" "}
+            &middot; {article.readTime} min leestijd
           </p>
         </Container>
       </div>
@@ -134,7 +157,7 @@ export default async function KennisbankArtikelPage({
             <ArticleToc items={toc} />
 
             {/* Center: Article content */}
-            <article>
+            <article className="min-w-0">
               <div className="prose prose-base max-w-none">
                 <MDXRemote
                   source={article.content}
@@ -157,27 +180,29 @@ export default async function KennisbankArtikelPage({
               {/* In-article CTA */}
               <div className="mt-12 rounded-card border border-forest/20 bg-forest/5 p-6">
                 <p className="font-display font-semibold text-ink">
-                  Benieuwd wat dit voor uw woning betekent?
+                  Wat betekent dit voor jouw woning?
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-ink/65">
-                  Vraag een vrijblijvende offerte aan. Na de inmeetservice (€ 49,
-                  verrekend bij doorgang) ontvangt u een volledig gespecificeerde
-                  offerte — geen verborgen kosten.
+                  Na het inmeten krijg je een voorstel waarin kozijn, glas en montage apart
+                  staan, zodat je precies ziet wat je kiest.
                 </p>
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3">
                   <Button href="/offerte" size="sm">
-                    Offerte aanvragen
+                    Vraag een voorstel
                   </Button>
-                  <Button href="/kosten" variant="secondary" size="sm">
-                    Bekijk montagekosten
-                  </Button>
+                  <Link
+                    href="/kosten"
+                    className="text-sm font-medium text-forest underline underline-offset-2 hover:text-ink"
+                  >
+                    Bekijk waaruit de prijs bestaat
+                  </Link>
                 </div>
               </div>
 
               {/* Back link */}
               <div className="mt-8">
                 <Button href="/kennis" variant="ghost" size="sm">
-                  ← Terug naar de kennisbank
+                  ← Alle artikelen over kozijnen
                 </Button>
               </div>
             </article>

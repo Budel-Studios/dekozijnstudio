@@ -128,12 +128,14 @@ export function VoorstelForm() {
   function validate(s: number): boolean {
     const schema = s === 0 ? wensSchema : s === 1 ? situatieSchema : contactSchema;
     const result = schema.safeParse(data);
-    if (result.success) {
-      setErrors({});
-      return true;
+    const errs: Errors = result.success ? {} : issuesToErrors(result.error.issues);
+    // The "e-mail or phone" rule is an object-level refine that zod only runs when
+    // all fields pass — check it here too so every problem shows at once.
+    if (s === 2 && !data.email.trim() && !data.telefoon.trim() && !errs.email) {
+      errs.email = "Vul een e-mailadres of telefoonnummer in, zodat we je kunnen bereiken.";
     }
-    setErrors(issuesToErrors(result.error.issues));
-    return false;
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   }
 
   function next() {
