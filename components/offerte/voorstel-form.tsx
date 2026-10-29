@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -89,8 +89,26 @@ function issuesToErrors(issues: { path: PropertyKey[]; message: string }[]): Err
   return out;
 }
 
-export function VoorstelForm() {
+/**
+ * "Vraag een voorstel" — three short steps (wens, situatie, contact).
+ * variant "page": inline card on /offerte, success → /bedankt.
+ * variant "drawer": fills the slide-over panel (AanvraagDrawer) with a fixed
+ * progress header, scrolling body and a sticky footer; success → onSuccess().
+ */
+export function VoorstelForm({
+  variant = "page",
+  onSuccess,
+  footerExtra,
+}: {
+  variant?: "page" | "drawer";
+  onSuccess?: () => void;
+  footerExtra?: ReactNode;
+} = {}) {
+  const drawer = variant === "drawer";
   const router = useRouter();
+  // Unique ids: the form can exist twice in the DOM (page + drawer).
+  const uid = useId();
+  const fid = (name: string) => `${uid}${name}`;
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormState>(initial);
   const [fotos, setFotos] = useState<Foto[]>([]);
@@ -115,7 +133,7 @@ export function VoorstelForm() {
   function markStarted() {
     if (!started.current) {
       started.current = true;
-      track("form_start", { form: "offerte" });
+      track("form_start", { form: drawer ? "drawer" : "offerte" });
     }
   }
 
@@ -238,8 +256,9 @@ export function VoorstelForm() {
       } catch {
         // Storage unavailable — /bedankt shows a generic confirmation.
       }
-      track("generate_lead", { form: "offerte", wens: data.wat.join(",") });
-      router.push("/bedankt");
+      track("generate_lead", { form: drawer ? "drawer" : "offerte", wens: data.wat.join(",") });
+      if (onSuccess) onSuccess();
+      else router.push("/bedankt");
     } catch {
       setSubmitError("Versturen is niet gelukt. Controleer je verbinding en probeer het opnieuw.");
     } finally {
@@ -247,23 +266,44 @@ export function VoorstelForm() {
     }
   }
 
-  return (
-    <div className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-widest text-wood">
-            Stap {step + 1} van {STEPS.length}
-          </p>
-          <p className="text-xs text-ink/55">{STEPS[step]}</p>
-        </div>
-        <div className="mt-2.5 flex gap-1.5" aria-hidden>
-          {STEPS.map((_, i) => (
-            <div key={i} className={cn("h-1.5 flex-1 rounded-full", i <= step ? "bg-lime" : "bg-mist")} />
-          ))}
-        </div>
+  const progress = drawer ? (
+    <div className="border-b border-mist px-6 pb-5">
+      <p className="sr-only">
+        Stap {step + 1} van {STEPS.length}: {STEPS[step]}
+      </p>
+      <ol className="flex gap-2" aria-hidden>
+        {STEPS.map((label, i) => (
+          <li key={label} className="flex-1">
+            <div className={cn("h-1.5 rounded-full transition-colors duration-300", i <= step ? "bg-lime" : "bg-mist")} />
+            <span className={cn("mt-1.5 block text-[11px] font-medium", i === step ? "text-ink" : "text-ink/50")}>
+              {label}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ) : (
+    <div className="mb-8">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-widest text-wood">
+          Stap {step + 1} van {STEPS.length}
+        </p>
+        <p className="text-xs text-ink/55">{STEPS[step]}</p>
       </div>
+      <div className="mt-2.5 flex gap-1.5" aria-hidden>
+        {STEPS.map((_, i) => (
+          <div key={i} className={cn("h-1.5 flex-1 rounded-full", i <= step ? "bg-lime" : "bg-mist")} />
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={drawer ? "flex min-h-0 flex-1 flex-col" : "rounded-card border border-mist bg-paper p-6 sm:p-8"}>
+      {progress}
 
       <form
+        className={drawer ? "flex min-h-0 flex-1 flex-col" : undefined}
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
@@ -271,12 +311,13 @@ export function VoorstelForm() {
           else void handleSubmit();
         }}
       >
+        <div key={drawer ? step : undefined} className={drawer ? "flex-1 animate-step-in overflow-y-auto px-6 py-6" : undefined}>
         {step === 0 && (
           <div>
             <StepHeading ref={headingRef} title="Waar gaat je vraag over?" hint="Twijfel je nog? Kies 'weet ik nog niet', dan denken we mee." />
             <fieldset>
               <legend className="mb-3 text-sm font-medium text-ink">Waarover (meerdere mogelijk)</legend>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className={drawer ? "grid gap-2.5" : "grid gap-3 sm:grid-cols-3"}>
                 {WAT_OPTIONS.map((opt) => {
                   const checked = data.wat.includes(opt.value);
                   return (
@@ -293,11 +334,11 @@ export function VoorstelForm() {
                   );
                 })}
               </div>
-              <FieldError id="err-wat" message={errors.wat} />
+              <FieldError id={`err-${fid("wat")}`} message={errors.wat} />
             </fieldset>
             <fieldset className="mt-7">
               <legend className="mb-3 text-sm font-medium text-ink">Wat is je situatie?</legend>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className={drawer ? "grid gap-2.5" : "grid gap-3 sm:grid-cols-3"}>
                 {SITUATIE_OPTIONS.map((opt) => (
                   <ChoiceCard
                     key={opt.value}
@@ -309,11 +350,11 @@ export function VoorstelForm() {
                   />
                 ))}
               </div>
-              <FieldError id="err-situatie" message={errors.situatie} />
+              <FieldError id={`err-${fid("situatie")}`} message={errors.situatie} />
             </fieldset>
             <fieldset className="mt-7">
               <legend className="mb-3 text-sm font-medium text-ink">Welk materiaal heb je in gedachten?</legend>
-              <div className="grid gap-3 sm:grid-cols-4">
+              <div className={drawer ? "grid grid-cols-2 gap-2.5" : "grid gap-3 sm:grid-cols-4"}>
                 {MATERIAAL_OPTIONS.map((opt) => (
                   <ChoiceCard
                     key={opt.value}
@@ -325,7 +366,7 @@ export function VoorstelForm() {
                   />
                 ))}
               </div>
-              <FieldError id="err-materiaal" message={errors.materiaal} />
+              <FieldError id={`err-${fid("materiaal")}`} message={errors.materiaal} />
             </fieldset>
           </div>
         )}
@@ -337,27 +378,27 @@ export function VoorstelForm() {
               title="Vertel iets over je woning"
               hint="Foto's en maten zijn niet verplicht, maar helpen ons om gericht te reageren."
             />
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Woonplaats of postcode" htmlFor="locatie" error={errors.locatie}>
+            <div className={drawer ? "grid gap-5" : "grid gap-5 sm:grid-cols-2"}>
+              <Field label="Woonplaats of postcode" htmlFor={fid("locatie")} error={errors.locatie}>
                 <input
-                  id="locatie"
+                  id={fid("locatie")}
                   className={inputClass}
                   value={data.locatie}
                   onChange={(e) => set("locatie", e.target.value)}
                   autoComplete="postal-code"
                   placeholder="Enschede of 7511 AB"
                   aria-invalid={!!errors.locatie}
-                  aria-describedby={errors.locatie ? "err-locatie" : undefined}
+                  aria-describedby={errors.locatie ? `err-${fid("locatie")}` : undefined}
                 />
               </Field>
-              <Field label="Hoeveel kozijnen of deuren, ongeveer?" htmlFor="aantal" error={errors.aantal}>
+              <Field label="Hoeveel kozijnen of deuren, ongeveer?" htmlFor={fid("aantal")} error={errors.aantal}>
                 <select
-                  id="aantal"
+                  id={fid("aantal")}
                   className={inputClass}
                   value={data.aantal}
                   onChange={(e) => set("aantal", e.target.value)}
                   aria-invalid={!!errors.aantal}
-                  aria-describedby={errors.aantal ? "err-aantal" : undefined}
+                  aria-describedby={errors.aantal ? `err-${fid("aantal")}` : undefined}
                 >
                   <option value="">Kies een aantal</option>
                   {AANTAL_OPTIONS.map((o) => (
@@ -370,12 +411,11 @@ export function VoorstelForm() {
             </div>
 
             <div className="mt-6">
-              <p className="text-sm font-medium text-ink" id="fotos-label">
+              <p className="text-sm font-medium text-ink" id={fid("fotos-label")}>
                 Foto&apos;s (optioneel)
               </p>
               <p className="mt-1 text-xs leading-relaxed text-ink/55">
-                Bijvoorbeeld de gevel en de kozijnen van binnen. Maximaal {FOTO_LIMIETEN.maxAantal} foto&apos;s.
-                We gebruiken ze alleen om je aanvraag te beoordelen; ze worden niet gepubliceerd.
+                {`Bijvoorbeeld de gevel en de kozijnen van binnen. Maximaal ${FOTO_LIMIETEN.maxAantal} foto's. We gebruiken ze alleen om je aanvraag te beoordelen; ze worden niet gepubliceerd.`}
               </p>
               <div className="mt-3 flex flex-wrap gap-3">
                 {fotos.map((f) => (
@@ -400,7 +440,7 @@ export function VoorstelForm() {
                       accept="image/*"
                       multiple
                       className="sr-only"
-                      aria-labelledby="fotos-label"
+                      aria-labelledby={fid("fotos-label")}
                       disabled={processing}
                       onChange={(e) => {
                         void addFotos(e.target.files);
@@ -410,13 +450,13 @@ export function VoorstelForm() {
                   </label>
                 )}
               </div>
-              <FieldError id="err-fotos" message={errors.fotos} />
+              <FieldError id={`err-${fid("fotos")}`} message={errors.fotos} />
             </div>
 
             <div className="mt-6">
-              <Field label="Toelichting of globale maten (optioneel)" htmlFor="toelichting" error={errors.toelichting}>
+              <Field label="Toelichting of globale maten (optioneel)" htmlFor={fid("toelichting")} error={errors.toelichting}>
                 <textarea
-                  id="toelichting"
+                  id={fid("toelichting")}
                   rows={4}
                   className={inputClass}
                   value={data.toelichting}
@@ -434,21 +474,21 @@ export function VoorstelForm() {
         {step === 2 && (
           <div>
             <StepHeading ref={headingRef} title="Hoe kunnen we je bereiken?" hint="Een e-mailadres of telefoonnummer is genoeg." />
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Naam" htmlFor="naam" error={errors.naam} className="sm:col-span-2">
+            <div className={drawer ? "grid gap-5" : "grid gap-5 sm:grid-cols-2"}>
+              <Field label="Naam" htmlFor={fid("naam")} error={errors.naam} className="sm:col-span-2">
                 <input
-                  id="naam"
+                  id={fid("naam")}
                   className={inputClass}
                   value={data.naam}
                   onChange={(e) => set("naam", e.target.value)}
                   autoComplete="name"
                   aria-invalid={!!errors.naam}
-                  aria-describedby={errors.naam ? "err-naam" : undefined}
+                  aria-describedby={errors.naam ? `err-${fid("naam")}` : undefined}
                 />
               </Field>
-              <Field label="E-mailadres" htmlFor="email" error={errors.email}>
+              <Field label="E-mailadres" htmlFor={fid("email")} error={errors.email}>
                 <input
-                  id="email"
+                  id={fid("email")}
                   type="email"
                   inputMode="email"
                   className={inputClass}
@@ -456,12 +496,12 @@ export function VoorstelForm() {
                   onChange={(e) => set("email", e.target.value)}
                   autoComplete="email"
                   aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "err-email" : undefined}
+                  aria-describedby={errors.email ? `err-${fid("email")}` : undefined}
                 />
               </Field>
-              <Field label="Telefoonnummer" htmlFor="telefoon" error={errors.telefoon}>
+              <Field label="Telefoonnummer" htmlFor={fid("telefoon")} error={errors.telefoon}>
                 <input
-                  id="telefoon"
+                  id={fid("telefoon")}
                   type="tel"
                   inputMode="tel"
                   className={inputClass}
@@ -469,12 +509,12 @@ export function VoorstelForm() {
                   onChange={(e) => set("telefoon", e.target.value)}
                   autoComplete="tel"
                   aria-invalid={!!errors.telefoon}
-                  aria-describedby={errors.telefoon ? "err-telefoon" : undefined}
+                  aria-describedby={errors.telefoon ? `err-${fid("telefoon")}` : undefined}
                 />
               </Field>
-              <Field label="Hoe wil je het liefst contact?" htmlFor="contactvoorkeur">
+              <Field label="Hoe wil je het liefst contact?" htmlFor={fid("contactvoorkeur")}>
                 <select
-                  id="contactvoorkeur"
+                  id={fid("contactvoorkeur")}
                   className={inputClass}
                   value={data.contactvoorkeur}
                   onChange={(e) => set("contactvoorkeur", e.target.value)}
@@ -486,9 +526,9 @@ export function VoorstelForm() {
                   ))}
                 </select>
               </Field>
-              <Field label="Wanneer wil je het laten doen? (optioneel)" htmlFor="periode">
+              <Field label="Wanneer wil je het laten doen? (optioneel)" htmlFor={fid("periode")}>
                 <select
-                  id="periode"
+                  id={fid("periode")}
                   className={inputClass}
                   value={data.periode}
                   onChange={(e) => set("periode", e.target.value)}
@@ -504,9 +544,9 @@ export function VoorstelForm() {
 
             {/* Honeypot — hidden from people and assistive tech. */}
             <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-              <label htmlFor="website">Website</label>
+              <label htmlFor={fid("website")}>Website</label>
               <input
-                id="website"
+                id={fid("website")}
                 tabIndex={-1}
                 autoComplete="off"
                 value={data.website}
@@ -522,7 +562,7 @@ export function VoorstelForm() {
                   checked={data.privacyAkkoord}
                   onChange={(e) => set("privacyAkkoord", e.target.checked)}
                   aria-invalid={!!errors.privacyAkkoord}
-                  aria-describedby={errors.privacyAkkoord ? "err-privacyAkkoord" : undefined}
+                  aria-describedby={errors.privacyAkkoord ? `err-${fid("privacyAkkoord")}` : undefined}
                 />
                 <span>
                   Ik ga akkoord met de{" "}
@@ -532,7 +572,7 @@ export function VoorstelForm() {
                   . We gebruiken je gegevens alleen om op je aanvraag te reageren.
                 </span>
               </label>
-              <FieldError id="err-privacyAkkoord" message={errors.privacyAkkoord} />
+              <FieldError id={`err-${fid("privacyAkkoord")}`} message={errors.privacyAkkoord} />
             </div>
           </div>
         )}
@@ -542,26 +582,48 @@ export function VoorstelForm() {
             {submitError}
           </p>
         )}
-
-        <div className="mt-8 flex items-center justify-between gap-3 border-t border-mist pt-6">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
-            className={cn(step === 0 && "invisible")}
-          >
-            ← Vorige
-          </Button>
-          {step < STEPS.length - 1 ? (
-            <Button type="submit" disabled={processing}>
-              Volgende →
-            </Button>
-          ) : (
-            <Button type="submit" disabled={submitting || processing}>
-              {submitting ? "Versturen…" : "Verstuur je aanvraag"}
-            </Button>
-          )}
         </div>
+
+        {drawer ? (
+          <div className="border-t border-mist bg-paper-soft px-6 py-5">
+            <div className="flex gap-3">
+              {step > 0 && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setStep((s) => Math.max(0, s - 1))}
+                  className="flex-1"
+                >
+                  ← Vorige
+                </Button>
+              )}
+              <Button type="submit" disabled={submitting || processing} className="flex-[2]">
+                {step < STEPS.length - 1 ? "Volgende →" : submitting ? "Versturen…" : "Verstuur je aanvraag"}
+              </Button>
+            </div>
+            {footerExtra}
+          </div>
+        ) : (
+          <div className="mt-8 flex items-center justify-between gap-3 border-t border-mist pt-6">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              className={cn(step === 0 && "invisible")}
+            >
+              ← Vorige
+            </Button>
+            {step < STEPS.length - 1 ? (
+              <Button type="submit" disabled={processing}>
+                Volgende →
+              </Button>
+            ) : (
+              <Button type="submit" disabled={submitting || processing}>
+                {submitting ? "Versturen…" : "Verstuur je aanvraag"}
+              </Button>
+            )}
+          </div>
+        )}
       </form>
     </div>
   );

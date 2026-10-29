@@ -190,6 +190,8 @@ export function SiteHeader() {
         id="mobile-menu"
         aria-label="Mobiel menu"
         hidden={!mobileOpen}
+        // Close after any link — also when the link opens the request panel instead of navigating.
+        onClick={(e) => (e.target as Element).closest("a") && setMobileOpen(false)}
         className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-b-3xl border-t border-mist bg-paper shadow-soft xl:hidden"
       >
         <Container className="space-y-6 py-6">

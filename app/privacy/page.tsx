@@ -20,6 +20,7 @@ export const metadata = pageMetadata({
  * - Browser storage: lib/project-cart.ts (localStorage "kozijn-project"),
  *   /bedankt confirmation (sessionStorage "voorstel-bevestiging", no contact data).
  * - lib/track.ts only pushes to window.dataLayer; no analytics tool, no cookies.
+ * - Mail: Resend (or SMTP fallback) via lib/mail-transport.ts, to the MTB Bouw mailbox for now.
  * - Hosting: Vercel (lib/site.ts). Update this page when any of that changes.
  */
 export default function PrivacyPage() {
@@ -96,8 +97,9 @@ export default function PrivacyPage() {
       <ul>
         <li>
           <strong>Per e-mail naar ons, niet in een database.</strong> Als je het formulier of je
-          project verstuurt, gaan je gegevens per e-mail naar de mailbox van De Kozijnstudio. De
-          website zelf slaat je aanvraag niet op in een database.
+          project verstuurt, gaan je gegevens per e-mail naar onze mailbox, die we voorlopig delen
+          met MTB Bouw (info@mtbbouw.com). Heb je een e-mailadres ingevuld, dan krijg je zelf een
+          bevestiging. De website slaat je aanvraag niet op in een database.
         </li>
         <li>
           <strong>Foto&rsquo;s als bijlage.</strong> Foto&rsquo;s gaan alleen als bijlage bij die
@@ -153,7 +155,8 @@ export default function PrivacyPage() {
           waarborgen die de AVG daarvoor vraagt.
         </li>
         <li>
-          <strong>E-mail:</strong> onze e-maildienst, waar je aanvraag binnenkomt en wordt bewaard.
+          <strong>E-mail:</strong> de verzenddienst Resend, die de e-mails van het formulier
+          aflevert, en onze e-mailhosting, waar je aanvraag binnenkomt en wordt bewaard.
         </li>
         <li>
           <strong>Uitvoering:</strong> leveranciers en vakmensen die we inschakelen voor je

@@ -17,7 +17,7 @@ export type TrackEvent =
 
 type SafeParams = {
   /** Which form or page element fired the event, e.g. "offerte" or "footer". */
-  form?: "offerte" | "project";
+  form?: "offerte" | "drawer" | "project";
   location?: string;
   /** Coarse, non-identifying request type, e.g. "kozijnen" or "schuifpui". */
   wens?: string;

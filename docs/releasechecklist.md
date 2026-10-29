@@ -4,7 +4,7 @@ Gebaseerd op `docs/seo-strategie-2026-10.md` h17 en h19. Alleen wat de livegang 
 
 ## Blokkeert de livegang
 - [ ] **Definitief domein kiezen.** Code gebruikt `NEXT_PUBLIC_SITE_URL` (standaard `https://www.kozijnstudio.com`); `data/company.ts` noemt nog `www.dekozijnstudio.nl`. Kies één domein, zet het in Vercel en laat de andere variant (en www/zonder www) met één redirect doorverwijzen.
-- [ ] **SMTP in Vercel instellen**: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `OFFERTE_TO_EMAIL`, `OFFERTE_FROM_EMAIL`. Zonder deze waarden toont het formulier een foutmelding (geen schijnsucces). Daarna een testaanvraag mét foto doen op productie.
+- [ ] **Mail in Vercel instellen**: zet `RESEND_API_KEY` (dezelfde sleutel als de MTB Bouw-site) en `MAIL_FROM=website@mtbbouw.com` in het Vercel-project van De Kozijnstudio. Aanvragen gaan dan naar info@mtbbouw.com (ander adres: `OFFERTE_TO_EMAIL`). SMTP blijft mogelijk als alternatief. Zonder een van beide toont het formulier een foutmelding (geen schijnsucces). Daarna een testaanvraag mét foto doen op productie.
 - [ ] **Btw-identificatienummer** aanvullen in `data/company.ts` (staat nog als placeholder, wordt niet getoond).
 - [ ] **Juridische pagina's** (privacy, algemene voorwaarden, cookiebeleid, voorwaarden aanbrengbonus) laten toetsen; open punten: e-mailprovider + verwerkersovereenkomsten, Vercel-regio, bewaartermijnen, geldigheid/betaaltermijn/annulering/garantie.
 - [ ] **Previews beschermen** (Vercel Deployment Protection) en controleren dat productie géén noindex of wachtwoordmuur heeft.
@@ -48,4 +48,5 @@ Elk feit hieronder is nu verborgen. Bevestigen = status op `verified` + `bron` +
 - Structured data: geldige JSON-LD, geen FAQPage en geen eigen ratings.
 - Publieke tekst: geen u-vorm, € 49, levertijd, "eigen monteurs", keurmerken, TODO of placeholders.
 - Formulier (mobiel en desktop): stapvalidatie, focus naar de stapkop, foto verkleind en als bijlage ontvangen via lokale SMTP, /bedankt met samenvatting, `generate_lead` pas na bevestiging. Met SMTP uit: nette foutmelding, geen succes, geen lead-event.
-- **Niet getest:** echte productie-SMTP, Vercel-deploy, Core Web Vitals/PageSpeed op productie, schermlezer, Safari/iOS (HEIC-foto's).
+- Aanvraagpaneel (schuift over de pagina, zoals op mtbbouw.com): opent vanaf elke link naar /offerte, Esc/overlay/kruisje sluit, achtergrond niet bedienbaar, bedankscherm na verzending, bevestigingsmail naar de klant.
+- **Niet getest:** verzending via Resend (geen sleutel in de testomgeving; SMTP-route wel getest), Vercel-deploy, Core Web Vitals/PageSpeed op productie, schermlezer, Safari/iOS (HEIC-foto's).
