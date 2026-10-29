@@ -2,7 +2,7 @@
  * JSON-LD schema helpers.
  * Returns plain objects — serialize with JSON.stringify in <script> tags.
  * Schemas: organisation (site-wide), BreadcrumbList (inner pages), Article (kennis).
- * No FAQPage: Google no longer shows FAQ results (docs/seo-strategie-2026-10.md, h12).
+ * No FAQPage: Google no longer shows FAQ results (SEO-strategie 2026-10 (privé projectdocument), h12).
  */
 
 import { SITE_URL } from "@/lib/site";
@@ -17,7 +17,7 @@ export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
  * Site-wide organisation data — only verified facts that are also visible on
  * the site (footer/contact): trade name, legal entity, address (visits by
  * appointment), phone, e-mail, service area. No ratings, reviews or
- * accreditations (docs/seo-strategie-2026-10.md, h12).
+ * accreditations (SEO-strategie 2026-10 (privé projectdocument), h12).
  */
 export function organizationSchema() {
   return {

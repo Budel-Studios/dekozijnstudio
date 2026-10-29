@@ -1,6 +1,6 @@
 /**
  * Site navigation — single source of truth for header and footer.
- * Structure follows docs/seo-strategie-2026-10.md (h6): a small menu
+ * Structure follows SEO-strategie 2026-10 (privé projectdocument) (h6): a small menu
  * (Kozijnen · Kosten · Montage en werkwijze · Over ons) plus one primary
  * action. Kennis and werkgebied are reachable via the footer.
  * Routes of modules that are switched off (lib/site.ts MODULES) and pages

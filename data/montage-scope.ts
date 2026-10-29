@@ -1,6 +1,6 @@
 /**
  * Montage scope — what installing kozijnen involves, per part of the work
- * (docs/seo-strategie-2026-10.md, h8 "Montage en werkwijze").
+ * (SEO-strategie 2026-10 (privé projectdocument), h8 "Montage en werkwijze").
  *
  * `uitleg` is general, factual explanation and is always shown.
  * `status` says whether a part is included, optional or depends on the

@@ -1,6 +1,6 @@
 # URL-migratie 29 oktober 2026
 
-Uitgevoerd op basis van `docs/seo-strategie-2026-10.md` (h5, h6, h12). Keuze eigenaar: URL's uit het plan overnemen, met permanente redirects. Alle redirects staan in `next.config.ts` (308, door zoekmachines behandeld als 301) en wijzen direct naar het inhoudelijke equivalent, zonder ketens.
+Uitgevoerd op basis van de SEO-strategie (privé, in het claude.ai-project KozijnStudio: `claude/seo-strategie-2026-10.md`) (h5, h6, h12). Keuze eigenaar: URL's uit het plan overnemen, met permanente redirects. Alle redirects staan in `next.config.ts` (308, door zoekmachines behandeld als 301) en wijzen direct naar het inhoudelijke equivalent, zonder ketens.
 
 | Oud | Nieuw | Toelichting |
 |---|---|---|

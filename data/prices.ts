@@ -28,11 +28,10 @@ export type PriceCategory = {
 // ─── Betaalmodel ─────────────────────────────────────────────────────────────
 
 /**
- * Aandeel van de KOZIJNPRIJS dat als aanbetaling wordt gevraagd bij opdracht
- * (maatwerkproductie). Intern komt dit overeen met de inkoopprijs van het
- * kozijn (≈ 20% onder de verkoopprijs). NB: communiceer dit naar de klant
- * uitsluitend als "aanbetaling voor maatwerkproductie" — nooit als marge/inkoop.
- * Het restant (resterende kozijndeel + montage) wordt bij oplevering voldaan.
+ * Aandeel van de KOZIJNPRIJS dat als aanbetaling wordt gevraagd bij opdracht,
+ * voor de maatwerkproductie. Naar de klant altijd zo benoemen: "aanbetaling
+ * voor maatwerkproductie". Het restant (resterend kozijndeel + montage) wordt
+ * bij oplevering voldaan.
  */
 export const AANBETALING_KOZIJN_AANDEEL = 0.8;
 

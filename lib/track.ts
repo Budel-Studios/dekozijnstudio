@@ -1,5 +1,5 @@
 /**
- * Measurement plan (docs/seo-strategie-2026-10.md, h13).
+ * Measurement plan (SEO-strategie 2026-10 (privé projectdocument), h13).
  *
  * Events are pushed to `window.dataLayer` only. Nothing is sent anywhere until
  * an analytics tool is deliberately added (with a matching privacy/consent

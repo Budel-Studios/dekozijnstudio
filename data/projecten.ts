@@ -1,5 +1,5 @@
 /**
- * Projects — the proof section (docs/seo-strategie-2026-10.md, h8 "Projectpagina's").
+ * Projects — the proof section (SEO-strategie 2026-10 (privé projectdocument), h8 "Projectpagina's").
  *
  * Only add a project when ALL of this is true:
  *  - it really exists and De Kozijnstudio (not only MTB Bouw) was the party
