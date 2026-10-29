@@ -15,7 +15,7 @@ import {
   familiesByCategory,
   type ProductCategorie,
 } from "@/data/preset-configuraties";
-import { SHOW_PRODUCT_PRICES } from "@/lib/site";
+import { MODULES, SHOW_PRODUCT_PRICES } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
@@ -88,7 +88,7 @@ const CATEGORIE_TEKST: Record<
 };
 
 export function generateStaticParams() {
-  return CATEGORIES.map((categorie) => ({ categorie }));
+  return MODULES.configurator ? CATEGORIES.map((categorie) => ({ categorie })) : [];
 }
 
 function isCategorie(value: string): value is ProductCategorie {
@@ -116,7 +116,7 @@ export default async function CategoriePage({
   params: Promise<{ categorie: string }>;
 }) {
   const { categorie } = await params;
-  if (!isCategorie(categorie)) notFound();
+  if (!MODULES.configurator || !isCategorie(categorie)) notFound();
 
   const meta = CATEGORIE_META[categorie];
   const tekst = CATEGORIE_TEKST[categorie];

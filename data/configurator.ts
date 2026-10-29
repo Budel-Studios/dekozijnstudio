@@ -11,11 +11,14 @@
  * opties, alles incl. btw.
  */
 
+import { MODULES } from "@/lib/site";
+
 /**
  * Technische profielspecificaties (mm) — bron: Toeleveringonline / fabrikant.
  * Echte, verifieerbare maten (geen prijzen). De zichtbreedte (kozijnMm[0])
  * stuurt de profieldikte in de live tekening op ware schaal aan.
  */
+
 export type ProfielSpecs = {
   /** Kozijnprofiel: zichtbreedte × inbouwdiepte in mm (bv. [90, 120]) */
   kozijnMm: [number, number];
@@ -199,13 +202,13 @@ export const CONFIG_GLAS: GlasOptie[] = [
   {
     value: "hr-plus",
     label: "HR++ glas",
-    description: "Uitstekende isolatie, standaard keuze. In aanmerking voor ISDE.",
+    description: "Goede isolatie, de gangbare standaard.",
     pricePerM2: 0,
   },
   {
     value: "triple",
     label: "Triple glas",
-    description: "Maximale isolatie en geluidsdemping. Ook ISDE-subsidiabel.",
+    description: "Isoleert beter dan HR++ en dempt meer geluid; zwaarder en duurder.",
     pricePerM2: 75,
   },
 ];
@@ -262,7 +265,7 @@ export type OptieToggle = {
 
 export const CONFIG_OPTIES: OptieToggle[] = [
   { value: "hor", label: "Inzethor", description: "Per raam, afneembaar.", pricePerUnit: 55 },
-  { value: "rc2", label: "Inbraakwerend beslag (RC2)", description: "Politiekeurmerk Veilig Wonen.", pricePerUnit: 95 },
+  { value: "rc2", label: "Inbraakwerend beslag (RC2)", description: "Beslag met extra weerstand tegen inbraak.", pricePerUnit: 95 },
   { value: "ventilatie", label: "Ventilatierooster", description: "Voor gezonde luchtcirculatie.", pricePerUnit: 75 },
 ];
 
@@ -276,22 +279,27 @@ export type UitvoeringOptie = {
   offerteType: string;
 };
 
-export const CONFIG_UITVOERING: UitvoeringOptie[] = [
+/** Delivery-only is offered only while the DIY module is on (lib/site.ts). */
+const ALLE_UITVOERINGEN: UitvoeringOptie[] = [
   {
     value: "montage",
     label: "Inclusief montage",
-    description: "Onze monteurs plaatsen de kozijnen vakkundig.",
+    description: "We plaatsen de kozijnen en werken ze af.",
     pricePerUnit: 175,
     offerteType: "montage",
   },
   {
     value: "levering",
     label: "Alleen levering (DIY)",
-    description: "U plaatst zelf, wij leveren aan huis.",
+    description: "Je plaatst zelf, wij leveren aan huis.",
     pricePerUnit: 0,
     offerteType: "levering",
   },
 ];
+
+export const CONFIG_UITVOERING: UitvoeringOptie[] = ALLE_UITVOERINGEN.filter(
+  (u) => MODULES.diy || u.value !== "levering",
+);
 
 // ─── Draairichting, hang- en sluitwerk, ventilatie ───────────────────────────
 

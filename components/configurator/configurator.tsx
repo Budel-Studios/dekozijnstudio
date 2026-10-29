@@ -465,7 +465,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
         {/* ── Step 7: Uitvoering ── */}
         {step === 6 && (
-          <Step title="Montage of zelf plaatsen?">
+          <Step title={CONFIG_UITVOERING.length > 1 ? "Montage of zelf plaatsen?" : "Uitvoering"}>
             <div className="grid gap-3 sm:grid-cols-2">
               {CONFIG_UITVOERING.map((u) => (
                 <SelectCard

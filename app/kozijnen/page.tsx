@@ -20,9 +20,10 @@ import {
 } from "@/data/kozijnen-gids";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { MODULES } from "@/lib/site";
 
 export const metadata = pageMetadata({
-  title: "Kozijnmaterialen vergelijken: hout, kunststof en aluminium",
+  title: "Hout, kunststof of aluminium kozijnen vergelijken",
   description:
     "Hout, kunststof of aluminium? Vergelijk uitstraling, onderhoud, opbouw en prijsklasse van de materialen en profielen en kies wat bij jouw woning past.",
   path: "/kozijnen",
@@ -79,7 +80,7 @@ export default function KozijnenGidsPage() {
       <PageHero
         eyebrow="Materialen vergelijken"
         title="Hout, kunststof of aluminium: welk kozijn past bij jouw woning?"
-        lead="Kort gezegd: kunststof vraagt het minste onderhoud, hout geeft de warmste en meest klassieke uitstraling, en aluminium maakt de slankste profielen mogelijk. Op deze pagina zet je de materialen en profielen naast elkaar, zodat je weet waar je op let."
+        lead="Kort gezegd: hout geeft de warmste en meest klassieke uitstraling, maar vraagt schilderwerk. Kunststof vraagt weinig onderhoud en past bij veel budgetten. Aluminium maakt de slankste profielen mogelijk. Op deze pagina zet je de materialen en profielen naast elkaar, zodat je weet waar je op let."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kozijnen vergelijken" }]}
         actions={
           <>
@@ -129,15 +130,21 @@ export default function KozijnenGidsPage() {
       <MateriaalSectie
         id="profielen"
         eyebrow="Profielen"
-        titel="De profielen uit de configurator"
+        titel="Profielen per materiaal"
         intro={
           <>
-            Dit zijn de profielen die je ook in de{" "}
-            <Link href="/configurator" className={link}>
-              configurator
-            </Link>{" "}
-            kunt kiezen, met de maten uit de gegevens van de fabrikant. Welk profiel bij jouw woning past, bespreken we
-            bij je voorstel.
+            Per profiel de maten en het beslag, op basis van de gegevens van de fabrikant.
+            {MODULES.configurator && (
+              <>
+                {" "}
+                Dezelfde profielen kies je in de{" "}
+                <Link href="/configurator" className={link}>
+                  configurator
+                </Link>
+                .
+              </>
+            )}{" "}
+            Welk profiel bij jouw woning past, bespreken we bij je voorstel.
           </>
         }
       >

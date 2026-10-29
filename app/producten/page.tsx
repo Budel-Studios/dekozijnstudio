@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
@@ -8,7 +9,7 @@ import { Callout } from "@/components/ui/callout";
 import { PresetCard } from "@/components/catalog/preset-card";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
 import { PRESET_FAMILIES } from "@/data/preset-configuraties";
-import { SHOW_PRODUCT_PRICES } from "@/lib/site";
+import { MODULES, SHOW_PRODUCT_PRICES } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
@@ -22,6 +23,8 @@ export const metadata = pageMetadata({
 const link = "font-medium text-forest underline underline-offset-2";
 
 export default function ProductenPage() {
+  if (!MODULES.configurator) notFound();
+
   return (
     <>
       <script

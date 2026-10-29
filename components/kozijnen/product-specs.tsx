@@ -55,7 +55,7 @@ export function ProductSpecs({ product }: { product: ProductGids }) {
           )}
 
           {maten.length > 0 && (
-            <dl className="space-y-1.5 border-t border-mist pt-4 text-sm">
+            <dl className={`space-y-1.5 text-sm ${product.afbeelding ? "border-t border-mist pt-4" : ""}`}>
               {maten.map(([label, waarde]) => (
                 <div key={label} className="flex justify-between gap-3">
                   <dt className="text-ink/55">{label}</dt>

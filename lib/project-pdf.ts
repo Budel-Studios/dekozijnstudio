@@ -163,8 +163,12 @@ export function buildProjectPdf(data: PdfData): { blob: Blob; base64: string } {
   doc.setFont("helvetica", "italic");
   doc.setFontSize(8);
   doc.setTextColor(...GREY);
+  const heeftBetaalsplitsing = data.overzicht.some(([label]) => label.replace(/^\*/, "").startsWith("Aanbetaling"));
   const disclaimer = doc.splitTextToSize(
-    "Richtprijs op basis van uw keuzes — niet bindend. De definitieve prijs wordt vastgesteld na de inmeetservice (€ 49, verrekend bij doorgang). Aanbetaling = maatwerkproductie kozijn; restant bij oplevering.",
+    "Indicatief overzicht op basis van je keuzes, niet bindend. De definitieve prijs staat in je voorstel, nadat we bij je thuis hebben ingemeten." +
+      (heeftBetaalsplitsing
+        ? " De aanbetaling is voor de productie van je maatwerkkozijnen; het restant betaal je bij oplevering."
+        : ""),
     contentW,
   );
   doc.text(disclaimer, margin, y);

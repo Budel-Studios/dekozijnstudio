@@ -78,9 +78,10 @@ export function MateriaalVergelijking() {
         </table>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-ink/50">
-        Indicatieve richtprijzen per stuk, incl. btw, excl. montage — in de
-        standaardkleur wit. Bedragen zijn placeholder-richtprijzen ter
-        vergelijking; uw definitieve prijs volgt na de inmeetservice.
+        Indicatieve richtprijzen per stuk, inclusief btw en zonder montage, in
+        de standaardkleur wit. Ze zijn alleen bedoeld om de materialen te
+        vergelijken. Je definitieve prijs staat in je voorstel, nadat we bij je
+        thuis hebben ingemeten.
       </p>
     </div>
   );

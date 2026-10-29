@@ -1,79 +1,116 @@
-import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/legal-layout";
 import { company } from "@/data/company";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Algemene voorwaarden",
   description:
-    "De algemene voorwaarden van De Kozijnstudio: offertes, prijzen, betaling, levering, montage, garantie en aansprakelijkheid.",
-  alternates: { canonical: "/algemene-voorwaarden" },
-};
+    "De algemene voorwaarden van De Kozijnstudio: voorstellen en prijzen, inmeten, betaling, levering en montage, annuleren, garantie, klachten en aansprakelijkheid.",
+  path: "/algemene-voorwaarden",
+});
 
 export default function AlgemeneVoorwaardenPage() {
   return (
     <LegalLayout
       title="Algemene voorwaarden"
-      intro="Deze voorwaarden zijn van toepassing op alle offertes, overeenkomsten en leveringen van De Kozijnstudio."
+      intro="Deze voorwaarden gelden voor alle voorstellen, overeenkomsten, leveringen en werkzaamheden van De Kozijnstudio."
+      path="/algemene-voorwaarden"
+      lastUpdated="oktober 2026"
     >
-      <h2>1. Definities</h2>
+      <h2>1. Wie zijn wij?</h2>
       <p>
-        In deze voorwaarden wordt verstaan onder &lsquo;wij&rsquo;/&lsquo;ons&rsquo;:{" "}
-        {company.naam}, handelsnaam van {company.entiteit};
-        en &lsquo;klant&rsquo;: de natuurlijke persoon of rechtspersoon met wie wij een
-        overeenkomst aangaan.
+        In deze voorwaarden bedoelen we met &lsquo;wij&rsquo; of &lsquo;ons&rsquo;: {company.naam},
+        een handelsnaam van {company.entiteit}, {company.adres}, {company.postcodePlaats}, KvK{" "}
+        {company.kvk}. Met &lsquo;je&rsquo; of &lsquo;klant&rsquo; bedoelen we de persoon of het
+        bedrijf met wie wij een overeenkomst sluiten.
       </p>
 
-      <h2>2. Toepasselijkheid</h2>
-      <p>Deze voorwaarden zijn van toepassing op alle aanbiedingen, offertes en overeenkomsten, tenzij schriftelijk anders overeengekomen.</p>
+      <h2>2. Wanneer gelden deze voorwaarden?</h2>
+      <p>
+        Deze voorwaarden gelden voor al onze voorstellen (offertes) en overeenkomsten, tenzij we
+        schriftelijk iets anders met je afspreken.
+      </p>
 
-      <h2>3. Offertes en prijzen</h2>
+      <h2>3. Voorstellen en prijzen</h2>
       <ul>
-        <li>Alle offertes zijn vrijblijvend, tenzij anders vermeld.</li>
-        <li>Prijzen die via de configurator en op de website worden getoond zijn <strong>indicatieve richtprijzen inclusief btw</strong> en niet bindend.</li>
-        <li>De definitieve prijs wordt vastgesteld na de inmeetservice en vermeld in de persoonlijke offerte.</li>
-        <li>Een uitgebrachte offerte is geldig gedurende de daarin genoemde termijn. <em>[Geldigheidsduur nog vast te leggen.]</em></li>
+        <li>Een voorstel is vrijblijvend, tenzij in het voorstel iets anders staat.</li>
+        <li>
+          Bedragen op de website of in de configurator zijn <strong>indicaties inclusief btw</strong>{" "}
+          en niet bindend.
+        </li>
+        <li>
+          De definitieve prijs staat in je persoonlijke voorstel, dat we na het inmeten opstellen.
+          Daarin staan de kozijnen, de montage en eventueel bouwkundig werk als aparte onderdelen.
+        </li>
+        <li>Een voorstel is geldig gedurende de termijn die in het voorstel staat.</li>
       </ul>
 
-      <h2>4. Inmeetservice</h2>
+      <h2>4. Inmeten</h2>
       <p>
-        De inmeetservice bedraagt € 49 en wordt volledig verrekend wanneer de opdracht
-        doorgaat. Pas na opmeting kunnen exacte maten en prijzen worden bevestigd.
+        Voordat er iets besteld wordt, meten we bij je thuis in. Eventuele kosten voor inmeten
+        worden vooraf met je afgesproken. Pas na het inmeten kunnen we de exacte maten en de prijs
+        bevestigen.
       </p>
 
-      <h2>5. Totstandkoming van de overeenkomst</h2>
-      <p>De overeenkomst komt tot stand na schriftelijke akkoordverklaring van de klant op de offerte.</p>
+      <h2>5. Wanneer is de overeenkomst gesloten?</h2>
+      <p>De overeenkomst komt tot stand zodra je schriftelijk akkoord geeft op ons voorstel.</p>
 
       <h2>6. Betaling</h2>
       <ul>
-        <li>Bij maatwerk wordt een aanbetaling gevraagd bij opdracht, ter dekking van de maatwerkproductie.</li>
-        <li>Het restantbedrag (resterend deel van de kozijnen en de montage) wordt voldaan bij oplevering.</li>
-        <li>Betaling dient te geschieden binnen de op de factuur vermelde termijn. <em>[Termijn nog vast te leggen.]</em></li>
+        <li>Bij maatwerk vragen we bij de opdracht een aanbetaling voor de productie.</li>
+        <li>Het restant, het overige deel van de kozijnen en de montage, betaal je bij de oplevering.</li>
+        <li>Je betaalt binnen de termijn die op de factuur staat.</li>
       </ul>
 
       <h2>7. Levering en montage</h2>
       <ul>
-        <li>Genoemde levertijden (doorgaans vanaf ± 8 weken na opmeting en opdracht) zijn indicatief en geen fatale termijnen.</li>
-        <li>Montage wordt uitgevoerd door onze monteurs; bouwkundige aanpassingen worden uitgevoerd door {company.moeder}.</li>
-        <li>De klant zorgt voor een veilige en toegankelijke werkplek.</li>
+        <li>
+          Levertijden zijn indicatief en geen fatale termijnen. De verwachte levertijd staat in je
+          voorstel. Verandert de planning, dan laten we je dat zo snel mogelijk weten.
+        </li>
+        <li>
+          We regelen de montage. Bouwkundige aanpassingen, zoals een opening vergroten of een latei
+          vervangen, voert MTB Bouw uit.
+        </li>
+        <li>
+          Je zorgt ervoor dat we veilig en goed bij de plek van het werk kunnen. Wat je vooraf
+          moet vrijmaken, spreken we met je af.
+        </li>
+        <li>
+          Komt er tijdens het werk iets naar boven dat vooraf niet te zien was, zoals verborgen
+          houtrot of een constructief probleem, dan bespreken we eerst met je wat er nodig is.
+          Extra werk voeren we alleen uit als je daarmee akkoord gaat.
+        </li>
       </ul>
 
-      <h2>8. Annulering van maatwerk</h2>
+      <h2>8. Annuleren van maatwerk</h2>
       <p>
-        Omdat kozijnen op maat worden geproduceerd, is annulering na akkoord en start van
-        de productie in beginsel niet kosteloos mogelijk. <em>[Annuleringsregeling nog vast te leggen.]</em>
+        Kozijnen worden op maat voor je gemaakt. Annuleren nadat je akkoord hebt gegeven en de
+        productie is gestart, kan daarom in principe niet zonder kosten.
       </p>
 
       <h2>9. Garantie</h2>
-      <p>Op geleverde producten en uitgevoerde werkzaamheden gelden de wettelijke en/of fabrieksgaranties. <em>[Specifieke garantietermijnen nog vast te leggen.]</em></p>
+      <p>
+        Op geleverde producten en uitgevoerde werkzaamheden geldt de wettelijke garantie en, waar
+        van toepassing, de garantie van de fabrikant.
+      </p>
 
       <h2>10. Aansprakelijkheid</h2>
-      <p>Onze aansprakelijkheid is beperkt tot hetgeen in deze voorwaarden is geregeld en tot het bedrag dat in het betreffende geval door onze verzekering wordt uitgekeerd. <em>[Aansprakelijkheidsbepaling nog juridisch te toetsen.]</em></p>
+      <p>
+        Onze aansprakelijkheid is beperkt tot wat in deze voorwaarden staat en tot het bedrag dat
+        onze verzekering in het betreffende geval uitkeert.
+      </p>
 
       <h2>11. Klachten</h2>
-      <p>Klachten kunt u binnen een redelijke termijn melden via {company.email}. Wij streven ernaar binnen één werkdag te reageren.</p>
+      <p>
+        Ben je ergens niet tevreden over? Meld het binnen een redelijke termijn nadat je het hebt
+        ontdekt, via <a href={`mailto:${company.email}`}>{company.email}</a> of{" "}
+        {company.telefoon}. We nemen zo snel mogelijk contact met je op om samen naar een
+        oplossing te zoeken.
+      </p>
 
       <h2>12. Toepasselijk recht</h2>
-      <p>Op alle overeenkomsten is Nederlands recht van toepassing.</p>
+      <p>Op al onze overeenkomsten is Nederlands recht van toepassing.</p>
     </LegalLayout>
   );
 }
