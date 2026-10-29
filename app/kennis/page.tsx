@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
@@ -7,70 +6,57 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@/components/icons";
 import { getAllArticles } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
-const zelfPlaatsenStappen = [
-  { n: "1", t: "Inmeten", d: "Exact opmeten van de bestaande situatie." },
-  { n: "2", t: "Bestellen", d: "Maatwerk kozijn samenstellen en aanvragen." },
-  { n: "3", t: "Voorbereiden", d: "Oude kozijn verwijderen, opening klaarmaken." },
-  { n: "4", t: "Plaatsen & afmonteren", d: "Stellen, bevestigen, isoleren en afkitten." },
+export const metadata = pageMetadata({
+  title: "Kennis over kozijnen",
+  description:
+    "Uitleg over kozijnen: wat ze kosten, welk materiaal en glas bij je woning past, hoe montage en subsidie werken en hoe je kozijnen onderhoudt.",
+  path: "/kennis",
+});
+
+/** Display order of the categories; unknown categories follow alphabetically. */
+const CATEGORY_ORDER = [
+  "Prijzen",
+  "Materialen",
+  "Beglazing",
+  "Subsidie",
+  "Montage",
+  "Bouwkundig",
+  "Regelgeving",
+  "Onderhoud",
 ];
 
-export const metadata: Metadata = {
-  title: "Kennisbank — alles over kozijnen",
-  description:
-    "Eerlijke informatie over kozijnen: kosten, materialen, subsidie, montage en onderhoud. Geen verkooppraatje — feiten en advies.",
-  alternates: { canonical: "/kennis" },
-};
+function categoryRank(category: string) {
+  const index = CATEGORY_ORDER.indexOf(category);
+  return index === -1 ? CATEGORY_ORDER.length : index;
+}
 
-export default function KennisbankPage() {
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Kennis", href: "/kennis" },
+];
+
+export default function KennisPage() {
   const articles = getAllArticles();
-  const categories = [...new Set(articles.map((a) => a.category))];
+  const categories = [...new Set(articles.map((a) => a.category))].sort(
+    (a, b) => categoryRank(a) - categoryRank(b) || a.localeCompare(b, "nl"),
+  );
 
   return (
     <>
-      <PageHero
-        eyebrow="Kennisbank"
-        title="Alles over kozijnen — eerlijk uitgelegd."
-        lead="Geen verkooppraatje, maar feitelijke informatie over kosten, materialen, subsidie en montage. Zodat u een weloverwogen beslissing kunt nemen."
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kennisbank" }]}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema(breadcrumbs)) }}
       />
 
-      {/* Uitgelicht: Zelf een kozijn plaatsen (kapstok — wordt later uitgewerkt) */}
-      <Section tone="soft">
-        <Container>
-          <div className="rounded-card border border-mist bg-paper p-6 sm:p-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="max-w-xl">
-                <Eyebrow>Zelf plaatsen</Eyebrow>
-                <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
-                  Zelf een kozijn plaatsen — van inmeten tot afmonteren
-                </h2>
-                <p className="mt-3 leading-relaxed text-ink/60">
-                  Handig en wil je besparen? In deze stap-voor-stap gids leggen we
-                  uit hoe je zelf kozijnen plaatst. De volledige uitwerking volgt
-                  binnenkort.
-                </p>
-              </div>
-              <Button href="/diy" variant="secondary">Over zelf plaatsen (DIY)</Button>
-            </div>
-            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {zelfPlaatsenStappen.map((s) => (
-                <li key={s.n} className="rounded-xl border border-mist bg-paper-soft p-4">
-                  <span className="flex size-8 items-center justify-center rounded-full border-2 border-lime bg-lime/10 font-display text-sm font-semibold text-ink">
-                    {s.n}
-                  </span>
-                  <p className="mt-3 font-medium text-ink">{s.t}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-ink/60">{s.d}</p>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 text-xs text-ink/45">
-              Uitgebreide instructies, foto&apos;s en video volgen — dit onderdeel
-              wordt later ingericht.
-            </p>
-          </div>
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Kennis"
+        title="Kennis over kozijnen, helder uitgelegd"
+        lead="Wat kosten nieuwe kozijnen, welk materiaal en glas passen bij je woning en hoe verloopt de montage? Hier lees je waar je op let, zodat je weet wat je kiest."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kennis" }]}
+      />
 
       <Section>
         <Container>
@@ -90,15 +76,15 @@ export default function KennisbankPage() {
                         <p className="text-xs font-semibold uppercase tracking-widest text-wood">
                           {article.category}
                         </p>
-                        <h3 className="mt-2 font-display font-semibold leading-snug text-ink transition-colors group-hover:text-forest">
+                        <h2 className="mt-2 font-display text-base font-semibold leading-snug text-ink transition-colors group-hover:text-forest">
                           {article.title}
-                        </h3>
+                        </h2>
                         <p className="mt-2 text-sm leading-relaxed text-ink/60">
                           {article.description}
                         </p>
                       </div>
                       <p className="mt-4 flex items-center gap-1.5 text-sm font-medium text-forest">
-                        Lees meer
+                        Lees het artikel
                         <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                       </p>
                     </Link>
@@ -107,6 +93,27 @@ export default function KennisbankPage() {
               </div>
             );
           })}
+        </Container>
+      </Section>
+
+      <Section tone="soft">
+        <Container>
+          <div className="max-w-2xl">
+            <Eyebrow>Jouw woning</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
+              Wil je weten wat nieuwe kozijnen voor jouw woning betekenen?
+            </h2>
+            <p className="mt-4 leading-relaxed text-ink/65">
+              Vertel ons wat je wilt veranderen. Na het inmeten krijg je een voorstel waarin
+              kozijn, glas en montage apart staan.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button href="/offerte">Vraag een voorstel</Button>
+              <Button href="/kosten" variant="secondary">
+                Bekijk de prijsopbouw
+              </Button>
+            </div>
+          </div>
         </Container>
       </Section>
     </>

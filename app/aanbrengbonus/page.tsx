@@ -61,7 +61,7 @@ const goedOmTeWeten = [
   "Je hebt zelf een opdracht gegeven aan De Kozijnstudio",
   "Je draagt iemand aan binnen je aanbrengjaar",
   "De persoon die je aandraagt, had nog geen aanvraag of opdracht bij ons lopen",
-  "De bonus volgt nadat het aangedragen project is opgeleverd en betaald",
+  "Je krijgt de bonus nadat het aangedragen project is opgeleverd en betaald",
   "De aanbrengbonus is persoonlijk en niet overdraagbaar",
 ];
 

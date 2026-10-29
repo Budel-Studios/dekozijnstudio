@@ -56,7 +56,7 @@ function faqGroups(): Array<{ title: string; items: FaqItem[] }> {
         {
           question: "Zijn jullie prijzen inclusief btw?",
           answer:
-            "Ja. Bedragen voor particulieren noemen we inclusief btw, zodat je in je voorstel ziet wat je uiteindelijk betaalt.",
+            "Ja. Prijzen voor particulieren geven we inclusief btw, zodat je in je voorstel ziet wat je uiteindelijk betaalt.",
         },
         {
           question: "Wat houdt het inmeten in?",
@@ -215,7 +215,7 @@ function faqGroups(): Array<{ title: string; items: FaqItem[] }> {
                 zelf kozijnen plaatsen
               </Link>{" "}
               lees je waar je op moet letten. Let op: zelf plaatsen telt volgens RVO
-              niet als uitvoering waarvoor je ISDE-subsidie kunt krijgen. Liever
+              niet als uitvoering waarvoor je subsidie via de ISDE kunt krijgen. Liever
               ontzorgd? Lees wat bij onze{" "}
               <Link href="/montage" className={link}>
                 montage
@@ -230,7 +230,7 @@ function faqGroups(): Array<{ title: string; items: FaqItem[] }> {
       title: "Subsidie",
       items: [
         {
-          question: "Kom ik in aanmerking voor ISDE-subsidie?",
+          question: "Kom ik in aanmerking voor subsidie via de ISDE?",
           answer: (
             <>
               Dat hangt af van je woning, het glastype, het oppervlak en wie het werk
