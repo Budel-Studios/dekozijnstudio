@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { SHOW_INTERNAL_PAGES } from "@/lib/site";
 import { Container } from "@/components/ui/container";
 import { HeroSplit } from "@/components/hero/hero-split";
 import { HeroLayers } from "@/components/hero/hero-layers";
@@ -25,6 +27,7 @@ function Label({ n, title, note }: { n: string; title: string; note: string }) {
 }
 
 export default function HeroOptiesPage() {
+  if (!SHOW_INTERNAL_PAGES) notFound();
   return (
     <>
       <div className="border-b border-mist bg-paper-soft py-8">

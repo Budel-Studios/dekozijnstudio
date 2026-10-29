@@ -1,13 +1,20 @@
 /**
- * Site navigation — single source of truth for the full sitemap.
- * Consumed by SiteHeader and SiteFooter so the menu and footer stay in sync.
- * Routes that arrive in later fases (klantportaal, configurator) are not
- * linked yet and will be added when those modules exist.
+ * Site navigation — single source of truth for header and footer.
+ * Structure follows docs/seo-strategie-2026-10.md (h6): a small menu
+ * (Kozijnen · Kosten · Montage en werkwijze · Over ons) plus one primary
+ * action. Kennis and werkgebied are reachable via the footer.
+ * Routes of modules that are switched off (lib/site.ts MODULES) and pages
+ * without real content (projecten) are not linked.
  */
+
+import { MODULES } from "@/lib/site";
+import { REGIO_PAGINAS, regioPad } from "@/data/regio";
 
 export type NavLink = {
   label: string;
   href: string;
+  /** Short helper line, shown in header dropdowns. */
+  description?: string;
 };
 
 export type NavGroup = {
@@ -15,78 +22,83 @@ export type NavGroup = {
   links: NavLink[];
 };
 
-export const productLinks: NavLink[] = [
-  { label: "Alle producten", href: "/producten" },
-  { label: "Ramen", href: "/producten/ramen" },
-  { label: "Deuren", href: "/producten/deuren" },
-  { label: "Schuifpuien", href: "/producten/schuifpuien" },
-  { label: "Configurator", href: "/configurator" },
+const configuratorLinks: NavLink[] = MODULES.configurator
+  ? [
+      { label: "Producten bekijken", href: "/producten", description: "Ramen, deuren en schuifpuien" },
+      { label: "Configurator", href: "/configurator", description: "Stel je kozijn zelf samen" },
+    ]
+  : [];
+
+export const kozijnenLinks: NavLink[] = [
+  { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", description: "Uitstraling, glas en onderhoud" },
+  { label: "Houten kozijnen", href: "/houten-kozijnen", description: "Warm en op maat geprofileerd" },
+  { label: "Aluminium kozijnen", href: "/aluminium-kozijnen", description: "Slanke profielen, veel glas" },
+  { label: "Materialen vergelijken", href: "/kozijnen", description: "Hout, kunststof en aluminium naast elkaar" },
+  ...configuratorLinks,
 ];
 
-export const serviceLinks: NavLink[] = [
-  { label: "Montage", href: "/montage" },
-  { label: "Zelf plaatsen (DIY)", href: "/diy" },
-  { label: "Bouwkundige aanpassingen", href: "/bouwkundige-aanpassingen" },
+export const werkLinks: NavLink[] = [
+  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen", description: "Wat er in je woning gebeurt" },
+  { label: "Montage", href: "/montage", description: "Wat bij het monteren hoort" },
+  { label: "Werkwijze", href: "/werkwijze", description: "Van eerste vraag tot oplevering" },
+  { label: "Bouwkundige aanpassingen", href: "/bouwkundige-aanpassingen", description: "Opening vergroten, latei, metselwerk" },
+  { label: "Subsidie", href: "/subsidie", description: "Isolatieglas en de ISDE" },
 ];
+
+/** Header: dropdown groups and direct links, in menu order. */
+export const headerGroups: NavGroup[] = [
+  { label: "Kozijnen", links: kozijnenLinks },
+  { label: "Montage en werkwijze", links: werkLinks },
+];
+
+export const headerDirectLinks: NavLink[] = [
+  { label: "Kosten", href: "/kosten" },
+  { label: "Over ons", href: "/over-ons" },
+];
+
+/** The one primary action, used site-wide. */
+export const primaryCta: NavLink = {
+  label: "Vraag een voorstel",
+  href: "/offerte",
+};
 
 export const infoLinks: NavLink[] = [
-  { label: "Configurator", href: "/configurator" },
-  { label: "Montagekosten", href: "/prijzen" },
-  { label: "ISDE-subsidie", href: "/isde-subsidie" },
-  { label: "Projecten", href: "/projecten" },
-  { label: "Kennisbank", href: "/kennisbank" },
+  { label: "Kosten", href: "/kosten" },
+  { label: "Kennis", href: "/kennis" },
   { label: "Veelgestelde vragen", href: "/faq" },
+  { label: "Werkgebied", href: "/werkgebied" },
 ];
 
 export const companyLinks: NavLink[] = [
   { label: "Over ons", href: "/over-ons" },
   { label: "MTB Bouw", href: "/mtb-bouw" },
-  { label: "Aanbrengbonus", href: "/aanbrengbonus" },
+  ...(MODULES.aanbrengbonus ? [{ label: "Aanbrengbonus", href: "/aanbrengbonus" }] : []),
   { label: "Contact", href: "/contact" },
 ];
 
-/** Hoofd-CTA in de header — opent de keuzedialoog (AanvraagDialog). */
-export const primaryCta: NavLink = {
-  label: "Aanvragen",
-  href: "/offerte-aanvragen",
-};
-
-/** Lokale landingspagina's — getoond in de footer onder "Werkgebied". */
+/** Werkgebied: the hub plus place pages (only when the module is on). */
 export const werkgebiedLinks: NavLink[] = [
-  { label: "Kozijnen Twente", href: "/kozijnen-twente" },
-  { label: "Kozijnen Enschede", href: "/kozijnen-enschede" },
-  { label: "Kozijnen Hengelo", href: "/kozijnen-hengelo" },
-  { label: "Kozijnen Almelo", href: "/kozijnen-almelo" },
-  { label: "Kozijnen Oldenzaal", href: "/kozijnen-oldenzaal" },
-  { label: "Kozijnen Haaksbergen", href: "/kozijnen-haaksbergen" },
+  { label: "Twente", href: "/werkgebied" },
+  ...(MODULES.plaatspaginas
+    ? REGIO_PAGINAS.filter((r) => r.soort === "plaats").map((r) => ({
+        label: r.naam,
+        href: regioPad(r),
+      }))
+    : []),
 ];
 
-/** Juridische links — getoond onderaan de footer. */
 export const legalLinks: NavLink[] = [
   { label: "Privacyverklaring", href: "/privacy" },
   { label: "Algemene voorwaarden", href: "/algemene-voorwaarden" },
   { label: "Cookiebeleid", href: "/cookiebeleid" },
-  { label: "Aanbrengbonus-voorwaarden", href: "/aanbrengbonus-voorwaarden" },
+  ...(MODULES.aanbrengbonus
+    ? [{ label: "Voorwaarden aanbrengbonus", href: "/aanbrengbonus-voorwaarden" }]
+    : []),
 ];
 
-/** Grouped header dropdowns (desktop) and accordion (mobile). */
-export const headerGroups: NavGroup[] = [
-  { label: "Kozijnen", links: productLinks },
-  { label: "Diensten", links: serviceLinks },
-];
-
-/** Direct (ungrouped) header links shown alongside the dropdowns. */
-export const headerDirectLinks: NavLink[] = [
-  { label: "Configurator", href: "/configurator" },
-  { label: "Montagekosten", href: "/prijzen" },
-  { label: "ISDE-subsidie", href: "/isde-subsidie" },
-  { label: "Kennisbank", href: "/kennisbank" },
-];
-
-/** Footer columns — covers the complete sitemap. */
 export const footerGroups: NavGroup[] = [
-  { label: "Kozijnen", links: productLinks },
-  { label: "Diensten", links: serviceLinks },
+  { label: "Kozijnen", links: kozijnenLinks },
+  { label: "Montage en werkwijze", links: werkLinks },
   { label: "Informatie", links: infoLinks },
   { label: "Bedrijf", links: companyLinks },
 ];

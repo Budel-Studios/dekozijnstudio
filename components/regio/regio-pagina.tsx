@@ -4,122 +4,147 @@ import { Button } from "@/components/ui/button";
 import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 import { FeatureList } from "@/components/ui/feature-list";
 import { FAQ } from "@/components/ui/faq";
-import { Placeholder } from "@/components/ui/placeholder";
 import { MateriaalSectie } from "@/components/kozijnen/materiaal-sectie";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
-import { breadcrumbSchema, organizationSchema, faqPageSchema, jsonLd } from "@/lib/jsonld";
-import { REGIO_PAGINAS, type RegioPagina } from "@/data/regio";
+import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { REGIO_PAGINAS, regioPad, type RegioPagina } from "@/data/regio";
 
+/** Material cards: trade-offs, no brand promises or performance claims. */
 const MATERIALEN = [
   {
-    eyebrow: "Onderhoudsarm",
+    eyebrow: "Weinig onderhoud",
     titel: "Kunststof kozijnen",
-    tekst: "De meest gekozen optie: uitstekende isolatie, nauwelijks onderhoud en leverbaar in vrijwel elke kleur. Profielen van Schüco en Gealan.",
+    tekst:
+      "Veel gekozen bij vervanging: goed te combineren met isolerend glas en in veel kleuren leverbaar, ook met houtnerf. Schilderen is niet nodig. Het profiel is wel breder dan bij aluminium, en van dichtbij zie je dat een houtlook geen hout is.",
     href: "/kunststof-kozijnen",
   },
   {
-    eyebrow: "Natuurlijk & klassiek",
+    eyebrow: "Natuurlijk en klassiek",
     titel: "Houten kozijnen",
-    tekst: "Mahonie hardhout met een warme, tijdloze uitstraling — ideaal voor karakteristieke en vooroorlogse woningen.",
+    tekst:
+      "Warm van uitstraling en goed te profileren zoals het oorspronkelijke kozijn, wat past bij karakteristieke en vooroorlogse woningen. Daar staat tegenover dat hout periodiek geschilderd moet worden. Reken dat onderhoud mee in je keuze.",
     href: "/houten-kozijnen",
   },
   {
-    eyebrow: "Slank & modern",
+    eyebrow: "Slank en strak",
     titel: "Aluminium kozijnen",
-    tekst: "Slanke profielen (Reynaers, Aluprof) met veel glas en een hoogwaardige afwerking, vrijwel onderhoudsvrij.",
+    tekst:
+      "Slanke profielen met veel glas, geschikt voor grote ramen en schuifpuien. Schilderen is niet nodig. Aluminium is meestal duurder in aanschaf, en de strakke uitstraling past niet bij elke gevel.",
     href: "/aluminium-kozijnen",
   },
 ];
 
+const chipClass = "border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70";
+
 /**
- * Gedeelde template voor lokale SEO-landingspagina's (/kozijnen-<plaats>).
- * Rendert JSON-LD (breadcrumb + organisatie + FAQ), hero, lokale USP's,
- * werkgebied, materialen, lokale context, FAQ en CTA — alles uit data/regio.ts.
+ * Shared template for the werkgebied pages: the regio hub (/werkgebied) and
+ * the place pages (/werkgebied/<plaats>). Renders breadcrumb JSON-LD, hero,
+ * local points of attention, service area chips, materials, local context,
+ * a visible FAQ (no FAQPage schema) and a CTA — all content from data/regio.ts.
+ * The organization schema lives in the root layout, not here.
  */
 export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
+  const isHub = data.soort === "regio";
   const inNaam = `in ${data.naam}`;
-  // Chips die zelf een landingspagina hebben, worden interne links
-  // (bv. "Hengelo" op de Twente-pagina → /kozijnen-hengelo).
-  const plaatsSlug = new Map(
-    REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r) => [r.naam, r.slug]),
+  const hubPad = regioPad({ slug: "twente", soort: "regio" });
+  const pad = regioPad(data);
+
+  const crumbs = isHub
+    ? [
+        { label: "Home", href: "/" },
+        { label: "Werkgebied", href: pad },
+      ]
+    : [
+        { label: "Home", href: "/" },
+        { label: "Werkgebied", href: hubPad },
+        { label: data.naam, href: pad },
+      ];
+
+  // Chips that have their own page become internal links
+  // (e.g. "Hengelo" on the hub → /werkgebied/hengelo).
+  const paginaPad = new Map(
+    REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r) => [r.naam, regioPad(r)]),
   );
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLd(
-            breadcrumbSchema([
-              { label: "Home", href: "/" },
-              { label: `Kozijnen ${data.naam}`, href: `/${data.slug}` },
-            ]),
-            organizationSchema(),
-            faqPageSchema(data.faq),
-          ),
-        }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema(crumbs)) }}
       />
 
       <PageHero
-        eyebrow={`Kozijnen ${data.naam}`}
+        eyebrow={isHub ? "Werkgebied" : "Werkgebied vanuit Enschede"}
         title={data.heroTitel}
         lead={data.heroLead}
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Kozijnen", href: "/kozijnen" },
-          { label: data.naam },
-        ]}
+        breadcrumbs={crumbs.map((c, i) =>
+          i === crumbs.length - 1 ? { label: c.label } : c,
+        )}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/kosten" variant="secondary">
+              Bekijk wat het kost
+            </Button>
           </>
         }
-        media={<Placeholder label={`Projectfoto ${data.naam} volgt`} className="min-h-72 lg:min-h-80" />}
       />
 
-      {/* Lokale USP's + werkgebied */}
+      {/* Points of attention + service area */}
       <MateriaalSectie
-        eyebrow="Waarom De Kozijnstudio"
-        titel={`Uw kozijnspecialist ${inNaam}`}
+        eyebrow={isHub ? "Hoe we werken" : "Waar we op letten"}
+        titel={
+          isHub
+            ? "Wat je van ons kunt verwachten in Twente"
+            : `Kozijnen ${inNaam}: waar we op letten`
+        }
       >
         <div className="grid gap-10 lg:grid-cols-2">
           <FeatureList items={data.lokaleUsps} />
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-wood">
-              Werkgebied
+              {isHub ? "Plaatsen in ons werkgebied" : "Wijken en plaatsen"}
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <ul className="mt-4 flex flex-wrap gap-2">
               {data.plaatsen.map((plaats) => {
-                const slug = plaatsSlug.get(plaats);
-                return slug ? (
-                  <Link
-                    key={plaats}
-                    href={`/${slug}`}
-                    className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70 underline decoration-mist underline-offset-4 transition-colors hover:border-forest hover:text-forest"
-                  >
-                    {plaats}
-                  </Link>
-                ) : (
-                  <span
-                    key={plaats}
-                    className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/70"
-                  >
-                    {plaats}
-                  </span>
+                const href = paginaPad.get(plaats);
+                return (
+                  <li key={plaats}>
+                    {href ? (
+                      <Link
+                        href={href}
+                        className={`${chipClass} inline-block underline decoration-mist underline-offset-4 transition-colors hover:border-forest hover:text-forest`}
+                      >
+                        {plaats}
+                      </Link>
+                    ) : (
+                      <span className={`${chipClass} inline-block`}>{plaats}</span>
+                    )}
+                  </li>
                 );
               })}
-            </div>
+            </ul>
+            {!isHub && (
+              <p className="mt-6 text-sm leading-relaxed text-ink/65">
+                {data.naam} is geen vestiging maar hoort bij ons werkgebied.{" "}
+                <Link
+                  href={hubPad}
+                  className="font-medium text-forest underline underline-offset-2"
+                >
+                  Bekijk het hele werkgebied
+                </Link>
+              </p>
+            )}
           </div>
         </div>
       </MateriaalSectie>
 
-      {/* Materialen */}
+      {/* Materials */}
       <MateriaalSectie
         tone="soft"
         eyebrow="Materialen"
         titel="Kunststof, hout of aluminium"
-        intro={`Elk materiaal heeft eigen voordelen qua uitstraling, onderhoud en isolatie. Wij leveren en monteren alle drie ${inNaam} — en helpen u kiezen wat bij uw woning past.`}
+        intro={`Elk materiaal heeft eigen voor- en nadelen in uitstraling, onderhoud en prijs. We leveren alle drie ${inNaam} en helpen je kiezen wat bij jouw woning past.`}
       >
         <div className="grid gap-6 sm:grid-cols-3">
           {MATERIALEN.map((m) => (
@@ -129,39 +154,53 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
               <CardBody>{m.tekst}</CardBody>
               <div className="mt-4">
                 <Button href={m.href} variant="ghost" size="sm">
-                  Lees meer →
+                  Lees meer over {m.titel.toLowerCase()} →
                 </Button>
               </div>
             </Card>
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="/kozijnen" variant="secondary">Vergelijk alle kozijnen</Button>
-          <Button href="/producten" variant="secondary">Bekijk alle producten</Button>
+          <Button href="/kozijnen" variant="secondary">
+            Vergelijk de materialen
+          </Button>
         </div>
       </MateriaalSectie>
 
-      {/* Lokale context */}
+      {/* Local context */}
       <MateriaalSectie
-        eyebrow="Lokaal maatwerk"
-        titel={`Kozijnen die passen bij de woningen ${inNaam}`}
+        eyebrow={isHub ? "De regio" : "Lokaal"}
+        titel={
+          isHub
+            ? "Veel verschillende woningen in één regio"
+            : `Wat opvalt aan de woningen ${inNaam}`
+        }
       >
         <div className="max-w-3xl space-y-4">
           {data.lokaleContext.map((alinea, i) => (
-            <p key={i} className="leading-relaxed text-ink/65">{alinea}</p>
+            <p key={i} className="leading-relaxed text-ink/65">
+              {alinea}
+            </p>
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="/montage" variant="secondary" size="sm">Over de montage</Button>
-          <Button href="/isde-subsidie" variant="secondary" size="sm">ISDE-subsidie</Button>
+          <Button href="/kozijnen-vervangen" variant="secondary" size="sm">
+            Zo gaat kozijnen vervangen
+          </Button>
+          <Button href="/montage" variant="secondary" size="sm">
+            Wat bij de montage hoort
+          </Button>
+          <Button href="/subsidie" variant="secondary" size="sm">
+            Lees over subsidie
+          </Button>
         </div>
       </MateriaalSectie>
 
-      {/* FAQ */}
+      {/* FAQ (visible only — no FAQPage schema) */}
       <MateriaalSectie
         tone="soft"
         eyebrow="Veelgestelde vragen"
-        titel={`Vragen over kozijnen ${inNaam}`}
+        titel={isHub ? "Vragen over ons werkgebied" : `Vragen over kozijnen ${inNaam}`}
       >
         <FAQ items={data.faq} />
       </MateriaalSectie>
@@ -169,11 +208,13 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
       {/* CTA */}
       <CtaBlok
         titel={`Nieuwe kozijnen ${inNaam}?`}
-        lead="Vraag een vrijblijvende offerte aan of plan de inmeetservice (€ 49, volledig verrekend bij doorgang). U ontvangt een offerte waarin elk onderdeel apart en incl. btw is gespecificeerd."
+        lead="Vertel ons over je woning en je wensen; foto's helpen, maar zijn niet verplicht. We nemen contact met je op om de volgende stap te bespreken."
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/contact" variant="secondary">Plan een inmeetafspraak</Button>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/kosten" variant="secondary">
+              Bekijk wat het kost
+            </Button>
           </>
         }
       />

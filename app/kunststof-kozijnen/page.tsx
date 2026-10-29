@@ -1,149 +1,273 @@
-import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
-import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
-import { Placeholder } from "@/components/ui/placeholder";
+import { FAQ, type FaqItem } from "@/components/ui/faq";
+import { CtaBlok } from "@/components/kozijnen/cta-blok";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { MODULES } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Kunststof kozijnen",
+export const metadata = pageMetadata({
+  title: "Kunststof kozijnen in Enschede",
   description:
-    "Onderhoudsvriendelijke kunststof kozijnen op maat. Profielen van Schüco en Gealan, HR++ en triple glas, transparante prijzen incl. btw. Twente & Oost-Nederland.",
-  alternates: { canonical: "/kunststof-kozijnen" },
-  openGraph: {
-    title: "Kunststof kozijnen — De Kozijnstudio",
-    description: "Op maat, energiezuinig en onderhoudsvriendelijk. Schüco en Gealan profielen, transparante prijzen incl. btw.",
-  },
-};
+    "Bekijk de keuzes voor kunststof kozijnen in Enschede en Twente. Van uitstraling en glas tot montage en afwerking. Vraag een voorstel aan.",
+  path: "/kunststof-kozijnen",
+});
 
-const voordelen = [
-  "Geen schilderwerk of onderhoud nodig",
-  "Uitstekende isolatiewaarden (HR++ of triple glas)",
-  "Leverbaar in elke kleur en houtstructuur",
-  "Lange levensduur — tot 50 jaar of meer",
-  "Draaikiepramen, vaste ramen, schuifpuien op maat",
-  "Profielen van Schüco en Gealan",
+const link = "font-medium text-forest underline underline-offset-2";
+
+const toepassingen = [
+  "Vervanging van houten of oude kunststof kozijnen in rijwoningen, twee-onder-een-kappers en vrijstaande woningen",
+  "Draaikiepramen, vaste ramen, valramen en combinaties met bovenlichten",
+  "Voordeuren, achterdeuren en openslaande tuindeuren",
+  "Schuifpuien, als de maat en het gewicht passen bij een kunststof systeem",
 ];
 
-const profielen = [
+const keuzes = [
   {
-    eyebrow: "Primair profiel",
-    title: "Schüco",
-    body: "Duits topkwaliteitsprofiel met een bewezen track record in de bouw. Leverbaar in een breed kleurenpallet en meerdere profielbreedte-series.",
+    titel: "Uitstraling en profilering",
+    tekst:
+      "Kunststof profielen verschillen in vorm: strak en vlak, licht afgerond, of verdiept met een klassieke uitstraling die dichter bij hout komt. Bij oudere woningen let je ook op de zichtbreedte en de verhouding tussen kozijn en glas.",
   },
   {
-    eyebrow: "Alternatief profiel",
-    title: "Gealan",
-    body: "Hoogwaardig PVC-profiel met uitstekende thermische eigenschappen. Populaire keuze voor woningen waar prijs-kwaliteitverhouding centraal staat.",
+    titel: "Kleur en houtlook",
+    tekst:
+      "Naast wit en crème zijn veel kleuren leverbaar, ook met een houtnerfstructuur. Binnen en buiten kunnen een andere kleur hebben. Welke kleuren bij het gekozen profiel horen, laten we je zien bij het advies.",
+  },
+  {
+    titel: "Glas",
+    tekst:
+      "Je kiest meestal tussen HR++- en triple glas. Triple glas isoleert beter, maar is zwaarder en duurder. Daarnaast zijn er opties voor geluidwerend glas, veiligheidsglas en glas met een andere uitstraling.",
+  },
+  {
+    titel: "Onderhoud",
+    tekst:
+      "Kunststof hoeft niet geschilderd te worden. Wel vraagt het om af en toe schoonmaken, en hang- en sluitwerk en rubbers hebben periodiek een controle of een druppel smeermiddel nodig.",
+  },
+];
+
+const prijsfactoren = [
+  "De afmetingen en het aantal kozijnen",
+  "De indeling: vast glas is goedkoper dan draaiende delen of deuren",
+  "Het profiel en de kleur, zeker bij een andere kleur binnen en buiten",
+  "Het glas: HR++ of triple, en eventuele extra eigenschappen",
+  "Hang- en sluitwerk en extra's zoals ventilatieroosters of roeden",
+  "Het werk in je woning: demontage, afwerking en eventueel bouwkundig werk",
+];
+
+const vragen: FaqItem[] = [
+  {
+    question: "Past kunststof met houtlook bij mijn gevel?",
+    answer:
+      "Vaak wel, maar het hangt af van de woning. Bij een karakteristieke gevel is de vorm van het profiel net zo belangrijk als de kleur. We bekijken samen of een verdiept profiel met houtnerf past, of dat hout de betere keuze is.",
+  },
+  {
+    question: "Wat zit er in een voorstel voor kunststof kozijnen?",
+    answer: (
+      <>
+        Het kozijn en het glas, de montage en de afwerking, en eventueel bouwkundig werk, elk apart en inclusief btw.
+        Op de pagina{" "}
+        <Link href="/kosten" className={link}>
+          kosten
+        </Link>{" "}
+        lees je hoe je dat vergelijkt met andere offertes.
+      </>
+    ),
+  },
+  {
+    question: "Hoe wordt de binnenkant afgewerkt?",
+    answer: (
+      <>
+        Na het plaatsen worden de randen binnen netjes afgewerkt. Of er ook stucwerk of een nieuwe vensterbank nodig is,
+        hangt af van wat er bij het verwijderen van je oude kozijn vrijkomt. Meer daarover lees je bij{" "}
+        <Link href="/montage" className={link}>
+          montage
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
+    question: "Kan ik kunststof kozijnen met triple glas krijgen?",
+    answer: (
+      <>
+        Ja, kunststof kozijnen zijn te combineren met triple glas. Of het in jouw situatie loont, hangt af van je woning
+        en je wensen. In het artikel over{" "}
+        <Link href="/kennis/hr-plus-plus-triple-glas" className={link}>
+          HR++ en triple glas
+        </Link>{" "}
+        zetten we de verschillen op een rij.
+      </>
+    ),
+  },
+  {
+    question: "Wanneer wordt er ingemeten?",
+    answer:
+      "Na het eerste advies en voordat er iets besteld wordt. Bij het inmeten nemen we de exacte maten op en bekijken we de bestaande opening, zodat het nieuwe kozijn goed aansluit.",
+  },
+  {
+    question: "Wat is de levertijd?",
+    answer:
+      "Dat verschilt per profiel, kleur en glas. De verwachte levertijd staat in je voorstel, zodat je weet waar je aan toe bent voordat je akkoord geeft.",
   },
 ];
 
 export default function KunststofKozijnenPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            breadcrumbSchema([
+              { label: "Home", href: "/" },
+              { label: "Kunststof kozijnen", href: "/kunststof-kozijnen" },
+            ]),
+          ),
+        }}
+      />
       <PageHero
         eyebrow="Kunststof kozijnen"
-        title="Onderhoudsvriendelijk, energiezuinig en op maat."
-        lead="Kunststof kozijnen zijn de meest gekozen optie voor Nederlandse woningen. Geen schilderwerk, uitstekende isolatie en een lange levensduur — tegen een transparante prijs incl. btw."
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kozijnen" }, { label: "Kunststof kozijnen" }]}
+        title="Kunststof kozijnen voor jouw woning in Twente"
+        lead="Kunststof wordt veel gekozen bij het vervangen van kozijnen: weinig onderhoud, veel kleuren en goed te combineren met isolerend glas. Hieronder lees je welke keuzes je maakt en waar je op let."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kunststof kozijnen" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/prijzen" variant="secondary">Bekijk montagekosten</Button>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/kosten" variant="secondary">
+              Bekijk de prijsopbouw
+            </Button>
           </>
         }
-        media={<Placeholder label="Kunststof kozijnen — sfeerfoto" className="min-h-72 lg:min-h-80" />}
       />
 
-      {/* Voordelen */}
       <Section>
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <Container className="grid gap-12 lg:grid-cols-2">
           <div>
-            <Eyebrow>Voordelen</Eyebrow>
-            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
-              Waarom kiezen voor kunststof?
-            </h2>
-            <p className="mt-4 leading-relaxed text-ink/65">
-              PVC-kozijnen hebben in de afgelopen decennia bewezen te presteren.
-              Ze zijn weerbestendig, kleurvast en vereisen nauwelijks onderhoud.
-              Combineer ze met HR++- of triple glas voor optimale
-              energieprestaties en mogelijk ISDE-subsidie.
+            <Eyebrow>Toepassingen</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Waar kunststof goed past</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Kunststof kozijnen passen bij de meeste woningen van na de oorlog en bij veel oudere woningen, als het
+              profiel goed gekozen is. Ze zijn er voor bijna elk soort raam en deur.
             </p>
-            <FeatureList items={voordelen} className="mt-6" />
+            <FeatureList className="mt-6" items={toepassingen} />
           </div>
-          <Placeholder label="Detail kozijn — kunststof profiel" className="min-h-64" />
+          <div className="rounded-card border border-mist bg-paper-soft p-7">
+            <h2 className="text-xl text-ink">Wanneer een ander materiaal logischer is</h2>
+            <p className="mt-3 leading-relaxed text-ink/70">
+              Bij monumenten en beschermde gevels stelt de gemeente vaak eisen aan materiaal en detaillering; dan is hout
+              meestal de route. Wil je heel slanke profielen of een grote schuifpui, dan kijk je eerder naar{" "}
+              <Link href="/aluminium-kozijnen" className={link}>
+                aluminium
+              </Link>
+              . En wil je juist de warmte en herstelbaarheid van hout, lees dan meer over{" "}
+              <Link href="/houten-kozijnen" className={link}>
+                houten kozijnen
+              </Link>
+              .
+            </p>
+            <p className="mt-4 text-sm text-ink/70">
+              <Link href="/kennis/pvc-hout-aluminium" className={link}>
+                Kunststof, hout of aluminium: de verschillen op een rij
+              </Link>
+            </p>
+          </div>
         </Container>
       </Section>
 
-      {/* Profielen */}
       <Section tone="soft">
         <Container>
-          <Eyebrow>Profielen</Eyebrow>
-          <h2 className="mt-4 mb-8 text-2xl text-ink sm:text-3xl">
-            Schüco en Gealan — beide toptitels
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {profielen.map((p) => (
-              <Card key={p.title}>
-                <Placeholder label={`Logo ${p.title}`} className="mb-4 min-h-16" />
-                <CardEyebrow>{p.eyebrow}</CardEyebrow>
-                <CardTitle>{p.title}</CardTitle>
-                <CardBody>{p.body}</CardBody>
-              </Card>
+          <Eyebrow>Keuzes</Eyebrow>
+          <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Wat je kiest bij kunststof kozijnen</h2>
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            {keuzes.map((k) => (
+              <article key={k.titel} className="rounded-card border border-mist bg-paper p-7">
+                <h3 className="text-lg text-ink">{k.titel}</h3>
+                <p className="mt-2 leading-relaxed text-ink/70">{k.tekst}</p>
+              </article>
             ))}
           </div>
+          <p className="mt-6 text-sm text-ink/70">
+            Twijfel je over het glas?{" "}
+            <Link href="/kennis/hr-plus-plus-triple-glas" className={link}>
+              Lees het verschil tussen HR++ en triple glas
+            </Link>{" "}
+            of bekijk{" "}
+            <Link href="/subsidie" className={link}>
+              waar je op let bij subsidie
+            </Link>
+            .
+          </p>
         </Container>
       </Section>
 
-      {/* Beglazing */}
       <Section>
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <Placeholder label="HR++ glas detail" className="min-h-64" />
+        <Container className="grid gap-12 lg:grid-cols-2">
           <div>
-            <Eyebrow>Beglazing</Eyebrow>
-            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
-              HR++ of triple glas — wat past bij u?
-            </h2>
-            <p className="mt-4 leading-relaxed text-ink/65">
-              HR++-glas biedt uitstekende isolatie voor de meeste woningen.
-              Triple glas gaat een stap verder en is interessant voor passief
-              bouwen, hogere geluidsisolatie of wanneer u maximaal wilt
-              profiteren van ISDE-subsidie.
+            <Eyebrow>Prijs</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Wat de prijs van kunststof kozijnen bepaalt</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Een prijs per kozijn zegt weinig zonder de uitgangspunten erbij. Dit zijn de keuzes die het verschil maken.
             </p>
-            <p className="mt-4 leading-relaxed text-ink/65">
-              Beide opties komen in aanmerking voor de ISDE-subsidie bij
-              vervanging van enkel- of dubbelglas. Wij adviseren u welke keuze
-              het best aansluit bij uw woning en budget.
+            <FeatureList className="mt-6" items={prijsfactoren} />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/kosten" variant="secondary">
+                Zo vergelijk je offertes
+              </Button>
+              {MODULES.configurator && (
+                <Button href="/configurator" variant="ghost">
+                  Stel je kozijn samen
+                </Button>
+              )}
+            </div>
+          </div>
+          <div>
+            <Eyebrow>Montage</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Plaatsen en afwerken</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Een goed kozijn kan nog steeds tochten als de aansluiting op de muur niet klopt. Daarom hoort bij het
+              plaatsen ook het isoleren en afdichten van de naad tussen kozijn en muur, en het afwerken binnen en buiten.
             </p>
-            <div className="mt-6">
-              <Button href="/isde-subsidie" variant="secondary">
-                Meer over ISDE-subsidie
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Moet de opening groter, of is er een nieuwe latei nodig? Dat bouwkundige werk doet MTB Bouw, in dezelfde
+              planning.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/montage" variant="secondary">
+                Bekijk wat bij montage hoort
+              </Button>
+              <Button href="/kozijnen-vervangen" variant="ghost">
+                Kozijnen vervangen
               </Button>
             </div>
           </div>
         </Container>
       </Section>
 
-      {/* CTA */}
-      <Section tone="ink">
-        <Container className="text-center">
-          <h2 className="text-2xl text-paper sm:text-3xl">
-            Benieuwd wat kunststof kozijnen kosten?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl leading-relaxed text-paper/65">
-            Na de inmeetservice (€ 49, verrekend bij doorgang) ontvangt u een
-            volledig gespecificeerde offerte — materiaal, montage en eventuele
-            bouwkundige aanpassingen apart vermeld.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/montage" variant="secondary">Over de montage</Button>
-          </div>
+      <Section tone="soft">
+        <Container width="narrow">
+          <Eyebrow>Vragen</Eyebrow>
+          <h2 className="mb-8 mt-4 text-2xl text-ink sm:text-3xl">Vragen over kunststof kozijnen</h2>
+          <FAQ items={vragen} />
         </Container>
       </Section>
+
+      <CtaBlok
+        titel="Kunststof kozijnen voor jouw woning?"
+        lead="Vertel ons welke kozijnen je wilt vervangen. Met een paar foto's kunnen we je al gericht adviseren."
+        actions={
+          <>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/kosten" variant="light">
+              Bekijk de prijsopbouw
+            </Button>
+          </>
+        }
+      />
     </>
   );
 }

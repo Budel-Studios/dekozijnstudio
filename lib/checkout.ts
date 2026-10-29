@@ -29,15 +29,19 @@ export type IsdeResult = {
   meetsMinimum: boolean;
 };
 
+/** Glass types that can fall under the ISDE glass measure (HR++ / triple). */
+const ISDE_GLAS = new Set(["hr-plus", "triple"]);
+
 export function computeIsde(config: KozijnConfig | null): IsdeResult {
   const glasType = config?.glas ?? "";
-  const rate = isdeBerekening.ratePerM2[glasType] ?? 0;
-  const eligible = rate > 0;
+  const eligible = ISDE_GLAS.has(glasType);
+  // No amount until the rates have been checked against rvo.nl (data/subsidie.ts).
+  const rate = isdeBerekening.tarievenGecontroleerd ? (isdeBerekening.ratePerM2[glasType] ?? 0) : 0;
   const glasM2 = config
     ? round2((config.breedteCm / 100) * (config.hoogteCm / 100) * Math.max(1, config.aantal || 1))
     : 0;
   const meetsMinimum = glasM2 >= isdeBerekening.minM2;
-  const subsidie = eligible ? round2(glasM2 * rate) : 0;
+  const subsidie = eligible && rate > 0 ? round2(glasM2 * rate) : 0;
   return { eligible, glasM2, ratePerM2: rate, subsidie, meetsMinimum };
 }
 
@@ -175,7 +179,7 @@ export function computeProject(items: ProjectLineItem[]): ProjectTotals {
 // ─── Validatieschema voor verzending ─────────────────────────────────────────
 
 export const checkoutContactSchema = z.object({
-  naam: z.string().min(2, "Vul uw naam in.").max(120),
+  naam: z.string().min(2, "Vul je naam in.").max(120),
   email: z.string().email("Vul een geldig e-mailadres in.").max(160),
   telefoon: z
     .string()
@@ -183,9 +187,9 @@ export const checkoutContactSchema = z.object({
     .max(25)
     .regex(/^[0-9+()\s-]+$/, "Alleen cijfers en + ( ) - zijn toegestaan."),
   postcode: z.string().regex(/^\d{4}\s?[A-Za-z]{2}$/, "Vul een geldige postcode in.").max(8),
-  plaats: z.string().min(2, "Vul uw plaats in.").max(120),
+  plaats: z.string().min(2, "Vul je woonplaats in.").max(120),
   opmerkingen: z.string().max(2000).optional().or(z.literal("")),
-  privacyAkkoord: z.literal(true, { message: "U dient akkoord te gaan met de privacyverklaring." }),
+  privacyAkkoord: z.literal(true, { message: "Ga akkoord met de privacyverklaring om te versturen." }),
   website: z.string().max(0).optional().or(z.literal("")),
 });
 

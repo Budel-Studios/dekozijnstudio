@@ -18,8 +18,9 @@ import { buildProjectPdf, type PdfItem } from "@/lib/project-pdf";
 import { KozijnPreview } from "@/components/configurator/kozijn-preview";
 import { computeProject } from "@/lib/checkout";
 import { isdeBerekening, isdeInfo } from "@/data/subsidie";
+import { track } from "@/lib/track";
 import { PRICE_ON_REQUEST, SHOW_PRODUCT_PRICES } from "@/lib/site";
-import { submitProject } from "@/app/offerte/actions";
+import { submitProject } from "@/app/project/actions";
 import { MontageEditor } from "@/components/offerte/montage-editor";
 import { PriceSummary } from "@/components/offerte/price-summary";
 import {
@@ -81,6 +82,8 @@ export function Checkout() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    // Browser-only storage is read after mount to avoid a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(readProject());
     setLoaded(true);
     const onUpd = () => setItems(readProject());
@@ -195,12 +198,12 @@ export function Checkout() {
 
   async function handleSubmit() {
     const e: Record<string, string> = {};
-    if (contact.naam.trim().length < 2) e.naam = "Vul uw naam in.";
+    if (contact.naam.trim().length < 2) e.naam = "Vul je naam in.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.email)) e.email = "Vul een geldig e-mailadres in.";
     if (contact.telefoon.trim().length < 8) e.telefoon = "Vul een geldig telefoonnummer in.";
     if (!/^\d{4}\s?[A-Za-z]{2}$/.test(contact.postcode)) e.postcode = "Vul een geldige postcode in.";
-    if (contact.plaats.trim().length < 2) e.plaats = "Vul uw plaats in.";
-    if (!akkoord) e.privacyAkkoord = "U dient akkoord te gaan met de privacyverklaring.";
+    if (contact.plaats.trim().length < 2) e.plaats = "Vul je woonplaats in.";
+    if (!akkoord) e.privacyAkkoord = "Ga akkoord met de privacyverklaring om te versturen.";
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
@@ -221,6 +224,7 @@ export function Checkout() {
         pdfBase64: pdf?.base64 ?? null,
       });
       if (result.ok) {
+        track("generate_lead", { form: "project" });
         if (pdf) setPdfUrl(URL.createObjectURL(pdf.blob));
         setDone(true);
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -248,11 +252,11 @@ export function Checkout() {
         <div className="mx-auto mb-5 flex size-14 items-center justify-center bg-lime/15">
           <CheckIcon className="size-7 text-forest" />
         </div>
-        <h2 className="font-display text-2xl font-semibold text-ink">Bedankt — uw projectaanvraag is verzonden!</h2>
+        <h2 className="font-display text-2xl font-semibold text-ink">Bedankt, je project is binnen</h2>
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-ink/65">
-          We hebben uw project met alle kozijnen ontvangen en nemen doorgaans
-          binnen één werkdag contact met u op om de inmeetservice in te plannen.
-          {pdfUrl ? " U kunt hieronder een PDF van uw aanvraag downloaden." : ""}
+          We hebben je project met alle kozijnen ontvangen en nemen contact met
+          je op om de volgende stap en het inmeten te bespreken.
+          {pdfUrl ? " Hieronder kun je een pdf van je aanvraag downloaden." : ""}
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           {pdfUrl && (
@@ -261,7 +265,7 @@ export function Checkout() {
               download="projectaanvraag-dekozijnstudio.pdf"
               className="inline-flex h-11 items-center justify-center gap-2 bg-lime px-6 text-sm font-medium text-ink transition-colors hover:bg-lime-hover"
             >
-              ↓ Download PDF
+              ↓ Download pdf
             </a>
           )}
           <Button href="/" variant={pdfUrl ? "secondary" : "primary"}>Terug naar home</Button>
@@ -275,10 +279,10 @@ export function Checkout() {
   if (loaded && items.length === 0) {
     return (
       <div className="border border-mist bg-paper p-8 text-center sm:p-12">
-        <p className="font-display text-xl font-semibold text-ink">Uw project is nog leeg</p>
+        <p className="font-display text-xl font-semibold text-ink">Je project is nog leeg</p>
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-ink/65">
-          Stel uw eerste kozijn samen in de configurator en voeg het toe aan uw
-          project. U kunt zoveel kozijnen toevoegen als u wilt.
+          Stel je eerste kozijn samen in de configurator en voeg het toe aan je
+          project. Je kunt zoveel kozijnen toevoegen als je wilt.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Button href="/configurator">Naar de configurator</Button>
@@ -294,7 +298,7 @@ export function Checkout() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-semibold text-ink">
-            Uw kozijnen {loaded ? `(${items.length})` : ""}
+            Je kozijnen {loaded ? `(${items.length})` : ""}
           </h2>
           <Button href="/configurator" variant="secondary" size="sm">+ Nog een kozijn</Button>
         </div>
@@ -311,35 +315,36 @@ export function Checkout() {
           />
         ))}
 
-        {/* ISDE (gecombineerd over het hele project) */}
+        {/* ISDE — explanation only; amounts appear once the rates are checked (data/subsidie.ts) */}
         <section className="border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">ISDE-subsidie</h2>
+          <h2 className="font-display text-lg font-semibold text-ink">Subsidie (ISDE)</h2>
           {totals.isde.eligible ? (
             <>
-              <div className="mt-4 border border-forest/20 bg-forest/5 p-5">
-                <p className="text-sm text-ink/60">Indicatieve ISDE-subsidie (ontvangt u van RVO)</p>
-                <p className="font-display text-2xl font-semibold text-forest">− {formatEuro(totals.isde.subsidie)}</p>
-                <p className="mt-1 text-xs text-ink/50">o.b.v. ± {totals.isde.glasM2.toFixed(1)} m² HR++/triple glas in dit project</p>
-              </div>
+              {totals.isde.subsidie > 0 ? (
+                <div className="mt-4 border border-forest/20 bg-forest/5 p-5">
+                  <p className="text-sm text-ink/60">Indicatieve ISDE-subsidie (ontvang je van RVO)</p>
+                  <p className="font-display text-2xl font-semibold text-forest">− {formatEuro(totals.isde.subsidie)}</p>
+                  <p className="mt-1 text-xs text-ink/55">o.b.v. ± {totals.isde.glasM2.toFixed(1)} m² HR++- of triple glas in dit project</p>
+                </div>
+              ) : (
+                <p className="mt-3 text-sm leading-relaxed text-ink/70">
+                  Met HR++- of triple glas kom je mogelijk in aanmerking voor de ISDE. Of dat zo is, hangt af van je
+                  woning, het glasoppervlak en de uitvoering. Lees{" "}
+                  <Link href="/subsidie" className="font-medium text-forest underline underline-offset-2">
+                    waar je op moet letten
+                  </Link>
+                  .
+                </p>
+              )}
               {!totals.isde.meetsMinimum && (
                 <Callout variant="warning" className="mt-4">
                   <p>
-                    Let op: het glasoppervlak (± {totals.isde.glasM2.toFixed(1)} m²) ligt onder de
-                    indicatieve minimumdrempel van {isdeBerekening.minM2} m². Voeg eventueel meer
-                    kozijnen toe om in aanmerking te komen.
+                    Het glasoppervlak in dit project (± {totals.isde.glasM2.toFixed(1)} m²) ligt onder het minimum van{" "}
+                    {isdeBerekening.minM2} m² dat RVO noemt voor glas dat vanaf 1 januari 2025 is geplaatst.
                   </p>
                 </Callout>
               )}
-              <Callout variant="info" className="mt-4" title="Verdubbelen via MTB Bouw">
-                <p>{isdeBerekening.combinatieVoordeel}</p>
-                <p className="mt-2">
-                  Glas komt zelfstandig in aanmerking. Combineren met een andere isolatiemaatregel
-                  kan de subsidie verdubbelen — onze vaste bouwpartner{" "}
-                  <Link href="/mtb-bouw" className="font-semibold underline underline-offset-2">MTB Bouw</Link>{" "}
-                  voert die graag voor u uit.
-                </p>
-              </Callout>
-              <Callout variant="disclaimer" className="mt-4" title={`Indicatief — bijgewerkt ${isdeBerekening.lastUpdated}`}>
+              <Callout variant="disclaimer" className="mt-4" title={`Gecontroleerd op ${isdeInfo.gecontroleerd}`}>
                 <p>
                   {isdeInfo.disclaimer}{" "}
                   <a href={isdeInfo.rvoUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-forest underline underline-offset-2 hover:no-underline">
@@ -350,16 +355,16 @@ export function Checkout() {
             </>
           ) : (
             <Callout variant="disclaimer" className="mt-4">
-              <p>ISDE-subsidie geldt bij HR++- of triple glas. Kies dat glastype in de configurator om mogelijk subsidie te ontvangen.</p>
+              <p>De ISDE geldt voor HR++-, triple of vacuümglas. Met een ander glastype valt dit project er niet onder.</p>
             </Callout>
           )}
         </section>
 
         {/* Gegevens */}
         <section className="border border-mist bg-paper p-6 sm:p-8">
-          <h2 className="font-display text-lg font-semibold text-ink">Uw gegevens</h2>
+          <h2 className="font-display text-lg font-semibold text-ink">Je gegevens</h2>
           <p className="mt-1.5 text-sm text-ink/55">
-            We gebruiken deze uitsluitend om uw offerte op te stellen en contact op te nemen.
+            We gebruiken ze alleen om op je project te reageren.
           </p>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <CField id="naam" label="Naam" value={contact.naam} onChange={(v) => setC("naam", v)} error={errors.naam} autoComplete="name" />
@@ -382,8 +387,8 @@ export function Checkout() {
           <label className="mt-5 flex cursor-pointer items-start gap-3">
             <input type="checkbox" checked={akkoord} onChange={(ev) => { setAkkoord(ev.target.checked); setErrors((er) => ({ ...er, privacyAkkoord: "" })); }} className="mt-0.5 size-4 accent-forest" />
             <span className="text-sm leading-relaxed text-ink/70">
-              Ik ga akkoord dat mijn gegevens worden gebruikt om mijn offerte op te stellen en
-              contact met mij op te nemen, zoals beschreven in de{" "}
+              Ik ga akkoord dat mijn gegevens worden gebruikt om op mijn project te reageren,
+              zoals beschreven in de{" "}
               <Link href="/privacy" className="font-medium text-forest underline underline-offset-2">privacyverklaring</Link>.
             </span>
           </label>
@@ -395,7 +400,7 @@ export function Checkout() {
 
           <div className="mt-6">
             <Button onClick={handleSubmit} disabled={submitting} className="w-full justify-center sm:w-auto">
-              {submitting ? "Versturen…" : `Projectaanvraag versturen (${items.length} kozijn${items.length === 1 ? "" : "en"})`}
+              {submitting ? "Versturen…" : `Verstuur je project (${items.length} kozijn${items.length === 1 ? "" : "en"})`}
             </Button>
           </div>
         </section>
@@ -409,7 +414,7 @@ export function Checkout() {
           <PriceSummary totals={totals} />
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink/45">
-          Indicatie van de montagekosten op basis van uw keuzes — niet bindend. Uw kozijnprijs en de definitieve prijs volgen na de inmeetservice.
+          Indicatie van de montagekosten op basis van je keuzes, niet bindend. De kozijnprijs en de definitieve prijs volgen na het inmeten.
         </p>
       </aside>
     </div>

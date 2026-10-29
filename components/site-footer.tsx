@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/logo";
 import { footerGroups, legalLinks, werkgebiedLinks } from "@/lib/navigation";
+import { company } from "@/data/company";
+import { ContactLink } from "@/components/contact-link";
 
 export function SiteFooter() {
   return (
@@ -12,8 +14,7 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <Logo inverse />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
-              De meest transparante kozijnleverancier van Nederland.{" "}
-              <span className="text-paper/40">(placeholder-claim)</span>
+              Kozijnen met transparante prijzen, van inmeten tot montage.
             </p>
             <div className="mt-4 rounded-2xl border border-paper/15 bg-paper/5 p-4">
               <p className="text-sm text-paper/80">
@@ -23,7 +24,7 @@ export function SiteFooter() {
                 </Link>
               </p>
               <p className="mt-1 text-xs leading-relaxed text-paper/55">
-                Uw bouwpartner voor renovatie, verbouw en aanbouw.{" "}
+                Het bouwbedrijf voor renovatie, verbouw en aanbouw.{" "}
                 <a
                   href="https://www.mtbbouw.com"
                   target="_blank"
@@ -34,7 +35,18 @@ export function SiteFooter() {
                 </a>
               </p>
             </div>
-            <nav aria-label="Werkgebied" className="mt-4">
+            <address className="mt-5 space-y-1 text-sm not-italic text-paper/70">
+              <p>
+                <ContactLink kind="phone" className="hover:text-lime">{company.telefoon}</ContactLink>
+              </p>
+              <p>
+                <a href={`mailto:${company.email}`} className="hover:text-lime">{company.email}</a>
+              </p>
+              <p className="text-paper/50">
+                {company.adres}, {company.postcodePlaats} · bezoek op afspraak
+              </p>
+            </address>
+            <nav aria-label="Werkgebied" className="mt-5">
               <p className="text-xs font-semibold uppercase tracking-widest text-paper/40">
                 Werkgebied
               </p>
@@ -88,7 +100,7 @@ export function SiteFooter() {
             ))}
           </nav>
           <p className="mt-4 text-xs text-paper/40">
-            © {new Date().getFullYear()} De Kozijnstudio — onderdeel van MTB Bouw.
+            © {new Date().getFullYear()} {company.naam} is een handelsnaam van {company.entiteit} · KvK {company.kvk}
           </p>
         </div>
       </Container>

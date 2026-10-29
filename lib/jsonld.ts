@@ -1,8 +1,8 @@
 /**
  * JSON-LD schema helpers.
  * Returns plain objects — serialize with JSON.stringify in <script> tags.
- * Schemas: Organization/LocalBusiness (site-wide), FAQPage (FAQ/product pages),
- * BreadcrumbList (all inner pages).
+ * Schemas: organisation (site-wide), BreadcrumbList (inner pages), Article (kennis).
+ * No FAQPage: Google no longer shows FAQ results (docs/seo-strategie-2026-10.md, h12).
  */
 
 import { SITE_URL } from "@/lib/site";
@@ -10,15 +10,27 @@ import { company } from "@/data/company";
 
 // ─── Organization / LocalBusiness ────────────────────────────────────────────
 
+/** Stable identity that other schemas reference. */
+export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+
+/**
+ * Site-wide organisation data — only verified facts that are also visible on
+ * the site (footer/contact): trade name, legal entity, address (visits by
+ * appointment), phone, e-mail, service area. No ratings, reviews or
+ * accreditations (docs/seo-strategie-2026-10.md, h12).
+ */
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": ["Organization", "LocalBusiness"],
-    name: "De Kozijnstudio",
-    description:
-      "Transparante kozijnleverancier voor kunststof, houten en aluminium kozijnen. Onderdeel van MTB Bouw. Werkgebied: Twente & Oost-Nederland.",
+    "@type": "HomeAndConstructionBusiness",
+    "@id": ORGANIZATION_ID,
+    name: company.naam,
+    legalName: company.entiteit,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`, // placeholder
+    logo: `${SITE_URL}/brand/logo-512.png`,
+    image: `${SITE_URL}/og/default.png`,
+    description:
+      "Kozijnen in Enschede en Twente: advies, levering en montage van kunststof, houten en aluminium kozijnen, met een uitgesplitst voorstel.",
     address: {
       "@type": "PostalAddress",
       streetAddress: company.adres,
@@ -29,41 +41,23 @@ export function organizationSchema() {
     },
     telephone: company.telefoonHref,
     email: company.email,
-    openingHours: "Mo-Fr 08:00-17:00",
-    areaServed: [
-      { "@type": "AdministrativeArea", name: "Twente" },
-      { "@type": "AdministrativeArea", name: "Overijssel" },
-      { "@type": "City", name: "Enschede" },
-      { "@type": "City", name: "Hengelo" },
-      { "@type": "City", name: "Almelo" },
-      { "@type": "City", name: "Oldenzaal" },
-      { "@type": "City", name: "Haaksbergen" },
-    ],
-    parentOrganization: {
-      "@type": "Organization",
-      name: "MTB Bouw",
-      url: "https://www.mtbbouw.com",
-    },
-    sameAs: [company.instagram],
-  };
-}
-
-// ─── FAQPage ─────────────────────────────────────────────────────────────────
-
-export type FaqSchemaItem = { question: string; answer: string };
-
-export function faqPageSchema(items: FaqSchemaItem[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      telephone: company.telefoonHref,
+      email: company.email,
+      availableLanguage: "nl",
+      hoursAvailable: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "17:00",
       },
-    })),
+    },
+    areaServed: [
+      { "@type": "City", name: "Enschede" },
+      { "@type": "AdministrativeArea", name: "Twente" },
+    ],
   };
 }
 
@@ -100,19 +94,11 @@ export function articleSchema(opts: {
     description: opts.description,
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
-    author: {
-      "@type": "Organization",
-      name: "De Kozijnstudio",
-      url: SITE_URL,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "De Kozijnstudio",
-      url: SITE_URL,
-    },
+    author: { "@id": ORGANIZATION_ID },
+    publisher: { "@id": ORGANIZATION_ID },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/kennisbank/${opts.slug}`,
+      "@id": `${SITE_URL}/kennis/${opts.slug}`,
     },
   };
 }

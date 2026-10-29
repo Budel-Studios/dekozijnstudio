@@ -2,7 +2,8 @@ import { VERGELIJK_RIJEN } from "@/data/kozijnen-gids";
 
 /**
  * Kwalitatieve vergelijkingstabel per profiel/product. Bevat bewust GEEN
- * bedragen — alleen een indicatieve prijsklasse (€ / €€ / €€€).
+ * bedragen — alleen een indicatieve prijsklasse (€ / €€ / €€€) — en geen
+ * prestatiewaarden of levensduurclaims zonder productbron.
  */
 export function KozijnVergelijkTabel() {
   return (
@@ -15,10 +16,9 @@ export function KozijnVergelijkTabel() {
               <th scope="col" className="px-4 py-3 font-semibold">Materiaal</th>
               <th scope="col" className="px-4 py-3 font-semibold">Uitstraling</th>
               <th scope="col" className="px-4 py-3 font-semibold">Onderhoud</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Isolatie</th>
+              <th scope="col" className="px-4 py-3 font-semibold">Opbouw</th>
               <th scope="col" className="px-4 py-3 font-semibold">Prijsklasse</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Levensduur</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Meest geschikt voor</th>
+              <th scope="col" className="px-4 py-3 font-semibold">Past vaak bij</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-mist">
@@ -28,9 +28,8 @@ export function KozijnVergelijkTabel() {
                 <td className="px-4 py-3 text-ink/70">{rij.materiaal}</td>
                 <td className="px-4 py-3 text-ink/70">{rij.uitstraling}</td>
                 <td className="px-4 py-3 text-ink/70">{rij.onderhoud}</td>
-                <td className="px-4 py-3 text-ink/70">{rij.isolatie}</td>
+                <td className="px-4 py-3 text-ink/70">{rij.opbouw}</td>
                 <td className="whitespace-nowrap px-4 py-3 font-medium text-ink">{rij.prijsklasse}</td>
-                <td className="px-4 py-3 text-ink/70">{rij.levensduur}</td>
                 <td className="px-4 py-3 text-ink/70">{rij.geschiktVoor}</td>
               </tr>
             ))}
@@ -38,9 +37,10 @@ export function KozijnVergelijkTabel() {
         </table>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-ink/50">
-        Prijsklasse is indicatief (€ = voordeligst, €€€ = hoogste segment) en
-        dient enkel ter vergelijking. Uw definitieve prijs hangt af van profiel,
-        afmeting, glas en montage en volgt na de inmeetservice.
+        De prijsklasse is een onderlinge vergelijking (€ = voordeligst, €€€ =
+        hoogste segment), geen bedrag. Wat jouw kozijnen kosten, hangt af van
+        profiel, maat, glas, kleur en montage. Dat staat in je voorstel, nadat we
+        bij je thuis hebben ingemeten.
       </p>
     </div>
   );

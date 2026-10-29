@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { MODULES } from "@/lib/site";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
@@ -29,6 +31,7 @@ const wasmogelijk = [
 ];
 
 export default function DiyPage() {
+  if (!MODULES.diy) notFound();
   return (
     <>
       <PageHero
@@ -38,7 +41,7 @@ export default function DiyPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Zelf plaatsen (DIY)" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Vraag levering aan</Button>
+            <Button href="/offerte">Vraag levering aan</Button>
             <Button href="/montage" variant="secondary">Liever montage?</Button>
           </>
         }
@@ -94,7 +97,7 @@ export default function DiyPage() {
             de maatvoering.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
+            <Button href="/offerte">Offerte aanvragen</Button>
             <Button href="/contact" variant="secondary">Vraag advies</Button>
           </div>
         </Container>

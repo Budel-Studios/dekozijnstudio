@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { SHOW_INTERNAL_PAGES } from "@/lib/site";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
@@ -11,6 +13,7 @@ import { LOREM_PARAGRAPH } from "@/lib/placeholder";
 
 export const metadata: Metadata = {
   title: "Styleguide",
+  robots: { index: false, follow: false },
 };
 
 const colors = [
@@ -50,6 +53,7 @@ function Block({
 }
 
 export default function StyleguidePage() {
+  if (!SHOW_INTERNAL_PAGES) notFound();
   return (
     <>
       <Section tone="soft" className="py-12 sm:py-16">

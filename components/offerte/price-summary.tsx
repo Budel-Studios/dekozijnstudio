@@ -1,6 +1,5 @@
 import { formatEuro } from "@/lib/configurator-price";
 import { MONTAGE } from "@/lib/montage";
-import { inmeetservice } from "@/data/prices";
 import type { CheckoutTotals } from "@/lib/checkout";
 import { PRICE_ON_REQUEST, SHOW_PRODUCT_PRICES } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -43,7 +42,7 @@ export function PriceSummary({
         {isde.subsidie > 0 && (
           <div className="border-t border-mist pt-2">
             <Line
-              k="ISDE-subsidie (ontvangt u van RVO)"
+              k="ISDE-subsidie (ontvang je van RVO)"
               v={`− ${formatEuro(isde.subsidie)}`}
               accent
             />
@@ -64,16 +63,14 @@ export function PriceSummary({
               <Line k="Restant bij oplevering" v={formatEuro(totals.restantBijOplevering)} />
             </dl>
             <p className="mt-2.5 text-xs leading-relaxed text-ink/45">
-              De aanbetaling dekt de maatwerkproductie van uw kozijnen. Het restant
-              (resterend kozijndeel + montage) voldoet u bij oplevering.
+              De aanbetaling dekt de maatwerkproductie van je kozijnen. Het restant
+              (resterend kozijndeel en montage) betaal je bij oplevering.
             </p>
           </>
         ) : (
           <p className="mt-2.5 text-xs leading-relaxed text-ink/45">
-            Bij maatwerk vragen we een kleine aanbetaling voor de productie; de
-            montage betaalt u achteraf. De bedragen staan in uw persoonlijke
-            offerte na de inmeetservice ({inmeetservice.price}, verrekend bij
-            doorgang).
+            Bij maatwerk vragen we een aanbetaling voor de productie; de montage
+            betaal je achteraf. De bedragen staan in je voorstel na het inmeten.
           </p>
         )}
       </div>

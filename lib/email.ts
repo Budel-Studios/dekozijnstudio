@@ -1,97 +1,27 @@
 import "server-only";
-import nodemailer from "nodemailer";
-import type { OfferteData } from "@/lib/offerte-schema";
+import { deliverMail, LEAD_MAILBOX } from "@/lib/mail-transport";
+import type { VoorstelData } from "@/lib/offerte-schema";
 import {
-  MATERIAAL_OPTIONS,
-  PRODUCTTYPE_OPTIONS,
-  UITVOERING_OPTIONS,
-  BOUWKUNDIG_OPTIONS,
+  CONTACTVOORKEUR_OPTIONS,
+  PERIODE_OPTIONS,
   labelFor,
+  summarize,
 } from "@/lib/offerte-schema";
 import {
-  computeCheckout,
   computeProject,
   type CheckoutContact,
   type ProjectLineItem,
 } from "@/lib/checkout";
-import { formatEuro, type KozijnConfig } from "@/lib/configurator-price";
-import { EENHEID_LABEL, MONTAGE } from "@/lib/montage";
+import { formatEuro } from "@/lib/configurator-price";
+import { MONTAGE } from "@/lib/montage";
 import { buildHandoff } from "@/lib/configurator-handoff";
 
 /**
- * SMTP email sending via Nodemailer.
- * Configuration comes entirely from environment variables (see .env.example).
- * Nothing is hardcoded; secrets live in .env.local (never committed).
+ * E-mail content for the site's forms. Delivery (Resend or SMTP) lives in
+ * lib/mail-transport.ts; leads go to the MTB Bouw mailbox for now.
  */
 
-type SmtpConfig = {
-  host: string;
-  port: number;
-  secure: boolean;
-  user: string;
-  pass: string;
-  to: string;
-  from: string;
-};
-
-/** Reads + validates SMTP config from env. Returns null if not configured. */
-function readSmtpConfig(): SmtpConfig | null {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const to = process.env.OFFERTE_TO_EMAIL;
-
-  if (!host || !user || !pass || !to) return null;
-
-  const port = Number(process.env.SMTP_PORT ?? "587");
-  return {
-    host,
-    port,
-    // Port 465 = implicit TLS. 587/25 = STARTTLS (secure:false). Allow override.
-    secure: process.env.SMTP_SECURE
-      ? process.env.SMTP_SECURE === "true"
-      : port === 465,
-    user,
-    pass,
-    to,
-    from: process.env.OFFERTE_FROM_EMAIL ?? user,
-  };
-}
-
-export function isEmailConfigured(): boolean {
-  return readSmtpConfig() !== null;
-}
-
-// ─── Content rendering ───────────────────────────────────────────────────────
-
-function renderFields(data: OfferteData): Array<[string, string]> {
-  const producttypes = data.producttypes
-    .map((t) => labelFor(PRODUCTTYPE_OPTIONS, t))
-    .join(", ");
-
-  const fields: Array<[string, string]> = [
-    ["Materiaal", labelFor(MATERIAAL_OPTIONS, data.materiaal)],
-    ["Producttype(s)", producttypes],
-    ["Aantal kozijnen", String(data.aantal)],
-    ["Globale afmetingen", data.afmetingen?.trim() || "—"],
-    ["Uitvoering", labelFor(UITVOERING_OPTIONS, data.uitvoering)],
-    ["Bouwkundige aanpassingen", labelFor(BOUWKUNDIG_OPTIONS, data.bouwkundig)],
-    ["Toelichting bouwkundig", data.bouwkundigToelichting?.trim() || "—"],
-    ["Naam", data.naam],
-    ["E-mail", data.email],
-    ["Telefoon", data.telefoon],
-    ["Postcode", data.postcode.toUpperCase()],
-    ["Plaats", data.plaats],
-    ["Opmerkingen", data.opmerkingen?.trim() || "—"],
-  ];
-
-  // Configurator handoff (fase 5) — only included when present.
-  if (data.configuratie && data.configuratie.trim().length > 0) {
-    fields.push(["Configurator", data.configuratie.trim()]);
-  }
-
-  return fields;
-}
+// ─── "Vraag een voorstel" (aanvraagformulier /offerte) ──────────────────────
 
 function escapeHtml(value: string): string {
   return value
@@ -101,8 +31,24 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function buildHtml(data: OfferteData): string {
-  const rows = renderFields(data)
+export type VoorstelFoto = { filename: string; contentType: string; content: Buffer };
+
+function voorstelFields(data: VoorstelData, fotoCount: number): Array<[string, string]> {
+  const c = data.contact;
+  return [
+    ...summarize(data),
+    ["Toelichting / globale maten", data.toelichting?.trim() || "—"],
+    ["Foto's", fotoCount > 0 ? `${fotoCount} als bijlage` : "Geen"],
+    ["Naam", c.naam],
+    ["E-mail", c.email || "—"],
+    ["Telefoon", c.telefoon || "—"],
+    ["Contactvoorkeur", labelFor(CONTACTVOORKEUR_OPTIONS, c.contactvoorkeur)],
+    ["Gewenste periode", c.periode ? labelFor(PERIODE_OPTIONS, c.periode) : "Geen voorkeur"],
+  ];
+}
+
+function voorstelHtml(fields: Array<[string, string]>, replyHint: string): string {
+  const rows = fields
     .map(
       ([label, value]) => `
       <tr>
@@ -111,182 +57,103 @@ function buildHtml(data: OfferteData): string {
       </tr>`,
     )
     .join("");
-
   return `<!doctype html>
 <html lang="nl">
 <body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
   <div style="max-width:640px;margin:0 auto;padding:24px;">
     <div style="background:#23272a;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0;">
-      <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe offerte-aanvraag</p>
+      <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe aanvraag: voorstel</p>
       <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio &middot; via website</p>
     </div>
     <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;border-radius:0 0 12px 12px;padding:8px 0;">
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        ${rows}
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}
       </table>
     </div>
-    <p style="font-size:12px;color:#6b6b6b;margin-top:16px;">
-      Verzonden via het offerteformulier op de website. Antwoord op deze e-mail
-      gaat rechtstreeks naar de klant (${escapeHtml(data.email)}).
-    </p>
+    <p style="font-size:12px;color:#6b6b6b;margin-top:16px;">${escapeHtml(replyHint)}</p>
   </div>
 </body>
 </html>`;
 }
 
-function buildText(data: OfferteData): string {
-  const lines = renderFields(data).map(([label, value]) => `${label}: ${value}`);
-  return `Nieuwe offerte-aanvraag — De Kozijnstudio\n\n${lines.join("\n")}\n`;
-}
-
-// ─── Send ────────────────────────────────────────────────────────────────────
-
-export async function sendOfferteEmail(
-  data: OfferteData,
+/**
+ * Sends a "Vraag een voorstel" request to the De Kozijnstudio mailbox.
+ * Photos travel as e-mail attachments only — they are never stored or
+ * published by the website. Resolves ok only after the SMTP server accepted
+ * the message, so the visitor never sees a false success.
+ */
+export async function sendVoorstelEmail(
+  data: VoorstelData,
+  fotos: VoorstelFoto[],
 ): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
-  const config = readSmtpConfig();
-  if (!config) {
-    console.error(
-      "[offerte] SMTP is niet geconfigureerd. Stel SMTP_HOST/SMTP_USER/SMTP_PASS/OFFERTE_TO_EMAIL in (.env.local).",
-    );
-    return { ok: false, reason: "not_configured" };
-  }
+  const c = data.contact;
+  const fields = voorstelFields(data, fotos.length);
+  const replyHint = c.email
+    ? `Antwoorden op deze e-mail gaat rechtstreeks naar ${c.email}.`
+    : `Geen e-mailadres opgegeven — bel of app ${c.telefoon}.`;
 
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth: { user: config.user, pass: config.pass },
+  // 1. The lead — this is what counts.
+  const lead = await deliverMail({
+    to: LEAD_MAILBOX,
+    fromName: "De Kozijnstudio — website",
+    ...(c.email ? { replyTo: `"${c.naam}" <${c.email}>` } : {}),
+    subject: `Kozijnstudio-aanvraag — ${c.naam} (${data.locatie})`,
+    text: `Nieuwe aanvraag via De Kozijnstudio\n\n${fields
+      .map(([l, v]) => `${l}: ${v}`)
+      .join("\n")}\n\n${replyHint}\n`,
+    html: voorstelHtml(fields, replyHint),
+    attachments: fotos.map((f) => ({ filename: f.filename, content: f.content, contentType: f.contentType })),
   });
+  if (!lead.ok) return lead;
 
-  try {
-    await transporter.sendMail({
-      from: `"De Kozijnstudio — website" <${config.from}>`,
-      to: config.to,
-      replyTo: `"${data.naam}" <${data.email}>`,
-      subject: `Offerte-aanvraag — ${data.naam} (${data.plaats})`,
-      text: buildText(data),
-      html: buildHtml(data),
+  // 2. Confirmation to the visitor (only with an e-mail address). A failed
+  //    confirmation never fails the request — we will contact them anyway.
+  if (c.email) {
+    const recap = summarize(data);
+    const confirm = await deliverMail({
+      to: c.email,
+      fromName: "De Kozijnstudio",
+      replyTo: LEAD_MAILBOX,
+      subject: "Je aanvraag bij De Kozijnstudio is binnen",
+      text: [
+        `Hoi ${c.naam},`,
+        "",
+        "Bedankt voor je aanvraag. We bekijken je wensen en nemen contact met je op om de volgende stap te bespreken.",
+        "",
+        "Dit heb je ons gestuurd:",
+        ...recap.map(([l, v]) => `- ${l}: ${v}`),
+        "",
+        "Groet,",
+        "De Kozijnstudio",
+      ].join("\n"),
+      html: confirmationHtml(c.naam, recap),
     });
-    return { ok: true };
-  } catch (error) {
-    console.error("[offerte] Versturen mislukt:", error);
-    return { ok: false, reason: "send_failed" };
+    if (!confirm.ok) console.error("[voorstel] bevestigingsmail naar klant mislukt");
   }
+  return { ok: true };
 }
 
-// ─── Checkout-offerte (met prijsoverzicht + montage + ISDE) ──────────────────
-
-export async function sendCheckoutEmail(input: {
-  config: KozijnConfig | null;
-  montageChecked: string[];
-  configSummary: string;
-  contact: CheckoutContact;
-}): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
-  const smtp = readSmtpConfig();
-  if (!smtp) {
-    console.error("[checkout] SMTP is niet geconfigureerd (.env.local).");
-    return { ok: false, reason: "not_configured" };
-  }
-
-  const totals = computeCheckout(input.config, input.montageChecked);
-  const c = input.contact;
-
-  const montageRows = totals.montage.lines
+function confirmationHtml(naam: string, recap: Array<[string, string]>): string {
+  const rows = recap
     .map(
-      (l) =>
-        `      <tr><td style="padding:6px 12px;border-bottom:1px solid #e7e5e0;">${escapeHtml(l.regel.label)}</td><td style="padding:6px 12px;border-bottom:1px solid #e7e5e0;text-align:right;">${l.aantal} ${EENHEID_LABEL[l.regel.eenheid]}</td><td style="padding:6px 12px;border-bottom:1px solid #e7e5e0;text-align:right;">${formatEuro(l.lineInclBtw)}</td></tr>`,
+      ([l, v]) =>
+        `<tr><td style="padding:8px 12px;border-bottom:1px solid #e7e5e0;color:#6b6b6b;width:180px;">${escapeHtml(l)}</td><td style="padding:8px 12px;border-bottom:1px solid #e7e5e0;color:#23272a;">${escapeHtml(v)}</td></tr>`,
     )
     .join("");
-
-  const isdeRow =
-    totals.isde.subsidie > 0
-      ? `<tr><td colspan="2" style="padding:6px 12px;">ISDE-subsidie (indicatief)</td><td style="padding:6px 12px;text-align:right;color:#4d7c0f;">− ${formatEuro(totals.isde.subsidie)}</td></tr>`
-      : "";
-
-  const html = `<!doctype html><html lang="nl"><body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
-  <div style="max-width:680px;margin:0 auto;padding:24px;">
+  return `<!doctype html><html lang="nl"><body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
+  <div style="max-width:600px;margin:0 auto;padding:24px;">
     <div style="background:#23272a;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0;">
-      <p style="margin:0;font-size:18px;font-weight:700;">Offerte-aanvraag (checkout)</p>
-      <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio · via website</p>
+      <p style="margin:0;font-size:18px;font-weight:700;">Je aanvraag is binnen</p>
+      <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio</p>
     </div>
-    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;padding:16px 24px;">
-      <h3 style="margin:8px 0;font-size:15px;">Klant</h3>
-      <p style="margin:0;font-size:14px;line-height:1.6;">
-        ${escapeHtml(c.naam)}<br>${escapeHtml(c.email)} · ${escapeHtml(c.telefoon)}<br>
-        ${escapeHtml(c.postcode.toUpperCase())} ${escapeHtml(c.plaats)}
-        ${c.opmerkingen ? `<br><br><strong>Opmerkingen:</strong><br>${escapeHtml(c.opmerkingen)}` : ""}
-      </p>
-
-      <h3 style="margin:18px 0 8px;font-size:15px;">Configuratie</h3>
-      <pre style="margin:0;white-space:pre-wrap;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#333;">${escapeHtml(input.configSummary || "— geen configuratie meegestuurd —")}</pre>
-
-      <h3 style="margin:18px 0 8px;font-size:15px;">Montage & werkzaamheden (incl. btw)</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:13px;">${montageRows || `<tr><td style="padding:6px 12px;color:#888;">Geen montage-items geselecteerd</td></tr>`}</table>
-      <p style="margin:6px 0 0;font-size:12px;color:#777;">Totaal montage-uren (indicatief): ${totals.montage.totaalUren} u</p>
-
-      <h3 style="margin:18px 0 8px;font-size:15px;">Prijsoverzicht</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">
-        <tr><td colspan="2" style="padding:6px 12px;">Kozijn(en) (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(totals.productInclBtw)}</td></tr>
-        <tr><td colspan="2" style="padding:6px 12px;">Montage & werk (incl. btw)</td><td style="padding:6px 12px;text-align:right;">${formatEuro(totals.montage.subtotaalInclBtw)}</td></tr>
-        <tr><td colspan="2" style="padding:8px 12px;border-top:1px solid #e7e5e0;font-weight:700;">Bruto (incl. btw)</td><td style="padding:8px 12px;text-align:right;border-top:1px solid #e7e5e0;font-weight:700;">${formatEuro(totals.brutoInclBtw)}</td></tr>
-        <tr><td colspan="2" style="padding:2px 12px;font-size:12px;color:#777;">waarvan btw (${MONTAGE.btwPercentage}%)</td><td style="padding:2px 12px;text-align:right;font-size:12px;color:#777;">${formatEuro(totals.btwBedrag)}</td></tr>
-        ${isdeRow}
-        ${totals.isde.subsidie > 0 ? `<tr><td colspan="2" style="padding:6px 12px;font-weight:600;">Netto investering (na ISDE)</td><td style="padding:6px 12px;text-align:right;font-weight:600;">${formatEuro(totals.nettoInvestering)}</td></tr>` : ""}
-        <tr><td colspan="3" style="padding:10px 12px 2px;font-size:12px;color:#abe000;background:#23272a;">BETALING</td></tr>
-        <tr><td colspan="2" style="padding:6px 12px;">Aanbetaling bij opdracht</td><td style="padding:6px 12px;text-align:right;">${formatEuro(totals.aanbetaling)}</td></tr>
-        <tr><td colspan="2" style="padding:6px 12px;">Restant bij oplevering</td><td style="padding:6px 12px;text-align:right;">${formatEuro(totals.restantBijOplevering)}</td></tr>
-      </table>
-      <p style="margin:12px 0 0;font-size:12px;color:#777;">Richtprijs — niet bindend. Definitieve prijs na inmeetservice. Aanbetaling = maatwerkproductie kozijn (intern ≈ inkoopprijs); restant bij oplevering.</p>
+    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;border-radius:0 0 12px 12px;padding:20px 24px;">
+      <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">Hoi ${escapeHtml(naam)},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Bedankt voor je aanvraag. We bekijken je wensen en nemen contact met je op om de volgende stap te bespreken.</p>
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;">Dit heb je ons gestuurd</p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}</table>
+      <p style="margin:20px 0 0;font-size:15px;">Groet,<br><strong>De Kozijnstudio</strong></p>
     </div>
   </div>
 </body></html>`;
-
-  const text = [
-    `Offerte-aanvraag (checkout) — De Kozijnstudio`,
-    ``,
-    `Klant: ${c.naam} · ${c.email} · ${c.telefoon} · ${c.postcode.toUpperCase()} ${c.plaats}`,
-    c.opmerkingen ? `Opmerkingen: ${c.opmerkingen}` : ``,
-    ``,
-    `Configuratie:`,
-    input.configSummary || "— geen —",
-    ``,
-    `Montage:`,
-    ...totals.montage.lines.map((l) => `- ${l.regel.label}: ${l.aantal} ${EENHEID_LABEL[l.regel.eenheid]} = ${formatEuro(l.lineInclBtw)}`),
-    `Montage-uren (indicatief): ${totals.montage.totaalUren}`,
-    ``,
-    `Kozijn(en): ${formatEuro(totals.productInclBtw)}`,
-    `Montage: ${formatEuro(totals.montage.subtotaalInclBtw)}`,
-    `Bruto incl. btw: ${formatEuro(totals.brutoInclBtw)} (waarvan btw ${formatEuro(totals.btwBedrag)})`,
-    totals.isde.subsidie > 0 ? `ISDE-subsidie (indicatief, via RVO): -${formatEuro(totals.isde.subsidie)}` : ``,
-    totals.isde.subsidie > 0 ? `Netto investering: ${formatEuro(totals.nettoInvestering)}` : ``,
-    `Aanbetaling bij opdracht: ${formatEuro(totals.aanbetaling)}`,
-    `Restant bij oplevering: ${formatEuro(totals.restantBijOplevering)}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  const transporter = nodemailer.createTransport({
-    host: smtp.host,
-    port: smtp.port,
-    secure: smtp.secure,
-    auth: { user: smtp.user, pass: smtp.pass },
-  });
-
-  try {
-    await transporter.sendMail({
-      from: `"De Kozijnstudio — website" <${smtp.from}>`,
-      to: smtp.to,
-      replyTo: `"${c.naam}" <${c.email}>`,
-      subject: `Offerte (checkout) — ${c.naam} (${c.plaats}) — ${formatEuro(totals.eindtotaalInclBtw)}`,
-      text,
-      html,
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("[checkout] Versturen mislukt:", error);
-    return { ok: false, reason: "send_failed" };
-  }
 }
 
 // ─── Project-offerte (mandje met meerdere kozijnen) ──────────────────────────
@@ -296,12 +163,6 @@ export async function sendProjectEmail(input: {
   contact: CheckoutContact;
   pdfBase64?: string | null;
 }): Promise<{ ok: true } | { ok: false; reason: "not_configured" | "send_failed" }> {
-  const smtp = readSmtpConfig();
-  if (!smtp) {
-    console.error("[project] SMTP is niet geconfigureerd (.env.local).");
-    return { ok: false, reason: "not_configured" };
-  }
-
   const project = computeProject(input.items);
   const t = project.total;
   const c = input.contact;
@@ -378,13 +239,6 @@ export async function sendProjectEmail(input: {
     .filter(Boolean)
     .join("\n");
 
-  const transporter = nodemailer.createTransport({
-    host: smtp.host,
-    port: smtp.port,
-    secure: smtp.secure,
-    auth: { user: smtp.user, pass: smtp.pass },
-  });
-
   const attachments =
     input.pdfBase64 && input.pdfBase64.length > 0
       ? [
@@ -396,19 +250,13 @@ export async function sendProjectEmail(input: {
         ]
       : undefined;
 
-  try {
-    await transporter.sendMail({
-      from: `"De Kozijnstudio — website" <${smtp.from}>`,
-      to: smtp.to,
-      replyTo: `"${c.naam}" <${c.email}>`,
-      subject: `Projectaanvraag — ${c.naam} (${c.plaats}) — ${project.itemCount} kozijn(en) — ${formatEuro(t.brutoInclBtw)}`,
-      text,
-      html,
-      attachments,
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("[project] Versturen mislukt:", error);
-    return { ok: false, reason: "send_failed" };
-  }
+  return deliverMail({
+    to: LEAD_MAILBOX,
+    fromName: "De Kozijnstudio — website",
+    replyTo: `"${c.naam}" <${c.email}>`,
+    subject: `Kozijnstudio-project — ${c.naam} (${c.plaats}) — ${project.itemCount} kozijn(en)`,
+    text,
+    html,
+    attachments,
+  });
 }

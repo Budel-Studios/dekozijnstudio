@@ -1,134 +1,117 @@
-import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { Placeholder } from "@/components/ui/placeholder";
+import { ContactLink } from "@/components/contact-link";
 import { company } from "@/data/company";
+import { feit } from "@/data/feiten";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { MODULES } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact",
+export const metadata = pageMetadata({
+  absoluteTitle: "Contact met De Kozijnstudio in Enschede",
   description:
-    "Neem contact op met De Kozijnstudio voor vragen, advies of een offerte. Werkgebied: Twente & Oost-Nederland.",
-  alternates: { canonical: "/contact" },
-};
+    "Een vraag over kozijnen in Enschede of Twente? Neem contact op met De Kozijnstudio of stuur informatie over jouw woning en wensen.",
+  path: "/contact",
+});
+
+const link = "font-medium text-forest underline underline-offset-2 hover:no-underline";
 
 export default function ContactPage() {
+  const reactietermijn = feit("reactietermijn");
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(breadcrumbSchema([{ label: "Home", href: "/" }, { label: "Contact", href: "/contact" }])),
+        }}
+      />
       <PageHero
         eyebrow="Contact"
-        title="We beantwoorden uw vraag binnen één werkdag."
-        lead="Heeft u een vraag over kozijnen, materialen, de ISDE-subsidie of ons werkgebied? Of wilt u meteen een offerte aanvragen? We staan voor u klaar."
+        title="Neem contact op met De Kozijnstudio"
+        lead={`Een vraag over kozijnen, materialen, subsidie of ons werkgebied? Bel, mail of app ons.${reactietermijn ? ` ${reactietermijn}.` : ""}`}
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
       />
 
       <Section>
         <Container className="grid gap-12 lg:grid-cols-2">
-          {/* Direct contact — bellen, WhatsApp of mail; offerte via de wizard */}
           <div>
-            <Eyebrow>Stuur een bericht</Eyebrow>
-            <h2 className="mt-4 mb-6 text-2xl text-ink">Direct contact</h2>
-            <p className="leading-relaxed text-ink/65">
-              Mail of bel ons gerust — we reageren doorgaans binnen één werkdag.
-              Liever appen? Dat kan ook: stuur uw vraag (met eventueel een foto
-              van de situatie) via WhatsApp.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button href={`mailto:${company.email}`}>Stuur een e-mail</Button>
-              <Button
-                href={`https://wa.me/${company.whatsappHref}`}
-                variant="secondary"
-              >
-                WhatsApp ons
-              </Button>
-            </div>
-            <div className="mt-10 rounded-card border border-mist bg-paper-soft p-5">
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">
-                Offerte of prijsindicatie?
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-ink/65">
-                Gebruik dan het offerteformulier of stel uw kozijn samen in de
-                configurator — dan hebben we alle gegevens direct compleet.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Button href="/offerte-aanvragen" size="sm">
-                  Offerte aanvragen →
-                </Button>
-                <Button href="/configurator" variant="secondary" size="sm">
-                  Naar de configurator
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Contactgegevens */}
-          <div>
-            <Eyebrow>Contactgegevens</Eyebrow>
-            <h2 className="mt-4 mb-6 text-2xl text-ink">Bereikbaarheid</h2>
-            <div className="space-y-5">
+            <Eyebrow>Direct contact</Eyebrow>
+            <h2 className="mb-6 mt-4 text-2xl text-ink">Bellen, mailen of appen</h2>
+            <div className="space-y-4">
               <div className="rounded-card border border-mist bg-paper-soft p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">Telefoon</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">Telefoon</p>
                 <p className="mt-1 font-medium text-ink">
-                  <a href={`tel:${company.telefoon.replace(/\s/g, "")}`} className="hover:text-forest">{company.telefoon}</a>
+                  <ContactLink kind="phone" location="contact" className="hover:text-forest">
+                    {company.telefoon}
+                  </ContactLink>
                 </p>
-                <p className="mt-1 text-sm text-ink/60">Bereikbaar {company.openingstijden}</p>
+                <p className="mt-1 text-sm text-ink/65">Bereikbaar {company.openingstijden}</p>
               </div>
               <div className="rounded-card border border-mist bg-paper-soft p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">WhatsApp</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">WhatsApp</p>
                 <p className="mt-1 font-medium text-ink">
-                  <a href={`https://wa.me/${company.whatsappHref}`} className="hover:text-forest">{company.whatsapp}</a>
+                  <ContactLink kind="whatsapp" location="contact" className="hover:text-forest">
+                    {company.whatsapp}
+                  </ContactLink>
                 </p>
-                <p className="mt-1 text-sm text-ink/60">Handig voor foto&rsquo;s van uw huidige kozijnen</p>
+                <p className="mt-1 text-sm text-ink/65">Handig om foto&apos;s van je huidige kozijnen te sturen</p>
               </div>
               <div className="rounded-card border border-mist bg-paper-soft p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">E-mail</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">E-mail</p>
                 <p className="mt-1 font-medium text-ink">
-                  <a href={`mailto:${company.email}`} className="hover:text-forest">{company.email}</a>
-                </p>
-                <p className="mt-1 text-sm text-ink/60">We reageren doorgaans binnen één werkdag</p>
-              </div>
-              <div className="rounded-card border border-mist bg-paper-soft p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">Werkgebied</p>
-                <p className="mt-1 font-medium text-ink">Twente & Oost-Nederland</p>
-                <p className="mt-1 text-sm text-ink/60">
-                  Twijfelt u of uw adres in ons werkgebied valt? Neem contact op.
-                </p>
-              </div>
-              <div className="rounded-card border border-mist bg-paper-soft p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-ink/40">Onderdeel van</p>
-                <p className="mt-1 font-medium text-ink">MTB Bouw</p>
-                <p className="mt-1 text-sm text-ink/60">
-                  <a href="https://www.mtbbouw.com" className="text-forest underline underline-offset-2 hover:no-underline">
-                    www.mtbbouw.com
+                  <a href={`mailto:${company.email}`} className="hover:text-forest">
+                    {company.email}
                   </a>
                 </p>
               </div>
             </div>
           </div>
-        </Container>
-      </Section>
 
-      <Section tone="soft">
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <Placeholder label="Kaart / locatie" className="min-h-56" />
           <div>
-            <Eyebrow>Locatie</Eyebrow>
-            <h2 className="mt-4 text-2xl text-ink">
-              Gevestigd in Enschede
-            </h2>
-            <p className="mt-4 leading-relaxed text-ink/65">
-              De Kozijnstudio opereert vanuit dezelfde locatie als MTB Bouw:
+            <Eyebrow>Een voorstel?</Eyebrow>
+            <h2 className="mb-6 mt-4 text-2xl text-ink">Stuur je wensen in één keer</h2>
+            <p className="leading-relaxed text-ink/70">
+              Wil je een voorstel voor nieuwe kozijnen? Via het aanvraagformulier geef je in drie korte stappen je wensen,
+              je situatie en je contactgegevens door. Foto&apos;s kun je meesturen.
             </p>
-            <p className="mt-4 font-medium text-ink">
-              {company.adres}
-              <br />
-              {company.postcodePlaats}
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-ink/60">
-              Bezoek op afspraak — zo weet u zeker dat er iemand met verstand
-              van uw project voor u klaarzit.
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/offerte">Vraag een voorstel</Button>
+              {MODULES.configurator && (
+                <Button href="/configurator" variant="secondary">
+                  Naar de configurator
+                </Button>
+              )}
+            </div>
+
+            <div className="mt-10 rounded-card border border-mist bg-paper p-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">Adres</p>
+              <p className="mt-2 font-medium text-ink">
+                {company.naam}
+                <br />
+                {company.adres}
+                <br />
+                {company.postcodePlaats}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-ink/70">
+                Bezoek op afspraak, zodat er iemand met tijd voor je project klaarzit. We werken op hetzelfde adres als MTB
+                Bouw.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-ink/70">
+                {company.naam} is een handelsnaam van {company.entiteit} · KvK {company.kvk}
+              </p>
+            </div>
+
+            <p className="mt-6 text-sm text-ink/70">
+              Werk je buiten Enschede? Bekijk ons{" "}
+              <Link href="/werkgebied" className={link}>
+                werkgebied in Twente
+              </Link>
+              .
             </p>
           </div>
         </Container>

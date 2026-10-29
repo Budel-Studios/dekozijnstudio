@@ -1,123 +1,195 @@
-import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
-import { ProcessSteps } from "@/components/ui/process-steps";
-import { Placeholder } from "@/components/ui/placeholder";
+import { FAQ, type FaqItem } from "@/components/ui/faq";
 import { MtbBouwBand } from "@/components/mtb-bouw-band";
-import { inmeetservice } from "@/data/prices";
+import { CtaBlok } from "@/components/kozijnen/cta-blok";
+import { ScopeTabel } from "@/components/montage/scope-tabel";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
-export const metadata: Metadata = {
-  title: "Montage",
+export const metadata = pageMetadata({
+  title: "Kozijnen laten monteren in Twente",
   description:
-    "Vakkundige montage van kozijnen door eigen monteurs. Van inmeten tot sleutelklaar, inclusief bouwkundige aanpassingen via MTB Bouw. Twente & Oost-Nederland.",
-  alternates: { canonical: "/montage" },
-};
+    "Wat hoort bij kozijnen monteren? Bekijk de aandachtspunten voor demontage, aansluitingen, afwerking en oplevering in jouw woning.",
+  path: "/montage",
+});
 
-const inbegrepen = [
-  "Verwijdering van de oude kozijnen (indien gewenst)",
-  "Plaatsing van de nieuwe kozijnen inclusief kit- en isolatiewerk",
-  "Controle op waterpas, lood en klemvrijheid",
-  "Aansluitingen conform bouwtechnische normen",
-  "Afvoer van oud materiaal en eindreiniging van het werkgebied",
+const link = "font-medium text-forest underline underline-offset-2";
+
+const voorbereiding = [
+  "Haal gordijnen, rails en jaloezieën weg bij de ramen die vervangen worden",
+  "Maak de vensterbanken leeg en zorg voor ongeveer een meter vrije ruimte voor het raam",
+  "Zorg dat de plek voor de gevel bereikbaar is, ook voor een eventuele steiger of hoogwerker",
+  "Laat weten als er alarmsensoren, zonwering of horren aan de kozijnen vastzitten",
 ];
 
-const montageSteps = [
+const vragen: FaqItem[] = [
   {
-    title: "Inmeetservice",
-    description: `Wij komen langs om de exacte maten op te nemen en uw situatie te beoordelen. Kosten: ${inmeetservice.price}. ${inmeetservice.note}`,
+    question: "Hoe weet ik wat er in mijn montage zit?",
+    answer:
+      "In je voorstel staat de montage per onderdeel uitgesplitst: verwijderen, plaatsen, afwerken en eventueel extra werk. Wat niet in het voorstel staat, wordt pas uitgevoerd nadat we het met je hebben besproken.",
   },
   {
-    title: "Offerte",
-    description:
-      "U ontvangt een gespecificeerde offerte met materiaal, montagekosten en eventuele bouwkundige meerwerken — alles incl. btw, geen verborgen kosten.",
+    question: "Wat als er bij het verwijderen iets onverwachts tevoorschijn komt?",
+    answer:
+      "Soms blijkt pas bij het verwijderen dat bijvoorbeeld een latei of het metselwerk eromheen slecht is. Dan leggen we je uit wat we zien en wat de opties zijn, voordat er extra werk wordt gedaan.",
   },
   {
-    title: "Productie & levering",
-    description:
-      "Na akkoord gaan de kozijnen in productie. Levertijd is doorgaans ± 8 weken. U wordt tijdig geïnformeerd over de exacte montagedatum.",
+    question: "Kunnen jullie ook de opening groter maken?",
+    answer: (
+      <>
+        Ja. Een opening vergroten, een nieuwe latei plaatsen of metselwerk aanpassen is bouwkundig werk. Dat doet MTB Bouw,
+        in dezelfde planning. Lees meer over{" "}
+        <Link href="/bouwkundige-aanpassingen" className={link}>
+          bouwkundige aanpassingen
+        </Link>
+        .
+      </>
+    ),
   },
   {
-    title: "Montagdag(en)",
-    description:
-      "Onze monteurs plaatsen zoveel mogelijk kozijnen per dag om de overlast te beperken. De montage verloopt doorgaans binnen één week.",
-  },
-  {
-    title: "Oplevering",
-    description:
-      "We lopen samen de oplevering door. Uw woning is na afloop wind- en waterdicht. Montage wordt achteraf gefactureerd.",
+    question: "Wat kost montage?",
+    answer: (
+      <>
+        Dat hangt af van het aantal en de grootte van de kozijnen, de bereikbaarheid en de afwerking. Op de pagina{" "}
+        <Link href="/kosten" className={link}>
+          kosten
+        </Link>{" "}
+        lees je hoe de prijs is opgebouwd.
+      </>
+    ),
   },
 ];
 
 export default function MontagePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(breadcrumbSchema([{ label: "Home", href: "/" }, { label: "Montage", href: "/montage" }])),
+        }}
+      />
       <PageHero
         eyebrow="Montage"
-        title="Van kozijn tot sleutelklaar — wij regelen het."
-        lead={`Onze eigen monteurs plaatsen uw nieuwe kozijnen vakkundig en netjes. Van de inmeetservice (${inmeetservice.price}) tot de oplevering: u heeft één aanspreekpunt.`}
+        title="Wat komt er kijken bij kozijnen monteren?"
+        lead="Een nieuw kozijn is zo goed als de manier waarop het geplaatst en aangesloten wordt. Hier zie je welke onderdelen bij het werk horen, waar je op let, en wat jij zelf kunt voorbereiden."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Montage" }]}
         actions={
           <>
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-            <Button href="/bouwkundige-aanpassingen" variant="secondary">Bouwkundige aanpassingen</Button>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/werkwijze" variant="secondary">
+              Bekijk onze werkwijze
+            </Button>
           </>
         }
-        media={<Placeholder label="Montage in uitvoering" className="min-h-72 lg:min-h-80" />}
       />
 
       <Section>
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-start">
-          <div>
-            <Eyebrow>Inbegrepen</Eyebrow>
-            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">
-              Wat zit er standaard in de montage?
-            </h2>
-            <p className="mt-4 leading-relaxed text-ink/65">
-              Onze montageprijzen zijn allesomvattend. Hieronder ziet u wat
-              standaard is inbegrepen. Meerwerken (zoals het vergroten van een
-              muuropening) worden altijd apart en vooraf gecommuniceerd.
-            </p>
-            <FeatureList items={inbegrepen} className="mt-6" />
+        <Container>
+          <Eyebrow>Onderdelen</Eyebrow>
+          <h2 className="mt-4 max-w-2xl text-2xl text-ink sm:text-3xl">Wat er bij het monteren gebeurt</h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-ink/70">
+            Van inmeten tot oplevering. In je voorstel zie je per onderdeel terug wat er voor jouw woning gedaan wordt.
+          </p>
+          <div className="mt-8">
+            <ScopeTabel />
           </div>
-          <Placeholder label="Montage detail — kitten/isoleren" className="min-h-56" />
         </Container>
       </Section>
 
       <Section tone="soft">
         <Container className="grid gap-12 lg:grid-cols-2">
           <div>
-            <Eyebrow>Het proces</Eyebrow>
-            <h2 className="mt-4 mb-8 text-2xl text-ink sm:text-3xl">
-              Stap voor stap naar nieuwe kozijnen
-            </h2>
-            <ProcessSteps steps={montageSteps} />
+            <Eyebrow>Aansluitingen</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Waarom de aansluiting zo belangrijk is</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Tussen het kozijn en de muur zit een naad. Die naad wordt geïsoleerd en aan de binnen- en buitenkant
+              afgedicht. Gaat dat mis, dan kan een nieuw kozijn alsnog tochten, of kan er vocht in de muur komen. Daarom
+              besteden we evenveel aandacht aan de aansluiting als aan het kozijn zelf.
+            </p>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Last van beslagen ramen?{" "}
+              <Link href="/kennis/condens-op-ramen" className={link}>
+                Lees wat condens op ramen betekent
+              </Link>
+              .
+            </p>
           </div>
-          <div className="lg:mt-16">
-            <Placeholder label="Tijdlijn illustratie" className="min-h-64 lg:sticky lg:top-32" />
+          <div>
+            <Eyebrow>Voorbereiding</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Wat je zelf kunt voorbereiden</h2>
+            <FeatureList className="mt-6" items={voorbereiding} />
+          </div>
+        </Container>
+      </Section>
+
+      <Section>
+        <Container className="grid gap-12 lg:grid-cols-2">
+          <div>
+            <Eyebrow>Oplevering</Eyebrow>
+            <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Samen nalopen</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              Na het werk lopen we samen de kozijnen na: sluiten, draaien en kiepen, de afwerking binnen en buiten. Je krijgt
+              uitleg over het onderhoud van het hang- en sluitwerk en de rubbers. Blijft er een punt open, dan spreken we af
+              wie het oplost en wanneer.
+            </p>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              <Link href="/kennis/kozijnen-onderhouden" className={link}>
+                Zo houd je je kozijnen mooi en soepel
+              </Link>
+            </p>
+          </div>
+          <div className="rounded-card border border-mist bg-paper-soft p-7">
+            <h2 className="text-xl text-ink">Meer weten over het hele traject?</h2>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <Link href="/kozijnen-vervangen" className={link}>
+                  Kozijnen vervangen: van bestaande situatie tot oplevering
+                </Link>
+              </li>
+              <li>
+                <Link href="/werkwijze" className={link}>
+                  Onze werkwijze, van eerste vraag tot nazorg
+                </Link>
+              </li>
+              <li>
+                <Link href="/kosten" className={link}>
+                  Wat montage en kozijnen kosten
+                </Link>
+              </li>
+            </ul>
           </div>
         </Container>
       </Section>
 
       <MtbBouwBand tone="paper" />
 
-      <Section tone="ink">
-        <Container className="text-center">
-          <h2 className="text-2xl text-paper sm:text-3xl">
-            Montage laten uitvoeren?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl leading-relaxed text-paper/65">
-            Plan de inmeetservice in. {inmeetservice.price} — volledig verrekend
-            bij doorgang. Daarna ontvangt u een transparante offerte.
-          </p>
-          <div className="mt-8">
-            <Button href="/offerte-aanvragen">Offerte aanvragen</Button>
-          </div>
+      <Section tone="soft">
+        <Container width="narrow">
+          <Eyebrow>Vragen</Eyebrow>
+          <h2 className="mb-8 mt-4 text-2xl text-ink sm:text-3xl">Vragen over montage</h2>
+          <FAQ items={vragen} />
         </Container>
       </Section>
+
+      <CtaBlok
+        titel="Je kozijnen laten monteren?"
+        lead="Vertel ons wat je wilt. Je krijgt een voorstel waarin de montage per onderdeel staat."
+        actions={
+          <>
+            <Button href="/offerte">Vraag een voorstel</Button>
+            <Button href="/kosten" variant="light">
+              Bekijk de prijsopbouw
+            </Button>
+          </>
+        }
+      />
     </>
   );
 }

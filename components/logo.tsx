@@ -1,25 +1,29 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-/** Four-pane window-frame mark — the brand symbol. Inherits currentColor. */
-export function WindowMark({ className }: { className?: string }) {
+/**
+ * Brand mark "hoekprofiel": a frame corner with its rebate (sponning).
+ * Outer profile inherits currentColor; inner profile is always brand lime.
+ * Geometry is shared with app/icon.svg and public/brand/*.svg — keep in sync.
+ */
+export function LogoMark({ className }: { className?: string }) {
   return (
-    <span
+    <svg
+      viewBox="0 0 40 40"
       aria-hidden
-      className={cn(
-        "grid size-8 shrink-0 grid-cols-2 gap-0.5 rounded-[5px] border-2 border-current p-1",
-        className,
-      )}
+      focusable="false"
+      className={cn("size-8 shrink-0", className)}
     >
-      <i className="rounded-tl-[2px] border-r border-current" />
-      <i />
-      <i className="border-r border-t border-current" />
-      <i className="border-t border-current" />
-    </span>
+      <path d="M5 38V5H38" fill="none" stroke="currentColor" strokeWidth="6" />
+      <path d="M17 38V17H38" fill="none" stroke="var(--color-lime)" strokeWidth="6" />
+    </svg>
   );
 }
 
-/** Wordmark + window mark. `inverse` for dark backgrounds (lime accent). */
+/** @deprecated Use LogoMark. Kept so older imports keep working. */
+export const WindowMark = LogoMark;
+
+/** Wordmark + mark. `inverse` for dark backgrounds. */
 export function Logo({
   inverse = false,
   className,
@@ -32,14 +36,16 @@ export function Logo({
       href="/"
       aria-label="De Kozijnstudio, naar de homepage"
       className={cn(
-        "inline-flex items-center gap-2.5 rounded-md",
+        "inline-flex shrink-0 items-center gap-2.5 rounded-md",
         inverse ? "text-paper" : "text-ink",
         className,
       )}
     >
-      <WindowMark />
-      <span className="font-display text-lg font-bold tracking-tight sm:text-xl">
-        De <span className={inverse ? "text-lime" : undefined}>Kozijn</span>studio
+      <LogoMark />
+      <span className="whitespace-nowrap font-display text-xl leading-none tracking-[-0.03em] sm:text-[1.375rem]">
+        <span className="font-medium">de </span>
+        <span className="font-extrabold">kozijn</span>
+        <span className="font-medium">studio</span>
       </span>
     </Link>
   );
