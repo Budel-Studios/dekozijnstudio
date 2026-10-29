@@ -1,5 +1,5 @@
 /**
- * Checked price examples for /kosten (docs/seo-strategie-2026-10.md, h8 "Kosten").
+ * Checked price examples for /kosten (SEO-strategie 2026-10 (privé projectdocument), h8 "Kosten").
  *
  * Only add an example that comes from a real, checked calculation (anonymised).
  * Amounts incl. btw as calculated by the administration — do not work out the

@@ -1,7 +1,7 @@
 /**
  * Feitenregister — every business claim that may appear on the public site.
  *
- * Rule (docs/seo-strategie-2026-10.md, h17): a claim is only rendered when its
+ * Rule (SEO-strategie 2026-10 (privé projectdocument), h17): a claim is only rendered when its
  * status is "verified". Claims with "needs_confirmation" stay in this register
  * (so nobody forgets them) but are hidden from public pages. Flip the status to
  * "verified" — and fill in `bron` + `gecontroleerd` — to make a claim visible

@@ -1,6 +1,6 @@
 # Schrijfwijzer De Kozijnstudio (vanaf 29-10-2026)
 
-Geldt voor alle publieke teksten: pagina's, data-bestanden, kennisartikelen, formulieren, e-mails aan klanten. Bron: `docs/seo-strategie-2026-10.md` (intern, nooit publiceren).
+Geldt voor alle publieke teksten: pagina's, data-bestanden, kennisartikelen, formulieren, e-mails aan klanten. Bron: de SEO-strategie (privé, in het claude.ai-project KozijnStudio: `claude/seo-strategie-2026-10.md`) (intern, nooit publiceren).
 
 ## Toon
 - **Je-vorm.** "je" als standaard, "jouw" waar het nadruk of bezit verduidelijkt ("jouw woning"), "jij" spaarzaam. Nooit "u/uw".

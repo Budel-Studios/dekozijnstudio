@@ -1,6 +1,6 @@
 # Releasechecklist De Kozijnstudio (stand 29-10-2026)
 
-Gebaseerd op `docs/seo-strategie-2026-10.md` h17 en h19. Alleen wat de livegang nog tegenhoudt of beperkt.
+Gebaseerd op de SEO-strategie (privé, in het claude.ai-project KozijnStudio: `claude/seo-strategie-2026-10.md`) h17 en h19. Alleen wat de livegang nog tegenhoudt of beperkt.
 
 ## Blokkeert de livegang
 - [ ] **Definitief domein kiezen.** Code gebruikt `NEXT_PUBLIC_SITE_URL` (standaard `https://www.kozijnstudio.com`); `data/company.ts` noemt nog `www.dekozijnstudio.nl`. Kies één domein, zet het in Vercel en laat de andere variant (en www/zonder www) met één redirect doorverwijzen.

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * "Vraag een voorstel" — request schema shared by the client form and the
- * server action (docs/seo-strategie-2026-10.md, h13: three short steps —
+ * server action (SEO-strategie 2026-10 (privé projectdocument), h13: three short steps —
  * wens, situatie, contact).
  *
  * AVG/GDPR: only what is needed to respond. Photos and exact measurements are

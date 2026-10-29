@@ -21,7 +21,7 @@ export const PRICE_ON_REQUEST = "Prijs op aanvraag";
 
 /**
  * Module switches — which optional parts of the site are public.
- * Decided by the owner on 2026-10-29 (docs/seo-strategie-2026-10.md, h2).
+ * Decided by the owner on 2026-10-29 (SEO-strategie 2026-10 (privé projectdocument), h2).
  * A module that is off is left out of navigation and sitemap and its routes
  * return a real 404, so it is not part of the public build.
  */

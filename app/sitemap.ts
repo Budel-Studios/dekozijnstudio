@@ -5,7 +5,7 @@ import { PLAATS_PAGINAS, regioPad } from "@/data/regio";
 
 /**
  * Sitemap: only published, canonical, indexable URLs that return 200
- * (docs/seo-strategie-2026-10.md, h12). `lastModified` is the date of the last
+ * (SEO-strategie 2026-10 (privé projectdocument), h12). `lastModified` is the date of the last
  * real content change — update it when you change a page's content, not on
  * every deploy. Flow pages (/project, /bedankt), internal pages and switched-off
  * modules are left out on purpose.

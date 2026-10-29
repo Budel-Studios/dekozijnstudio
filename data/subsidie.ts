@@ -2,7 +2,7 @@
  * ISDE-subsidie — content for /subsidie, the project overview and the
  * configurator.
  *
- * RULES (CLAUDE.md + docs/seo-strategie-2026-10.md, h8 "Glas en subsidie"):
+ * RULES (CLAUDE.md + SEO-strategie 2026-10 (privé projectdocument), h8 "Glas en subsidie"):
  *  - No amounts on the site until they are checked against rvo.nl.
  *  - Every statement below was checked on the date in `gecontroleerd`;
  *    re-check every quarter and before 1 January (`volgendeControle`).

@@ -2,7 +2,7 @@
  * Werkgebied — content for the regio hub (/werkgebied) and the place pages
  * (/werkgebied/<slug>), rendered by RegioPaginaTemplate.
  *
- * Rules (docs/schrijfwijzer.md + docs/seo-strategie-2026-10.md, h5 and h10):
+ * Rules (docs/schrijfwijzer.md + SEO-strategie 2026-10 (privé projectdocument), h5 and h10):
  *  - Je-vorm, calm tone, no superlatives.
  *  - Only verified claims (data/feiten.ts). No inspection price, delivery or
  *    installation times, reaction times, "own fitters" or subsidy amounts.
