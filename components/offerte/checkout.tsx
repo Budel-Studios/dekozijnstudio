@@ -81,6 +81,8 @@ export function Checkout() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    // Browser-only storage is read after mount to avoid a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(readProject());
     setLoaded(true);
     const onUpd = () => setItems(readProject());

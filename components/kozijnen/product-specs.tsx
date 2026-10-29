@@ -18,8 +18,15 @@ function maatRows(materiaal?: string, profielValue?: string): Array<[string, str
   return rows;
 }
 
-function isTodo(waarde: string) {
-  return waarde.trimStart().toUpperCase().startsWith("TODO");
+/**
+ * Strips internal "TODO: …" notes from a spec value before it reaches visitors.
+ * The notes stay in data/kozijnen-gids.ts as a to-confirm checklist.
+ * Returns null when nothing publishable is left (row is then hidden).
+ */
+function publicWaarde(waarde: string): string | null {
+  const idx = waarde.search(/\bTODO\b/i);
+  const text = (idx === -1 ? waarde : waarde.slice(0, idx)).trim();
+  return text.length > 0 ? text : null;
 }
 
 /**
@@ -69,21 +76,16 @@ export function ProductSpecs({ product }: { product: ProductGids }) {
           <p className="mt-3 leading-relaxed text-ink/70">{product.intro}</p>
 
           <dl className="mt-6 divide-y divide-mist border-t border-mist">
-            {product.specs.map((row) => (
-              <div key={row.label} className="grid gap-1 py-3 sm:grid-cols-[160px_1fr] sm:gap-4">
-                <dt className="text-sm font-medium text-ink">{row.label}</dt>
-                <dd
-                  className={
-                    isTodo(row.waarde)
-                      ? "text-sm italic text-ink/40"
-                      : "text-sm leading-relaxed text-ink/70"
-                  }
-                  title={isTodo(row.waarde) ? "Nog in te vullen" : undefined}
-                >
-                  {row.waarde}
-                </dd>
-              </div>
-            ))}
+            {product.specs.map((row) => {
+              const waarde = publicWaarde(row.waarde);
+              if (!waarde) return null;
+              return (
+                <div key={row.label} className="grid gap-1 py-3 sm:grid-cols-[160px_1fr] sm:gap-4">
+                  <dt className="text-sm font-medium text-ink">{row.label}</dt>
+                  <dd className="text-sm leading-relaxed text-ink/70">{waarde}</dd>
+                </div>
+              );
+            })}
           </dl>
         </div>
       </div>

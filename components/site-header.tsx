@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, MenuIcon, CloseIcon, ArrowRightIcon } from "@/components/icons";
-import { headerDirectLinks, footerGroups, primaryCta } from "@/lib/navigation";
+import { headerDirectLinks, primaryCta } from "@/lib/navigation";
 import { megaGroups, type MegaGroup, type MegaLink } from "@/lib/mega-menu";
 import { ProjectLink } from "@/components/offerte/project-link";
 import { cn } from "@/lib/utils";
@@ -130,7 +130,7 @@ function MobileMenu({
   return (
     <div
       id="mobile-menu"
-      className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-b-3xl border-t border-mist bg-paper shadow-soft lg:hidden"
+      className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-b-3xl border-t border-mist bg-paper shadow-soft xl:hidden"
     >
       <Container className="py-6 space-y-1">
 
@@ -303,7 +303,7 @@ export function SiteHeader() {
           <Wordmark />
 
           {/* Desktop nav */}
-          <nav aria-label="Hoofdmenu" className="hidden items-center gap-0.5 lg:flex">
+          <nav aria-label="Hoofdmenu" className="hidden items-center gap-0.5 xl:flex">
 
             {/* Mega menu triggers */}
             {megaGroups.map((group) => {
@@ -320,7 +320,7 @@ export function SiteHeader() {
                     data-open={isOpen}
                     onClick={() => (isOpen ? setOpenGroup(null) : openMenu(group.label))}
                     className={cn(
-                      "nav-underline inline-flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-medium transition-colors",
+                      "nav-underline inline-flex items-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-sm font-medium transition-colors xl:px-3.5",
                       isOpen ? "text-ink" : "text-ink/70 hover:text-ink",
                     )}
                   >
@@ -342,15 +342,15 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 onMouseEnter={() => setOpenGroup(null)}
-                className="nav-underline px-3.5 py-2.5 text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+                className="nav-underline whitespace-nowrap px-2 py-2.5 text-sm font-medium text-ink/70 transition-colors hover:text-ink xl:px-3.5"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 lg:flex">
-            <ProjectLink className="text-sm font-medium text-ink/70 transition-colors hover:text-ink" />
+          <div className="hidden items-center gap-4 xl:flex">
+            <ProjectLink className="whitespace-nowrap text-sm font-medium text-ink/70 transition-colors hover:text-ink" />
             <AanvraagDialog
               renderTrigger={(trigger) => (
                 <Button {...trigger} size="sm">
@@ -367,7 +367,7 @@ export function SiteHeader() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             aria-label={mobileOpen ? "Menu sluiten" : "Menu openen"}
-            className="inline-flex size-11 items-center justify-center rounded-pill border border-ink/20 text-ink hover:border-ink lg:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-pill border border-ink/20 text-ink hover:border-ink xl:hidden"
           >
             {mobileOpen ? (
               <CloseIcon className="size-5" />

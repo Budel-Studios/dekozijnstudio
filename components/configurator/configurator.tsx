@@ -20,7 +20,6 @@ import {
   CONFIG_VENTILATIE_POSITIE,
   DRAAIRICHTING_TYPES,
   SIZE_LIMITS,
-  findProfiel,
   type KleurCategorie,
   type Profiel,
 } from "@/data/configurator";
@@ -72,6 +71,8 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
 
   useEffect(() => {
     if (montageTouched) return;
+    // Re-derive montage defaults until the visitor edits them (intentional sync).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMontageChecked(defaultCheckedIds(config));
   }, [config, montageTouched]);
 

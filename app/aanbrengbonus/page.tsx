@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
-import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
+import { Card, CardTitle, CardBody } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Callout } from "@/components/ui/callout";
 import { FeatureList } from "@/components/ui/feature-list";

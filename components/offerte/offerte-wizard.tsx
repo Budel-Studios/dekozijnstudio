@@ -47,6 +47,8 @@ export function OfferteWizard() {
       const raw = sessionStorage.getItem(HANDOFF_KEY);
       if (!raw) return;
       const handoff = JSON.parse(raw) as OfferteHandoff;
+      // sessionStorage is browser-only; reading it after mount avoids a hydration mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setData((d) => ({
         ...d,
         ...(handoff.prefill.materiaal ? { materiaal: handoff.prefill.materiaal } : {}),

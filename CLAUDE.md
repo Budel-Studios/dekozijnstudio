@@ -198,3 +198,10 @@ Home · Over ons · Kunststof kozijnen · Houten kozijnen · Aluminium kozijnen 
 - **Fase 6 geparkeerd** (keuze gebruiker) en **richtprijzen configurator volgen later** — content eerst.
 
 @AGENTS.md
+
+#### Logo "hoekprofiel" (okt 2026, keuze gebruiker: concept C)
+- **Beeldmerk**: kozijnhoek met sponning — buitenste L in `currentColor` (ink / paper), binnenste L altijd `lime`. Geometrie (viewBox 40): `M5 38V5H38` + `M17 38V17H38`, stroke 6, rechte uiteinden.
+- **Woordmerk**: "de **kozijn**studio" in kleine letters, Bricolage Grotesque 500/800, tracking −0.03em. Component: `components/logo.tsx` (`Logo`, `LogoMark`; `WindowMark` = alias).
+- **Bestanden**: `public/brand/logo.svg`, `logo-inverse.svg`, `logo-mark.svg`, `logo-mark-inverse.svg` (tekst als paden, font-onafhankelijk). App-iconen: `app/icon.svg` + `app/favicon.ico` (ink tegel, wit/lime merk), `app/apple-icon.png`, sitebrede `app/opengraph-image.png` (+ `.alt.txt`).
+- **Header**: volledig desktopmenu vanaf `xl` (1280px); daaronder hamburgermenu (bij `lg` paste het menu niet meer).
+- **Opschoning**: interne `TODO:`-notities in `data/kozijnen-gids.ts` worden niet meer getoond (gestript in `product-specs.tsx`, rij verborgen als er niets overblijft — de data blijft de checklist). Footer-claim vervangen door "Kozijnen met transparante prijzen, van inmeten tot montage." `/styleguide` op noindex. Lint schoon.

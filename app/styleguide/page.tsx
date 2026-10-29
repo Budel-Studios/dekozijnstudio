@@ -11,6 +11,7 @@ import { LOREM_PARAGRAPH } from "@/lib/placeholder";
 
 export const metadata: Metadata = {
   title: "Styleguide",
+  robots: { index: false, follow: false },
 };
 
 const colors = [

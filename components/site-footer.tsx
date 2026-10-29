@@ -12,8 +12,7 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <Logo inverse />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
-              De meest transparante kozijnleverancier van Nederland.{" "}
-              <span className="text-paper/40">(placeholder-claim)</span>
+              Kozijnen met transparante prijzen, van inmeten tot montage.
             </p>
             <div className="mt-4 rounded-2xl border border-paper/15 bg-paper/5 p-4">
               <p className="text-sm text-paper/80">

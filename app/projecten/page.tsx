@@ -5,7 +5,6 @@ import { PageHero } from "@/components/ui/page-hero";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Placeholder } from "@/components/ui/placeholder";
-import { Card, CardEyebrow, CardTitle, CardBody } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Projecten",
@@ -58,7 +57,7 @@ export default function ProjectenPage() {
             ))}
           </div>
           <p className="mt-8 text-sm text-ink/45 text-center">
-            Projectfoto's en klantreviews worden toegevoegd zodra projecten zijn
+            Projectfoto&apos;s en klantreviews worden toegevoegd zodra projecten zijn
             opgeleverd en toestemming is verkregen.
           </p>
         </Container>

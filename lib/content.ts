@@ -77,6 +77,7 @@ export function getAllArticles(): ArticleMeta[] {
   return getAllSlugs()
     .map((slug) => parseFile(slug))
     .filter((a): a is Article => a !== null)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .map(({ content: _content, ...meta }) => meta)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
@@ -92,6 +93,7 @@ export function getRelatedArticles(slugs: string[]): ArticleMeta[] {
     .map((slug) => {
       const article = parseFile(slug);
       if (!article) return null;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { content: _content, ...meta } = article;
       return meta;
     })
