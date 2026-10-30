@@ -22,7 +22,7 @@ export const company = {
   whatsapp: "+31 6 42 99 70 18",
   whatsappHref: "31642997018",
   openingstijden: "Ma–Vr 08:00–17:00",
-  website: "www.dekozijnstudio.nl",
+  website: "www.kozijnstudio.com",
   werkgebied: "Twente & Oost-Nederland",
   instagram: "https://www.instagram.com/mtbbouw",
   sbb: "SBB erkend leerbedrijf — ID 100812726",

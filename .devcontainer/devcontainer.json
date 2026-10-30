@@ -1,0 +1,31 @@
+{
+  // Preview the site in GitHub Codespaces (also from a phone browser):
+  // Code → Codespaces → Create codespace. Dependencies install, the dev
+  // server starts and the site opens on port 3000.
+  // Mail sending needs RESEND_API_KEY and MAIL_FROM as Codespaces secrets;
+  // without them the request form shows its "not configured" message.
+  "name": "De Kozijnstudio",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "24" }
+  },
+  "postCreateCommand": "npm ci",
+  "postAttachCommand": {
+    "website": "npm run dev"
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Website",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "secrets": {
+    "RESEND_API_KEY": {
+      "description": "Optional: Resend key so the request form can send mail in the preview."
+    },
+    "MAIL_FROM": {
+      "description": "Optional: sender address, e.g. website@mtbbouw.com."
+    }
+  }
+}

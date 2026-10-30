@@ -3,7 +3,8 @@
 Gebaseerd op de SEO-strategie (privé, in het claude.ai-project KozijnStudio: `claude/seo-strategie-2026-10.md`) h17 en h19. Alleen wat de livegang nog tegenhoudt of beperkt.
 
 ## Blokkeert de livegang
-- [ ] **Definitief domein kiezen.** Code gebruikt `NEXT_PUBLIC_SITE_URL` (standaard `https://www.kozijnstudio.com`); `data/company.ts` noemt nog `www.dekozijnstudio.nl`. Kies één domein, zet het in Vercel en laat de andere variant (en www/zonder www) met één redirect doorverwijzen.
+- [x] **Definitief domein: kozijnstudio.com.** Vercel-project `budel-studios/dekozijnstudio` serveert `kozijnstudio.com` en `www.kozijnstudio.com`; `NEXT_PUBLIC_SITE_URL` staat in Vercel en `data/company.ts` is gelijkgetrokken. Vercel adviseert de nieuwe DNS-records (A `216.198.79.1`), de oude records blijven werken.
+- [ ] **Mailvariabelen in Vercel:** `RESEND_API_KEY` (zelfde sleutel als de MTB Bouw-site) en `MAIL_FROM=website@mtbbouw.com` voor Production en Preview. Zonder deze twee toont het aanvraagformulier een nette foutmelding en komen er geen leads binnen.
 - [ ] **Mail in Vercel instellen**: zet `RESEND_API_KEY` (dezelfde sleutel als de MTB Bouw-site) en `MAIL_FROM=website@mtbbouw.com` in het Vercel-project van De Kozijnstudio. Aanvragen gaan dan naar info@mtbbouw.com (ander adres: `OFFERTE_TO_EMAIL`). SMTP blijft mogelijk als alternatief. Zonder een van beide toont het formulier een foutmelding (geen schijnsucces). Daarna een testaanvraag mét foto doen op productie.
 - [ ] **Btw-identificatienummer** aanvullen in `data/company.ts` (staat nog als placeholder, wordt niet getoond).
 - [ ] **Juridische pagina's** (privacy, algemene voorwaarden, cookiebeleid, voorwaarden aanbrengbonus) laten toetsen; open punten: e-mailprovider + verwerkersovereenkomsten, Vercel-regio, bewaartermijnen, geldigheid/betaaltermijn/annulering/garantie.
