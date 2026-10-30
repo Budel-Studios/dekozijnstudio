@@ -20,6 +20,8 @@ export type NavLink = {
 export type NavGroup = {
   label: string;
   links: NavLink[];
+  /** Intro column of the header mega menu (same structure as mtbbouw.com). */
+  intro?: { title: string; text: string; href: string; button: string };
 };
 
 const configuratorLinks: NavLink[] = MODULES.configurator
@@ -47,8 +49,26 @@ export const werkLinks: NavLink[] = [
 
 /** Header: dropdown groups and direct links, in menu order. */
 export const headerGroups: NavGroup[] = [
-  { label: "Kozijnen", links: kozijnenLinks },
-  { label: "Montage en werkwijze", links: werkLinks },
+  {
+    label: "Kozijnen",
+    links: kozijnenLinks,
+    intro: {
+      title: "Kozijnen in hout, kunststof en aluminium",
+      text: "Vergelijk de materialen en bekijk wat bij je woning past.",
+      href: "/kozijnen",
+      button: "Materialen vergelijken",
+    },
+  },
+  {
+    label: "Montage en werkwijze",
+    links: werkLinks,
+    intro: {
+      title: "Van eerste vraag tot oplevering",
+      text: "Wat er gebeurt bij het vervangen, monteren en afwerken van je kozijnen.",
+      href: "/werkwijze",
+      button: "Bekijk de werkwijze",
+    },
+  },
 ];
 
 export const headerDirectLinks: NavLink[] = [

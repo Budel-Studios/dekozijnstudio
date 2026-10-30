@@ -212,3 +212,28 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =====================================================================
+ * MTB Bouw-opbouw (okt 2026): dezelfde labelstijl als mtbbouw.com, zodat
+ * header, mega-menu en footer herkenbaar uit dezelfde familie komen.
+ * ===================================================================== */
+
+/* Klein technisch label in hoofdletters (footerkoppen, meta, endorsement) */
+@utility label-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Nummering (01, 02 …) in het mega-menu */
+@utility label-num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
