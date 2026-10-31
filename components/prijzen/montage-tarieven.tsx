@@ -14,7 +14,7 @@ export function MontageTarieven() {
 
   return (
     <div>
-      <div className="overflow-hidden rounded-card border border-mist bg-paper">
+      <div className="overflow-hidden border border-mist bg-paper">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">
             Montagetarieven per eenheid, inclusief btw

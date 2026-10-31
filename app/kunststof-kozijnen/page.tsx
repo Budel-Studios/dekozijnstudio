@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { FeatureList } from "@/components/ui/feature-list";
 import { FAQ, type FaqItem } from "@/components/ui/faq";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
+import { LokaalBlok } from "@/components/regio/lokaal-blok";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 import { MODULES } from "@/lib/site";
@@ -156,7 +157,7 @@ export default function KunststofKozijnenPage() {
             </p>
             <FeatureList className="mt-6" items={toepassingen} />
           </div>
-          <div className="rounded-card border border-mist bg-paper-soft p-7">
+          <div className="border border-mist bg-paper-soft p-7">
             <h2 className="text-xl text-ink">Wanneer een ander materiaal logischer is</h2>
             <p className="mt-3 leading-relaxed text-ink/70">
               Bij monumenten en beschermde gevels stelt de gemeente vaak eisen aan materiaal en detaillering; dan is hout
@@ -185,7 +186,7 @@ export default function KunststofKozijnenPage() {
           <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Wat je kiest bij kunststof kozijnen</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             {keuzes.map((k) => (
-              <article key={k.titel} className="rounded-card border border-mist bg-paper p-7">
+              <article key={k.titel} className="border border-mist bg-paper p-7">
                 <h3 className="text-lg text-ink">{k.titel}</h3>
                 <p className="mt-2 leading-relaxed text-ink/70">{k.tekst}</p>
               </article>
@@ -247,6 +248,19 @@ export default function KunststofKozijnenPage() {
           </div>
         </Container>
       </Section>
+
+      <LokaalBlok titel="Kunststof kozijnen in Enschede">
+        <p>
+          Enschede heeft woningen uit alle bouwperiodes, en dat zie je terug in de keuze voor kunststof. Bij een
+          vooroorlogse woning past meestal een profiel met een verdiepte, klassieke vorm en eventueel een houtnerf,
+          zodat de gevel zijn karakter houdt. Bij een naoorlogse rijwoning of twee-onder-een-kap gaat het vaker om
+          comfort: isolerend glas, goed sluitende ramen en minder onderhoud.
+        </p>
+        <p>
+          Bij het inmeten kijken we welke uitvoering bij jouw gevel past. Woon je buiten Enschede? We werken in heel
+          Twente.
+        </p>
+      </LokaalBlok>
 
       <Section tone="soft">
         <Container width="narrow">

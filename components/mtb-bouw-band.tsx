@@ -53,12 +53,12 @@ export function MtbBouwBand({ tone = "soft" }: { tone?: Tone }) {
             return (
               <div
                 key={service.title}
-                className={`rounded-card border p-5 ${
+                className={`border p-5 ${
                   dark ? "border-paper/15 bg-paper/5" : "border-mist bg-paper"
                 }`}
               >
                 <div
-                  className={`mb-3 flex size-10 items-center justify-center rounded-xl ${
+                  className={`mb-3 flex size-10 items-center justify-center ${
                     dark ? "bg-lime/15" : "bg-forest/8"
                   }`}
                 >

@@ -9,6 +9,7 @@ import { ProcessSteps } from "@/components/ui/process-steps";
 import { Callout } from "@/components/ui/callout";
 import { FAQ, type FaqItem } from "@/components/ui/faq";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
+import { LokaalBlok } from "@/components/regio/lokaal-blok";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
@@ -159,7 +160,7 @@ export default function KozijnenVervangenPage() {
             <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Redenen om je kozijnen te vervangen</h2>
             <FeatureList className="mt-6" items={redenen} />
           </div>
-          <div className="rounded-card border border-mist bg-paper-soft p-7">
+          <div className="border border-mist bg-paper-soft p-7">
             <h2 className="text-xl text-ink">Is vervangen altijd nodig?</h2>
             <p className="mt-3 leading-relaxed text-ink/70">
               Nee. Zijn de kozijnen zelf nog goed en gaat het vooral om warmteverlies, dan kan ander glas soms genoeg zijn.
@@ -234,6 +235,23 @@ export default function KozijnenVervangenPage() {
           </div>
         </Container>
       </Section>
+
+      <LokaalBlok titel="Kozijnen vervangen in Enschede">
+        <p>
+          We werken vanuit Enschede en meten bij je thuis in. Bij de voorbereiding kijken we ook naar de
+          bereikbaarheid van je woning: in de binnenstad en in de smalle straten van oudere wijken is ruimte voor een
+          bus, een container of een steiger niet vanzelfsprekend. Dat nemen we mee in de planning, zodat de montagedag
+          niet vastloopt op parkeren.
+        </p>
+        <p>
+          Staat je woning in een beschermd gebied of is het een monument? Kijk dan eerst{" "}
+          <Link href="/kennis/kozijnen-en-vergunningen" className={link}>
+            of je een vergunning nodig hebt
+          </Link>
+          . Komt het nieuwe kozijn in dezelfde opening, met een vergelijkbare indeling en uitstraling, dan is dat
+          meestal niet nodig.
+        </p>
+      </LokaalBlok>
 
       <Section tone="soft">
         <Container width="narrow">

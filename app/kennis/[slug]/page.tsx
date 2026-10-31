@@ -178,7 +178,7 @@ export default async function KennisArtikelPage({
               </div>
 
               {/* In-article CTA */}
-              <div className="mt-12 rounded-card border border-forest/20 bg-forest/5 p-6">
+              <div className="mt-12 border border-forest/20 bg-forest/5 p-6">
                 <p className="font-display font-semibold text-ink">
                   Wat betekent dit voor jouw woning?
                 </p>

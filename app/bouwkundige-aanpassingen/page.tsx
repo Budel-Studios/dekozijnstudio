@@ -176,7 +176,7 @@ export default function BouwkundigeAanpassingenPage() {
             </p>
             <FeatureList items={wanneerNodig} className="mt-6" />
           </div>
-          <div className="rounded-card border border-mist bg-paper-soft p-7">
+          <div className="border border-mist bg-paper-soft p-7">
             <h2 className="text-xl text-ink">De situatie bepaalt het werk</h2>
             <p className="mt-3 leading-relaxed text-ink/70">
               Twee woningen met dezelfde ramen kunnen een heel ander project zijn. Hoe de opening, de latei en het

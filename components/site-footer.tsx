@@ -38,13 +38,13 @@ export function SiteFooter() {
               <ContactLink
                 kind="phone"
                 location="footer"
-                className="inline-flex items-center rounded-pill bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-lime"
+                className="inline-flex items-center bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-lime"
               >
                 {company.telefoon}
               </ContactLink>
               <Link
                 href={primaryCta.href}
-                className="inline-flex items-center rounded-pill border border-paper/40 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
+                className="inline-flex items-center border border-paper/40 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
               >
                 {primaryCta.label}
               </Link>

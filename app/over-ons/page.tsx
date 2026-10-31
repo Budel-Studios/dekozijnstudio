@@ -101,7 +101,7 @@ export default function OverOnsPage() {
               </Button>
             </div>
           </div>
-          <div className="rounded-card border border-mist bg-paper p-7">
+          <div className="border border-mist bg-paper p-7">
             <h2 className="text-xl text-ink">Je aanspreekpunt</h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div>

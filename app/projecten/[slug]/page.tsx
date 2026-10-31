@@ -90,7 +90,7 @@ export default async function ProjectPage({ params }: Props) {
                 width={1200}
                 height={900}
                 sizes="(min-width: 1024px) 40vw, 100vw"
-                className="w-full rounded-card object-cover"
+                className="w-full object-cover"
               />
             ))}
           </div>

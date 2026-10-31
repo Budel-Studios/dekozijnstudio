@@ -8,7 +8,7 @@ import { VERGELIJK_RIJEN } from "@/data/kozijnen-gids";
 export function KozijnVergelijkTabel() {
   return (
     <div>
-      <div className="overflow-x-auto rounded-card border border-mist">
+      <div className="overflow-x-auto border border-mist">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead>
             <tr className="bg-paper-soft text-ink">

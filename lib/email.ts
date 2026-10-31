@@ -61,11 +61,11 @@ function voorstelHtml(fields: Array<[string, string]>, replyHint: string): strin
 <html lang="nl">
 <body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
   <div style="max-width:640px;margin:0 auto;padding:24px;">
-    <div style="background:#23272a;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0;">
+    <div style="background:#23272a;color:#fff;padding:20px 24px;">
       <p style="margin:0;font-size:18px;font-weight:700;">Nieuwe aanvraag: voorstel</p>
       <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio &middot; via website</p>
     </div>
-    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;border-radius:0 0 12px 12px;padding:8px 0;">
+    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;padding:8px 0;">
       <table style="width:100%;border-collapse:collapse;font-size:14px;">${rows}
       </table>
     </div>
@@ -141,11 +141,11 @@ function confirmationHtml(naam: string, recap: Array<[string, string]>): string 
     .join("");
   return `<!doctype html><html lang="nl"><body style="margin:0;background:#f7f6f3;font-family:Arial,Helvetica,sans-serif;color:#23272a;">
   <div style="max-width:600px;margin:0 auto;padding:24px;">
-    <div style="background:#23272a;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0;">
+    <div style="background:#23272a;color:#fff;padding:20px 24px;">
       <p style="margin:0;font-size:18px;font-weight:700;">Je aanvraag is binnen</p>
       <p style="margin:6px 0 0;font-size:13px;color:#abe000;">De Kozijnstudio</p>
     </div>
-    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;border-radius:0 0 12px 12px;padding:20px 24px;">
+    <div style="background:#fff;border:1px solid #e7e5e0;border-top:none;padding:20px 24px;">
       <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">Hoi ${escapeHtml(naam)},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Bedankt voor je aanvraag. We bekijken je wensen en nemen contact met je op om de volgende stap te bespreken.</p>
       <p style="margin:0 0 8px;font-size:13px;font-weight:700;">Dit heb je ons gestuurd</p>

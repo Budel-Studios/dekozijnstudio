@@ -33,7 +33,7 @@ export function MontageEditor({
 
   if (regels.length === 0) {
     return (
-      <p className="rounded-xl border border-mist bg-paper-soft px-4 py-3 text-sm text-ink/55">
+      <p className="border border-mist bg-paper-soft px-4 py-3 text-sm text-ink/55">
         Geen montagewerkzaamheden van toepassing (zonder montage of nog geen
         configuratie).
       </p>
@@ -48,7 +48,7 @@ export function MontageEditor({
         return (
           <div key={categorie}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-wood">{categorie}</p>
-            <div className="divide-y divide-mist rounded-xl border border-mist">
+            <div className="divide-y divide-mist border border-mist">
               {inCat.map((regel) => (
                 <MontageRow
                   key={regel.id}
@@ -63,7 +63,7 @@ export function MontageEditor({
         );
       })}
 
-      <p className="rounded-xl border border-wood/30 bg-wood/5 px-4 py-3 text-xs leading-relaxed text-ink/70">
+      <p className="border border-wood/30 bg-wood/5 px-4 py-3 text-xs leading-relaxed text-ink/70">
         <strong className="text-ink">Hoogwerker?</strong> {HOOGWERKER_NOTE}
       </p>
     </div>

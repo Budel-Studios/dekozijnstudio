@@ -11,7 +11,7 @@ export function LeveranciersSectie() {
   return (
     <div className="grid gap-6 sm:grid-cols-2">
       {LEVERANCIERS.map((lev) => (
-        <div key={lev.naam} className="flex flex-col rounded-card border border-mist bg-paper p-6">
+        <div key={lev.naam} className="flex flex-col border border-mist bg-paper p-6">
           <h3 className="text-lg font-medium text-ink">{lev.naam}</h3>
           <p className="mt-2 grow leading-relaxed text-ink/70">{lev.intro}</p>
           <div className="mt-4">

@@ -62,7 +62,7 @@ export default function ProductenPage() {
             <Link
               key={c.href}
               href={c.href}
-              className="rounded-pill border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-forest hover:text-forest"
+              className="border border-ink/20 px-4 py-2 text-sm font-medium text-ink hover:border-forest hover:text-forest"
             >
               {c.label}
             </Link>

@@ -5,8 +5,9 @@
  * No FAQPage: Google no longer shows FAQ results (SEO-strategie 2026-10 (privé projectdocument), h12).
  */
 
-import { SITE_URL } from "@/lib/site";
+import { MODULES, SITE_URL } from "@/lib/site";
 import { company } from "@/data/company";
+import { PLAATS_PAGINAS } from "@/data/regio";
 
 // ─── Organization / LocalBusiness ────────────────────────────────────────────
 
@@ -54,8 +55,11 @@ export function organizationSchema() {
         closes: "17:00",
       },
     },
+    // Enschede (home base, served by the homepage), the places with their own
+    // page, and Twente as a whole — the same areas the site shows.
     areaServed: [
       { "@type": "City", name: "Enschede" },
+      ...(MODULES.plaatspaginas ? PLAATS_PAGINAS.map((p) => ({ "@type": "City", name: p.naam })) : []),
       { "@type": "AdministrativeArea", name: "Twente" },
     ],
   };

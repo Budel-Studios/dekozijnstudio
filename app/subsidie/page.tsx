@@ -132,7 +132,7 @@ export default function SubsidiePage() {
           <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Documenten die je nodig hebt</h2>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {isdeAanvraag.benodigdheden.map((b) => (
-              <li key={b} className="rounded-xl border border-mist bg-paper-soft px-5 py-4 text-sm font-medium text-ink">
+              <li key={b} className="border border-mist bg-paper-soft px-5 py-4 text-sm font-medium text-ink">
                 {b}
               </li>
             ))}

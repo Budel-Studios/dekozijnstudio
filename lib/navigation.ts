@@ -96,8 +96,12 @@ export const companyLinks: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-/** Werkgebied: the hub plus place pages (only when the module is on). */
+/**
+ * Werkgebied: Enschede (served by the homepage), the hub and the place pages
+ * (only when the module is on).
+ */
 export const werkgebiedLinks: NavLink[] = [
+  { label: "Enschede", href: "/" },
   { label: "Twente", href: "/werkgebied" },
   ...(MODULES.plaatspaginas
     ? REGIO_PAGINAS.filter((r) => r.soort === "plaats").map((r) => ({

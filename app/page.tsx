@@ -9,8 +9,27 @@ import { FeaturedProducts } from "@/components/catalog/featured-products";
 import { MtbBouwBand } from "@/components/mtb-bouw-band";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
 import { ArrowRightIcon, EuroIcon, UsersIcon, WrenchIcon } from "@/components/icons";
+import { TwenteMapSection } from "@/components/twente-map/twente-map-section";
+import { TwenteMapSvg } from "@/components/twente-map/twente-map-svg";
 import { pageMetadata } from "@/lib/seo";
 import { MODULES } from "@/lib/site";
+import { ENSCHEDE_ANCHOR, mapPlaces } from "@/lib/werkgebied-kaart";
+import { company } from "@/data/company";
+
+const kaartPlaatsen = mapPlaces({ onHome: true });
+
+/** Stadsdelen and villages of the municipality of Enschede. */
+const enschedeDelen = [
+  "Centrum",
+  "Noord",
+  "Oost",
+  "Zuid",
+  "West",
+  "Glanerbrug",
+  "Boekelo",
+  "Lonneker",
+  "Usselo",
+];
 
 export const metadata = pageMetadata({
   absoluteTitle: "Kozijnen in Enschede en Twente | De Kozijnstudio",
@@ -134,8 +153,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/65 to-ink/20" />
         <Container className="relative flex min-h-[34rem] items-end pb-16 pt-24 sm:min-h-[38rem] sm:pb-20">
           <div className="max-w-3xl">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-pill border border-paper/30 bg-ink/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] backdrop-blur-md">
-              <span aria-hidden className="size-2 rounded-full bg-lime" />
+            <p className="mb-5 inline-flex items-center gap-2 border border-paper/30 bg-ink/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] backdrop-blur-md">
+              <span aria-hidden className="size-2 bg-lime" />
               Kozijnen · Enschede en Twente
             </p>
             <h1 id="hero-title" className="text-5xl font-extrabold leading-[1.02] sm:text-6xl lg:text-7xl">
@@ -171,10 +190,10 @@ export default function Home() {
               beslissing neemt die bij je woning en budget past.
             </p>
           </div>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-mist bg-mist md:grid-cols-3">
+          <div className="mt-12 grid gap-px overflow-hidden border border-mist bg-mist md:grid-cols-3">
             {redenen.map(({ icon: Icon, title, body }) => (
               <article key={title} className="bg-paper p-7 sm:p-9">
-                <span className="grid size-12 place-items-center rounded-full bg-lime text-ink">
+                <span className="grid size-12 place-items-center bg-lime text-ink">
                   <Icon className="size-5" />
                 </span>
                 <h3 className="mt-8 text-xl text-ink">{title}</h3>
@@ -202,7 +221,7 @@ export default function Home() {
               <Link
                 key={m.href}
                 href={m.href}
-                className="group flex flex-col justify-between rounded-2xl border border-mist bg-paper-soft p-7 transition-colors hover:border-forest"
+                className="group flex flex-col justify-between border border-mist bg-paper-soft p-7 transition-colors hover:border-forest"
               >
                 <div>
                   <h3 className="text-2xl text-ink">{m.title}</h3>
@@ -243,7 +262,7 @@ export default function Home() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {prijsfactoren.map((f) => (
-              <li key={f} className="rounded-xl border border-mist bg-paper px-5 py-4 text-sm font-medium text-ink">
+              <li key={f} className="border border-mist bg-paper px-5 py-4 text-sm font-medium text-ink">
                 {f}
               </li>
             ))}
@@ -260,7 +279,7 @@ export default function Home() {
           <h2 className="mt-4 text-3xl text-ink sm:text-4xl">Van eerste vraag tot nieuwe kozijnen</h2>
           <ol className="mt-10 grid gap-6 md:grid-cols-4">
             {stappen.map((s, i) => (
-              <li key={s.title} className="rounded-2xl border border-mist bg-paper-soft p-6">
+              <li key={s.title} className="border border-mist bg-paper-soft p-6">
                 <span className="font-display text-sm font-semibold text-ink/60">Stap {i + 1}</span>
                 <h3 className="mt-2 text-lg text-ink">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink/70">{s.text}</p>
@@ -275,31 +294,75 @@ export default function Home() {
         </Container>
       </Section>
 
-      {/* Kozijnen in Enschede — lokale context */}
-      <Section tone="soft">
-        <Container className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+      {/* Werkgebied — interactieve Twente-kaart, zoals op mtbbouw.com */}
+      <TwenteMapSection
+        svg={<TwenteMapSvg places={kaartPlaatsen} currentHref="/" />}
+        places={kaartPlaatsen}
+        title="Kozijnen in Enschede en heel Twente."
+        intro={
+          <p>
+            Enschede is onze thuisbasis. Van daaruit werken we in heel Twente. Kies je plaats op de kaart en lees
+            waar we bij de woningen daar op letten.
+          </p>
+        }
+      />
+
+      {/* Kozijnen in Enschede — lokale context (deze pagina is de Enschede-pagina) */}
+      <Section tone="soft" id={ENSCHEDE_ANCHOR} className="scroll-mt-20">
+        <Container className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div>
             <Eyebrow>Enschede</Eyebrow>
             <h2 className="mt-4 text-3xl text-ink sm:text-4xl">Kozijnen voor Enschedese woningen</h2>
+            <p className="mt-4 leading-relaxed text-ink/70">
+              We werken vanuit Enschede, aan de {company.adres}. In elke wijk, en in de dorpen eromheen.
+            </p>
+            <p className="label-mono mt-8 text-ink/55">Stadsdelen en kernen</p>
+            <ul className="mt-3 flex flex-wrap gap-2" aria-label="Stadsdelen en kernen van Enschede">
+              {enschedeDelen.map((d) => (
+                <li key={d} className="border border-mist bg-paper px-3 py-1.5 text-sm text-ink/75">
+                  {d}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="space-y-4 leading-relaxed text-ink/70">
-            <p>
-              Enschede heeft een gemengde woningvoorraad. In de vooroorlogse wijken staan veel jaren-20- en
-              jaren-30-woningen met houten kozijnen en fijne roedeverdelingen. Daar luistert de detaillering nauw,
-              en kies je vaak voor hout of voor kunststof met een verdiept, klassiek profiel.
-            </p>
-            <p>
-              In de naoorlogse wijken, zoals in Enschede-Zuid, staan veel rijwoningen waar het vervangen van
-              enkel of oud dubbel glas en tochtige kozijnen het meeste comfort oplevert. Bij nieuwere woningen en
-              aanbouwen zien we vaker slanke aluminium kozijnen en schuifpuien.
-            </p>
-            <p>
-              We werken vanuit Enschede, in alle wijken en in de rest van{" "}
-              <Link href="/werkgebied" className="font-medium text-forest underline underline-offset-2">
-                Twente
-              </Link>
-              .
-            </p>
+          <div>
+            <div className="space-y-4 leading-relaxed text-ink/70">
+              <p>
+                Enschede heeft een gemengde woningvoorraad, en dat bepaalt welk kozijn verstandig is. In de
+                vooroorlogse buurten, zoals het tuindorp Pathmos (gebouwd tussen 1914 en 1928), staan woningen met
+                houten kozijnen, roedeverdelingen en bovenlichten. Daar luistert de detaillering nauw: je kiest vaak
+                voor hout, of voor kunststof met een klassiek, verdiept profiel dat de oorspronkelijke maten volgt.
+                Bij een monument of in een beschermd gebied kijk je eerst{" "}
+                <Link
+                  href="/kennis/kozijnen-en-vergunningen"
+                  className="font-medium text-forest underline underline-offset-2"
+                >
+                  of je een vergunning nodig hebt
+                </Link>
+                .
+              </p>
+              <p>
+                In de naoorlogse uitbreidingswijken, zoals in Enschede-Zuid, staan veel rijwoningen en
+                twee-onder-een-kappers. Daar levert het vervangen van enkel of oud dubbel glas en tochtige kozijnen
+                vaak het meeste comfort op. Kunststof met HR++- of triple glas is dan een veelgekozen route.
+              </p>
+              <p>
+                Bij nieuwere woningen en aanbouwen zie je vaker slanke aluminium kozijnen en schuifpuien, soms met
+                een grotere gevelopening. Moet de opening groter of komt er een nieuwe latei, dan doet MTB Bouw het
+                bouwkundige werk, in dezelfde planning.
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/kunststof-kozijnen" variant="secondary" size="sm">
+                Kunststof kozijnen
+              </Button>
+              <Button href="/kozijnen-vervangen" variant="secondary" size="sm">
+                Kozijnen vervangen
+              </Button>
+              <Button href="/kosten" variant="secondary" size="sm">
+                Wat het kost
+              </Button>
+            </div>
           </div>
         </Container>
       </Section>

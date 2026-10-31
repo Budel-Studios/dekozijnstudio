@@ -6,14 +6,15 @@ type Variant = "primary" | "secondary" | "ghost" | "light";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-[background-color,border-color,box-shadow,transform] duration-200 [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 font-semibold transition-colors duration-200 [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:transition-transform hover:[&_svg]:translate-x-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:pointer-events-none disabled:opacity-50";
 
+// Square, flat buttons (same family as mtbbouw.com): colour changes on hover,
+// nothing floats.
 const variants: Record<Variant, string> = {
-  primary: "bg-lime text-ink shadow-studio hover:-translate-y-px hover:bg-lime-hover",
-  secondary:
-    "border border-ink/20 bg-paper/85 text-ink backdrop-blur-sm hover:-translate-y-px hover:border-ink hover:bg-paper",
+  primary: "bg-lime text-ink hover:bg-lime-hover",
+  secondary: "border border-ink/30 bg-paper text-ink hover:border-ink hover:bg-ink hover:text-paper",
   ghost: "text-ink hover:bg-ink/5",
-  light: "bg-paper text-ink shadow-studio hover:-translate-y-px hover:bg-paper-soft",
+  light: "bg-paper text-ink hover:bg-lime",
 };
 
 const sizes: Record<Size, string> = {

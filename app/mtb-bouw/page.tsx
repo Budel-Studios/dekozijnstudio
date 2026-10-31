@@ -110,13 +110,13 @@ export default function MtbBouwPage() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-card border border-mist bg-paper p-6">
+          <div className="mt-8 border border-mist bg-paper p-6">
             <p className="text-sm font-medium text-ink">Daarnaast werkt MTB Bouw onder meer aan:</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {mtbAllServices.map((service) => (
                 <span
                   key={service}
-                  className="rounded-pill border border-mist bg-paper-soft px-3 py-1.5 text-xs font-medium text-ink/70"
+                  className="border border-mist bg-paper-soft px-3 py-1.5 text-xs font-medium text-ink/70"
                 >
                   {service}
                 </span>

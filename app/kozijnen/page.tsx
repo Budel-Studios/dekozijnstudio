@@ -100,7 +100,7 @@ export default function KozijnenGidsPage() {
           {MATERIALEN.map((m) => {
             const meta = MATERIAAL_META[m.key];
             return (
-              <div key={m.key} className="flex flex-col rounded-card border border-mist bg-paper p-6">
+              <div key={m.key} className="flex flex-col border border-mist bg-paper p-6">
                 <h3 className="text-lg font-medium text-ink">{m.titel}</h3>
                 <p className="mt-2 grow leading-relaxed text-ink/70">{m.tekst}</p>
                 {meta && (

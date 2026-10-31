@@ -43,7 +43,7 @@ export function HeroLayers({
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink/70">
             {["Transparante prijzen", "Vanaf ± 8 weken levertijd", "1 partner: kozijn + bouw"].map((t) => (
               <span key={t} className="flex items-center gap-2">
-                <span className="flex size-5 items-center justify-center rounded-full bg-lime/20">
+                <span className="flex size-5 items-center justify-center bg-lime/20">
                   <CheckIcon className="size-3 text-forest" />
                 </span>
                 {t}
@@ -55,7 +55,7 @@ export function HeroLayers({
         {/* Gelaagd beeld */}
         <div className="relative mx-auto w-full max-w-md lg:max-w-none">
           {/* hoofdfoto */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-soft ring-1 ring-ink/5">
+          <div className="relative aspect-[4/3] overflow-hidden shadow-soft ring-1 ring-ink/5">
             <Image
               src={image}
               alt="Lichte woonkamer met grote kozijnen"
@@ -67,14 +67,14 @@ export function HeroLayers({
           </div>
 
           {/* hout-gekaderd mini-beeld, rechtsboven */}
-          <div className="absolute -right-3 -top-6 hidden h-28 w-36 overflow-hidden rounded-2xl border-4 border-wood/30 bg-paper shadow-soft sm:block">
+          <div className="absolute -right-3 -top-6 hidden h-28 w-36 overflow-hidden border-4 border-wood/30 bg-paper shadow-soft sm:block">
             <Image src={inset} alt="Detail van een kozijn" fill sizes="160px" className="object-cover" />
           </div>
 
           {/* zwevende glas-prijskaart, linksonder */}
-          <div className="absolute -bottom-6 -left-3 rounded-2xl border border-white/40 bg-white/80 p-4 shadow-soft backdrop-blur-md sm:-left-6 sm:p-5">
+          <div className="absolute -bottom-6 -left-3 border border-white/40 bg-white/80 p-4 shadow-soft backdrop-blur-md sm:-left-6 sm:p-5">
             <div className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-forest/10">
+              <span className="flex size-9 items-center justify-center bg-forest/10">
                 <LeafIcon className="size-5 text-forest" />
               </span>
               <div>
@@ -85,7 +85,7 @@ export function HeroLayers({
               </div>
             </div>
             <div className="mt-3 flex items-center gap-1.5 border-t border-mist pt-3 text-xs text-ink/55">
-              <span aria-hidden className="size-1.5 rounded-full bg-lime" />
+              <span aria-hidden className="size-1.5 bg-lime" />
               Mogelijk ISDE-subsidie bij HR++ of triple glas
             </div>
           </div>

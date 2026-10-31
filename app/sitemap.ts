@@ -11,11 +11,13 @@ import { PLAATS_PAGINAS, regioPad } from "@/data/regio";
  * modules are left out on purpose.
  */
 const CONTENT_UPDATED = "2026-10-29";
+/** Pages whose content changed with the Enschede/werkgebied update. */
+const ENSCHEDE_UPDATE = "2026-10-31";
 
 const staticPaths: Array<{ path: string; updated: string }> = [
-  { path: "/", updated: CONTENT_UPDATED },
-  { path: "/kunststof-kozijnen", updated: CONTENT_UPDATED },
-  { path: "/kozijnen-vervangen", updated: CONTENT_UPDATED },
+  { path: "/", updated: ENSCHEDE_UPDATE },
+  { path: "/kunststof-kozijnen", updated: ENSCHEDE_UPDATE },
+  { path: "/kozijnen-vervangen", updated: ENSCHEDE_UPDATE },
   { path: "/kosten", updated: CONTENT_UPDATED },
   { path: "/montage", updated: CONTENT_UPDATED },
   { path: "/werkwijze", updated: CONTENT_UPDATED },
@@ -30,7 +32,7 @@ const staticPaths: Array<{ path: string; updated: string }> = [
   { path: "/mtb-bouw", updated: CONTENT_UPDATED },
   { path: "/faq", updated: CONTENT_UPDATED },
   { path: "/kennis", updated: CONTENT_UPDATED },
-  { path: "/werkgebied", updated: CONTENT_UPDATED },
+  { path: "/werkgebied", updated: ENSCHEDE_UPDATE },
   { path: "/privacy", updated: CONTENT_UPDATED },
   { path: "/algemene-voorwaarden", updated: CONTENT_UPDATED },
   { path: "/cookiebeleid", updated: CONTENT_UPDATED },
@@ -50,7 +52,7 @@ const staticPaths: Array<{ path: string; updated: string }> = [
       ]
     : []),
   ...(MODULES.plaatspaginas
-    ? PLAATS_PAGINAS.map((r) => ({ path: regioPad(r), updated: CONTENT_UPDATED }))
+    ? PLAATS_PAGINAS.map((r) => ({ path: regioPad(r), updated: ENSCHEDE_UPDATE }))
     : []),
 ];
 

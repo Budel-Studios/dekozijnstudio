@@ -43,7 +43,7 @@ export default function ContactPage() {
             <Eyebrow>Direct contact</Eyebrow>
             <h2 className="mb-6 mt-4 text-2xl text-ink">Bellen, mailen of appen</h2>
             <div className="space-y-4">
-              <div className="rounded-card border border-mist bg-paper-soft p-5">
+              <div className="border border-mist bg-paper-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">Telefoon</p>
                 <p className="mt-1 font-medium text-ink">
                   <ContactLink kind="phone" location="contact" className="hover:text-forest">
@@ -52,7 +52,7 @@ export default function ContactPage() {
                 </p>
                 <p className="mt-1 text-sm text-ink/65">Bereikbaar {company.openingstijden}</p>
               </div>
-              <div className="rounded-card border border-mist bg-paper-soft p-5">
+              <div className="border border-mist bg-paper-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">WhatsApp</p>
                 <p className="mt-1 font-medium text-ink">
                   <ContactLink kind="whatsapp" location="contact" className="hover:text-forest">
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 </p>
                 <p className="mt-1 text-sm text-ink/65">Handig om foto&apos;s van je huidige kozijnen te sturen</p>
               </div>
-              <div className="rounded-card border border-mist bg-paper-soft p-5">
+              <div className="border border-mist bg-paper-soft p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">E-mail</p>
                 <p className="mt-1 font-medium text-ink">
                   <a href={`mailto:${company.email}`} className="hover:text-forest">
@@ -88,7 +88,7 @@ export default function ContactPage() {
               )}
             </div>
 
-            <div className="mt-10 rounded-card border border-mist bg-paper p-6">
+            <div className="mt-10 border border-mist bg-paper p-6">
               <p className="text-xs font-semibold uppercase tracking-widest text-ink/60">Adres</p>
               <p className="mt-2 font-medium text-ink">
                 {company.naam}

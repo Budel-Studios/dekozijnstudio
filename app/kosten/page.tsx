@@ -157,7 +157,7 @@ export default function KostenPage() {
             In je voorstel staan deze onderdelen apart, inclusief btw. Zo zie je wat je krijgt en waar een verschil met een
             andere offerte vandaan komt.
           </p>
-          <div className="mt-8 overflow-x-auto rounded-card border border-mist bg-paper">
+          <div className="mt-8 overflow-x-auto border border-mist bg-paper">
             <table className="w-full min-w-[40rem] text-left text-sm">
               <caption className="sr-only">Onderdelen van de prijs van nieuwe kozijnen</caption>
               <thead>
@@ -192,7 +192,7 @@ export default function KostenPage() {
             <h2 className="mt-4 text-2xl text-ink sm:text-3xl">Prijsvoorbeelden uit echte calculaties</h2>
             <div className="mt-8 grid gap-6 lg:grid-cols-3">
               {PRIJSVOORBEELDEN.map((v) => (
-                <article key={v.id} className="rounded-card border border-mist bg-paper p-6">
+                <article key={v.id} className="border border-mist bg-paper p-6">
                   <h3 className="text-lg text-ink">{v.titel}</h3>
                   <dl className="mt-4 space-y-2 text-sm">
                     {(

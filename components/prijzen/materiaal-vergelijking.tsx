@@ -48,7 +48,7 @@ function prijs(materiaal: string, rij: Rij): number {
 export function MateriaalVergelijking() {
   return (
     <div>
-      <div className="overflow-x-auto rounded-card border border-mist">
+      <div className="overflow-x-auto border border-mist">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="bg-paper-soft text-ink">

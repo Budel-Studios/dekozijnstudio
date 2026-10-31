@@ -27,7 +27,7 @@ export function PriceTable({
   className?: string;
 }) {
   return (
-    <div className={cn("overflow-hidden rounded-card border border-mist", className)}>
+    <div className={cn("overflow-hidden border border-mist", className)}>
       <table className="w-full text-left text-sm">
         <caption className="sr-only">{caption}</caption>
         <thead>

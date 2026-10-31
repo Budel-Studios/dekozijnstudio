@@ -55,7 +55,7 @@ export default function OffertePage() {
             <h2 className="mb-6 mt-4 text-xl font-semibold text-ink">Na je aanvraag</h2>
             <FeatureList items={inmeten ? [...naAanvraag, inmeten] : naAanvraag} />
 
-            <div className="mt-8 rounded-card border border-mist bg-paper-soft p-6">
+            <div className="mt-8 border border-mist bg-paper-soft p-6">
               <p className="font-semibold text-ink">Liever direct contact?</p>
               <p className="mt-2 text-sm leading-relaxed text-ink/70">
                 Bel{" "}
@@ -71,7 +71,7 @@ export default function OffertePage() {
             </div>
 
             {MODULES.configurator && (
-              <div className="mt-4 rounded-card border border-mist bg-paper-soft p-6">
+              <div className="mt-4 border border-mist bg-paper-soft p-6">
                 <p className="font-semibold text-ink">Weet je al precies wat je wilt?</p>
                 <p className="mt-2 text-sm leading-relaxed text-ink/70">
                   Stel je kozijn zelf samen in de configurator en stuur je project in één keer door.

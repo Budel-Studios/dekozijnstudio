@@ -15,7 +15,7 @@ export function RelatedArticles({ articles }: { articles: ArticleMeta[] }) {
           <li key={a.slug}>
             <Link
               href={`/kennis/${a.slug}`}
-              className="group flex items-start gap-3 rounded-xl border border-mist bg-paper p-4 transition-shadow hover:shadow-soft"
+              className="group flex items-start gap-3 border border-mist bg-paper p-4 transition-colors hover:border-ink/40"
             >
               <div className="flex-1">
                 <p className="text-xs font-semibold uppercase tracking-widest text-wood">

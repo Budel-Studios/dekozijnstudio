@@ -54,7 +54,7 @@ export function PriceSummary({
       </dl>
 
       {/* Betaalsplitsing */}
-      <div className="mt-4 rounded-xl border border-mist bg-paper p-4">
+      <div className="mt-4 border border-mist bg-paper p-4">
         <p className="text-xs font-semibold uppercase tracking-widest text-wood">Betaling</p>
         {SHOW_PRODUCT_PRICES ? (
           <>

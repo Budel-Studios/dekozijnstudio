@@ -6,7 +6,10 @@ import { FeatureList } from "@/components/ui/feature-list";
 import { FAQ } from "@/components/ui/faq";
 import { MateriaalSectie } from "@/components/kozijnen/materiaal-sectie";
 import { CtaBlok } from "@/components/kozijnen/cta-blok";
+import { TwenteMapFigure } from "@/components/twente-map/twente-map-figure";
+import { TwenteMapSvg } from "@/components/twente-map/twente-map-svg";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
+import { mapPlaces } from "@/lib/werkgebied-kaart";
 import { REGIO_PAGINAS, regioPad, type RegioPagina } from "@/data/regio";
 
 /** Material cards: trade-offs, no brand promises or performance claims. */
@@ -62,8 +65,21 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
 
   // Chips that have their own page become internal links
   // (e.g. "Hengelo" on the hub → /werkgebied/hengelo).
-  const paginaPad = new Map(
-    REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r) => [r.naam, regioPad(r)]),
+  const paginaPad = new Map<string, string>([
+    // Enschede is served by the homepage.
+    ...(data.slug === "enschede" ? [] : ([["Enschede", "/"]] as Array<[string, string]>)),
+    ...REGIO_PAGINAS.filter((r) => r.slug !== data.slug).map((r): [string, string] => [r.naam, regioPad(r)]),
+  ]);
+
+  // Twente map in the hero: the hub tours the places, a place page lights up its own municipality.
+  const places = mapPlaces();
+  const kaart = (
+    <TwenteMapFigure
+      svg={<TwenteMapSvg places={places} activeSlug={isHub ? null : data.slug} currentHref={pad} />}
+      places={places}
+      defaultActive={isHub ? null : data.slug}
+      tour={isHub}
+    />
   );
 
   return (
@@ -88,6 +104,7 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
             </Button>
           </>
         }
+        media={kaart}
       />
 
       {/* Points of attention + service area */}

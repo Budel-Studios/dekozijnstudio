@@ -38,7 +38,7 @@ export function ProductSpecs({ product }: { product: ProductGids }) {
   const maten = maatRows(product.materiaal, product.profielValue);
 
   return (
-    <div className="rounded-card border border-mist bg-paper p-6 sm:p-8">
+    <div className="border border-mist bg-paper p-6 sm:p-8">
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         {/* Beeld + kerngegevens */}
         <div>

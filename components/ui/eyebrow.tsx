@@ -25,7 +25,7 @@ export function Eyebrow({
         className,
       )}
     >
-      <span aria-hidden className="size-2 rounded-full bg-lime" />
+      <span aria-hidden className="size-2 bg-lime" />
       {children}
     </p>
   );

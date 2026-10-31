@@ -9,7 +9,7 @@ export function ScopeTabel({ ids }: { ids?: string[] }) {
   const rows = ids ? MONTAGE_SCOPE.filter((r) => ids.includes(r.id)) : MONTAGE_SCOPE;
   const metStatus = isVerified("montagescope");
   return (
-    <div className="overflow-x-auto rounded-card border border-mist bg-paper">
+    <div className="overflow-x-auto border border-mist bg-paper">
       <table className="w-full min-w-[36rem] text-left text-sm">
         <caption className="sr-only">Onderdelen van het monteren van kozijnen</caption>
         <thead>

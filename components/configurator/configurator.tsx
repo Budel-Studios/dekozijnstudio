@@ -164,10 +164,10 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_340px] lg:items-start">
       {/* ── Wizard panel ── */}
-      <div className="order-2 rounded-card border border-mist bg-paper p-6 sm:p-8 lg:order-1">
+      <div className="order-2 border border-mist bg-paper p-6 sm:p-8 lg:order-1">
         {preselectedLabel && (
-          <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-lime/40 bg-lime/8 px-4 py-2.5 text-sm text-ink/75">
-            <span aria-hidden className="size-1.5 rounded-full bg-lime" />
+          <div className="mb-6 flex items-center gap-2.5 border border-lime/40 bg-lime/8 px-4 py-2.5 text-sm text-ink/75">
+            <span aria-hidden className="size-1.5 bg-lime" />
             Gekozen product: <strong className="font-semibold text-ink">{preselectedLabel}</strong>
           </div>
         )}
@@ -185,7 +185,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
               <div
                 key={i}
                 className={cn(
-                  "h-1.5 flex-1 rounded-full transition-colors",
+                  "h-1.5 flex-1 transition-colors",
                   i <= step ? "bg-lime" : "bg-mist",
                 )}
               />
@@ -330,12 +330,12 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
                           aria-pressed={active}
                           title={k.ral ? `${k.label} (${k.ral})` : k.label}
                           className={cn(
-                            "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
+                            "flex items-center gap-2 border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
                             active ? "border-forest bg-forest/5 text-ink" : "border-mist text-ink/70 hover:bg-paper-soft",
                           )}
                         >
                           <span
-                            className="size-6 rounded-full border border-black/10"
+                            className="size-6 border border-black/10"
                             style={{ backgroundColor: k.hex }}
                             aria-hidden
                           />
@@ -361,12 +361,12 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
                       aria-pressed={active}
                       title={hs.description}
                       className={cn(
-                        "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
+                        "flex items-center gap-2 border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
                         active ? "border-forest bg-forest/5 text-ink" : "border-mist text-ink/70 hover:bg-paper-soft",
                       )}
                     >
                       <span
-                        className="size-6 rounded-full border border-black/10"
+                        className="size-6 border border-black/10"
                         style={{ backgroundColor: hs.value === "zwart" ? "#1c1c1c" : "#cfd2d4" }}
                         aria-hidden
                       />
@@ -386,7 +386,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
                     <label
                       key={o.value}
                       className={cn(
-                        "flex cursor-pointer flex-col rounded-xl border p-4 transition-colors",
+                        "flex cursor-pointer flex-col border p-4 transition-colors",
                         checked ? "border-forest bg-forest/5" : "border-mist hover:bg-paper-soft",
                       )}
                     >
@@ -406,7 +406,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
         {/* ── Step 6: Ventilatie ── */}
         {step === 5 && (
           <Step title="Ventilatierooster" hint="Optioneel, voor frisse lucht in huis. Je kiest zelf de positie en de kleur.">
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-mist p-4 transition-colors hover:bg-paper-soft">
+            <label className="flex cursor-pointer items-start gap-3 border border-mist p-4 transition-colors hover:bg-paper-soft">
               <input
                 type="checkbox"
                 checked={ventilatieAan}
@@ -447,11 +447,11 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
                           aria-pressed={active}
                           title={k.label}
                           className={cn(
-                            "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
+                            "flex items-center gap-2 border py-1.5 pl-1.5 pr-3 text-xs font-medium transition-colors",
                             active ? "border-forest bg-forest/5 text-ink" : "border-mist text-ink/70 hover:bg-paper-soft",
                           )}
                         >
-                          <span className="size-6 rounded-full border border-black/10" style={{ backgroundColor: k.hex }} aria-hidden />
+                          <span className="size-6 border border-black/10" style={{ backgroundColor: k.hex }} aria-hidden />
                           {k.label}
                         </button>
                       );
@@ -511,7 +511,7 @@ export function Configurator({ initialProducttype }: { initialProducttype?: stri
         {/* ── Step 9: Resultaat / projectoverzicht ── */}
         {step === 8 && (
           <Step title="Je projectoverzicht">
-            <div className="rounded-card border border-forest/20 bg-forest/5 p-6 text-center">
+            <div className="border border-forest/20 bg-forest/5 p-6 text-center">
               {SHOW_PRODUCT_PRICES ? (
                 <>
                   <p className="text-sm text-ink/60">
@@ -640,9 +640,9 @@ function LiveSummary({
   ];
 
   return (
-    <aside className="order-1 rounded-card border border-mist bg-paper-soft p-6 lg:order-2 lg:sticky lg:top-32">
+    <aside className="order-1 border border-mist bg-paper-soft p-6 lg:order-2 lg:sticky lg:top-32">
       {/* Live tekening (buitenaanzicht) */}
-      <div className="mb-5 rounded-xl border border-mist bg-paper p-4">
+      <div className="mb-5 border border-mist bg-paper p-4">
         <KozijnPreview config={config} />
         <p className="mt-2 text-center text-xs uppercase tracking-widest text-ink/40">
           Buitenaanzicht
@@ -727,14 +727,14 @@ function SelectCard({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
+        "flex flex-col items-start gap-1 border p-4 text-left transition-colors",
         active ? "border-forest bg-forest/5 ring-1 ring-forest/20" : "border-mist hover:bg-paper-soft",
       )}
     >
       <span className="flex w-full items-center justify-between">
         <span className="text-sm font-medium text-ink">{title}</span>
         {active && (
-          <span className="flex size-5 items-center justify-center rounded-full bg-lime/20">
+          <span className="flex size-5 items-center justify-center bg-lime/20">
             <CheckIcon className="size-3 text-forest" />
           </span>
         )}
@@ -760,7 +760,7 @@ function ProfielCard({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
+        "flex flex-col items-start gap-1 border p-4 text-left transition-colors",
         active ? "border-forest bg-forest/5 ring-1 ring-forest/20" : "border-mist hover:bg-paper-soft",
       )}
     >
@@ -778,7 +778,7 @@ function ProfielCard({
       <span className="flex w-full items-center justify-between gap-2">
         <span className="text-sm font-medium text-ink">{profiel.label}</span>
         {active && (
-          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-lime/20">
+          <span className="flex size-5 shrink-0 items-center justify-center bg-lime/20">
             <CheckIcon className="size-3 text-forest" />
           </span>
         )}
@@ -799,7 +799,7 @@ function ProfielCard({
 
 function SpecChip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-sm bg-mist/70 px-1.5 py-0.5 text-[11px] font-medium text-ink/65">
+    <span className="bg-mist/70 px-1.5 py-0.5 text-[11px] font-medium text-ink/65">
       {children}
     </span>
   );
@@ -840,7 +840,7 @@ function NumberField({
           if (Number.isNaN(n)) return;
           onChange(Math.min(max, Math.max(min, n)));
         }}
-        className="w-full rounded-xl border border-mist bg-paper px-4 py-3 text-sm text-ink outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+        className="w-full border border-mist bg-paper px-4 py-3 text-sm text-ink outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
       />
       <p className="mt-1 text-xs text-ink/40">{min}–{max}</p>
     </div>

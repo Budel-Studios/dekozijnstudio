@@ -16,7 +16,7 @@ export function PresetCard({ preset }: { preset: PresetItem }) {
   return (
     <Link
       href={`/configurator?type=${preset.configType}`}
-      className="group flex flex-col overflow-hidden rounded-card border border-mist bg-paper transition-shadow hover:shadow-soft"
+      className="group flex flex-col overflow-hidden border border-mist bg-paper transition-colors hover:border-ink/40"
     >
       <div className="flex h-48 items-center justify-center bg-paper-soft p-6">
         <div className="flex h-full w-full items-center justify-center">
