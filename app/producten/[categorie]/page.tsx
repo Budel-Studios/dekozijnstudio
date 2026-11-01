@@ -43,7 +43,7 @@ const CATEGORIE_TEKST: Record<
         Welk raam waar past, hangt af van hoe je wilt ventileren en schoonmaken. Een draaikiepraam kan op een kier en
         helemaal open; een vast raam geeft het meeste glas. Wil je weten welk glas past, of wat er bij het vervangen
         gebeurt? Lees{" "}
-        <Link href="/kozijnen-vervangen" className={link}>
+        <Link href="/#zo-gaat-het" className={link}>
           hoe kozijnen vervangen in zijn werk gaat
         </Link>
         .

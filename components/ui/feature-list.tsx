@@ -17,7 +17,7 @@ export function FeatureList({
     <ul className={cn("space-y-3", className)}>
       {items.map((item, index) => (
         <li key={index} className="flex items-start gap-3 text-sm text-ink/75 leading-relaxed">
-          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-lime/15">
+          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center bg-lime/15">
             <CheckIcon className="size-3 text-forest" />
           </span>
           {item}

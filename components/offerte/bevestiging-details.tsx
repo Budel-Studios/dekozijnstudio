@@ -28,7 +28,7 @@ export function BevestigingDetails() {
     return null;
   }
   return (
-    <div className="mt-8 rounded-card border border-mist bg-paper p-6">
+    <div className="mt-8 border border-mist bg-paper p-6">
       <p className="text-sm font-semibold text-ink">Dit heb je ons gestuurd</p>
       <dl className="mt-4 divide-y divide-mist text-sm">
         {b.regels.map(([label, value]) => (

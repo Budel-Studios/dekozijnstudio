@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 /**
  * URL migration of 29-10-2026 (docs/seo-migratie.md). Every old URL points
  * directly to its content equivalent — no chains, no dump to the homepage
- * except /kozijnen-enschede, whose intent ("kozijnen Enschede") is now served
- * by the homepage. `permanent: true` → 308, which search engines treat as 301.
+ * except /kozijnen-enschede and /kozijnen-vervangen, whose intent ("kozijnen
+ * vervangen in Enschede") is now served by the homepage. `permanent: true` → 308, which search engines treat as 301.
  */
 const redirects: Array<{ source: string; destination: string }> = [
   { source: "/prijzen", destination: "/kosten" },
@@ -19,6 +19,9 @@ const redirects: Array<{ source: string; destination: string }> = [
   { source: "/kozijnen-haaksbergen", destination: "/werkgebied/haaksbergen" },
   { source: "/offerte-aanvragen", destination: "/offerte" },
   { source: "/referral", destination: "/aanbrengbonus" },
+  // 1-11-2026: focus on "kozijnen vervangen in Enschede" — the page is merged
+  // into the homepage, which is now the landing page for that query.
+  { source: "/kozijnen-vervangen", destination: "/" },
 ];
 
 /**

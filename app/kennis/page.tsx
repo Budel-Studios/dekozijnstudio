@@ -70,7 +70,7 @@ export default function KennisPage() {
                     <Link
                       key={article.slug}
                       href={`/kennis/${article.slug}`}
-                      className="group flex flex-col justify-between rounded-card border border-mist bg-paper p-5 transition-shadow hover:shadow-soft"
+                      className="group flex flex-col justify-between border border-mist bg-paper p-5 transition-colors hover:border-ink/40"
                     >
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-widest text-wood">

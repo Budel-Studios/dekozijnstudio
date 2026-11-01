@@ -145,11 +145,11 @@ export default function MontagePage() {
               </Link>
             </p>
           </div>
-          <div className="rounded-card border border-mist bg-paper-soft p-7">
+          <div className="border border-mist bg-paper-soft p-7">
             <h2 className="text-xl text-ink">Meer weten over het hele traject?</h2>
             <ul className="mt-4 space-y-3">
               <li>
-                <Link href="/kozijnen-vervangen" className={link}>
+                <Link href="/#zo-gaat-het" className={link}>
                   Kozijnen vervangen: van bestaande situatie tot oplevering
                 </Link>
               </li>

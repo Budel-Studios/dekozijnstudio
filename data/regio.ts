@@ -39,6 +39,8 @@ export type RegioPagina = {
   metaDescription: string;
   heroTitel: string;
   heroLead: string;
+  /** Short line under the place name on the Twente map and in the map list. */
+  kaartRegel: string;
   /**
    * Hub: what you can expect from us. Place: what we pay attention to in this
    * place. Short lines, unique per page.
@@ -61,6 +63,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     metaDescription:
       "De Kozijnstudio werkt vanuit Enschede in Twente. Bekijk ons werkgebied en bespreek de mogelijkheden voor jouw adres en project.",
     heroTitel: "Vanuit Enschede aan het werk in Twente",
+    kaartRegel: "Heel Twente vanuit Enschede",
     heroLead:
       "De Kozijnstudio werkt vanuit Enschede. Van daaruit leveren we kunststof, houten en aluminium kozijnen in Twente en regelen we de montage. Twijfel je of jouw adres bij ons werkgebied hoort? Vraag het ons gerust.",
     lokaleUsps: [
@@ -127,6 +130,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     metaDescription:
       "Nieuwe kozijnen in Hengelo? Lees waar je op let bij een wederopbouwpand, een huis in Tuindorp 't Lansink of een woning uit de jaren 70. Vraag een voorstel aan.",
     heroTitel: "Kozijnen in Hengelo, passend bij de bouwperiode van je woning",
+    kaartRegel: "Passend bij de bouwperiode",
     heroLead:
       "We werken vanuit Enschede; Hengelo hoort bij ons werkgebied. De stad is in lagen gebouwd, van tuindorp en wederopbouw tot grote uitbreidingswijken, en dat zie je terug in de gevels. Hier lees je waar je op let bij nieuwe kozijnen voor een woning in Hengelo.",
     lokaleUsps: [
@@ -184,6 +188,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     metaDescription:
       "Kozijnen vervangen in Almelo of West-Twente? Lees hoe je een oudere woning stap voor stap verduurzaamt met nieuwe kozijnen en glas, en vraag een voorstel aan.",
     heroTitel: "Kozijnen in Almelo: verduurzamen met een duidelijk plan",
+    kaartRegel: "Verduurzamen met een plan",
     heroLead:
       "We werken vanuit Enschede; Almelo en West-Twente horen bij ons werkgebied. Veel woningen hier stammen uit de textieltijd en de naoorlogse jaren. Nieuwe kozijnen zijn dan vaak een logische stap in het verduurzamen. We helpen je kiezen wat bij jouw woning past.",
     lokaleUsps: [
@@ -240,6 +245,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     metaDescription:
       "Kozijnen in Oldenzaal of Noordoost-Twente? Lees waar je op let bij een pand in de binnenstad, bij roeden en bij de bereikbaarheid, en vraag een voorstel aan.",
     heroTitel: "Kozijnen in Oldenzaal, van binnenstad tot Noordoost-Twente",
+    kaartRegel: "Binnenstad en Noordoost-Twente",
     heroLead:
       "We werken vanuit Enschede; Oldenzaal en de dorpen in Noordoost-Twente horen bij ons werkgebied. Rond de Plechelmusbasiliek staan panden waar de detaillering telt, in de wijken daaromheen heb je meer vrijheid. Op deze pagina lees je waar je op let.",
     lokaleUsps: [
@@ -292,6 +298,7 @@ export const REGIO_PAGINAS: RegioPagina[] = [
     metaDescription:
       "Kozijnen of een schuifpui in Haaksbergen, Buurse of Sint Isidorushoeve? Lees waar je op let bij grote raampartijen en erven, en vraag een voorstel aan.",
     heroTitel: "Kozijnen in Haaksbergen: ruim wonen, grote ramen",
+    kaartRegel: "Ruim wonen, grote ramen",
     heroLead:
       "We werken vanuit Enschede, en Haaksbergen ligt daar direct naast. Het hoort bij ons werkgebied, net als Buurse, Sint Isidorushoeve en het buitengebied. Hier staan veel vrijstaande woningen met grote raampartijen, en daar komt bij nieuwe kozijnen net wat meer bij kijken.",
     lokaleUsps: [

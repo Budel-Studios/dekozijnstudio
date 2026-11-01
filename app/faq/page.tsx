@@ -345,7 +345,7 @@ export default function FaqPage() {
             </div>
           ))}
 
-          <div className="mt-10 rounded-card border border-mist bg-paper-soft p-6 text-center">
+          <div className="mt-10 border border-mist bg-paper-soft p-6 text-center">
             <p className="font-medium text-ink">Staat je vraag er niet bij?</p>
             <p className="mt-2 text-sm text-ink/65">
               Neem contact met ons op, dan helpen we je verder.

@@ -28,7 +28,7 @@ export function Callout({
   return (
     <div
       className={cn(
-        "rounded-card border px-5 py-4 leading-relaxed",
+        "border px-5 py-4 leading-relaxed",
         styles[variant],
         className,
       )}

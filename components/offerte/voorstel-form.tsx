@@ -63,7 +63,7 @@ const initial: FormState = {
 };
 
 const inputClass =
-  "w-full rounded-xl border border-mist bg-paper px-4 py-3 text-base text-ink outline-none transition-colors placeholder:text-ink/40 focus:border-forest focus:ring-2 focus:ring-forest/15 aria-[invalid=true]:border-red-500 sm:text-sm";
+  "w-full border border-mist bg-paper px-4 py-3 text-base text-ink outline-none transition-colors placeholder:text-ink/40 focus:border-forest focus:ring-2 focus:ring-forest/15 aria-[invalid=true]:border-red-500 sm:text-sm";
 
 /** Resize + re-encode a photo in the browser so uploads stay small. */
 async function compress(file: File): Promise<File> {
@@ -274,7 +274,7 @@ export function VoorstelForm({
       <ol className="flex gap-2" aria-hidden>
         {STEPS.map((label, i) => (
           <li key={label} className="flex-1">
-            <div className={cn("h-1.5 rounded-full transition-colors duration-300", i <= step ? "bg-lime" : "bg-mist")} />
+            <div className={cn("h-1.5 transition-colors duration-300", i <= step ? "bg-lime" : "bg-mist")} />
             <span className={cn("mt-1.5 block text-[11px] font-medium", i === step ? "text-ink" : "text-ink/50")}>
               {label}
             </span>
@@ -292,14 +292,14 @@ export function VoorstelForm({
       </div>
       <div className="mt-2.5 flex gap-1.5" aria-hidden>
         {STEPS.map((_, i) => (
-          <div key={i} className={cn("h-1.5 flex-1 rounded-full", i <= step ? "bg-lime" : "bg-mist")} />
+          <div key={i} className={cn("h-1.5 flex-1", i <= step ? "bg-lime" : "bg-mist")} />
         ))}
       </div>
     </div>
   );
 
   return (
-    <div className={drawer ? "flex min-h-0 flex-1 flex-col" : "rounded-card border border-mist bg-paper p-6 sm:p-8"}>
+    <div className={drawer ? "flex min-h-0 flex-1 flex-col" : "border border-mist bg-paper p-6 sm:p-8"}>
       {progress}
 
       <form
@@ -419,21 +419,21 @@ export function VoorstelForm({
               </p>
               <div className="mt-3 flex flex-wrap gap-3">
                 {fotos.map((f) => (
-                  <div key={f.id} className="relative size-24 overflow-hidden rounded-xl border border-mist">
+                  <div key={f.id} className="relative size-24 overflow-hidden border border-mist">
                     {/* eslint-disable-next-line @next/next/no-img-element -- local preview of a user file */}
                     <img src={f.url} alt="Gekozen foto" className="size-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeFoto(f.id)}
                       aria-label="Foto verwijderen"
-                      className="absolute right-1 top-1 grid size-7 place-items-center rounded-full bg-ink/80 text-paper hover:bg-ink"
+                      className="absolute right-1 top-1 grid size-7 place-items-center bg-ink/80 text-paper hover:bg-ink"
                     >
                       <CloseIcon className="size-3.5" />
                     </button>
                   </div>
                 ))}
                 {fotos.length < FOTO_LIMIETEN.maxAantal && (
-                  <label className="grid size-24 cursor-pointer place-items-center rounded-xl border border-dashed border-ink/25 text-center text-xs text-ink/60 hover:border-forest hover:text-forest focus-within:ring-2 focus-within:ring-forest/30">
+                  <label className="grid size-24 cursor-pointer place-items-center border border-dashed border-ink/25 text-center text-xs text-ink/60 hover:border-forest hover:text-forest focus-within:ring-2 focus-within:ring-forest/30">
                     <span>{processing ? "Bezig…" : "+ Foto toevoegen"}</span>
                     <input
                       type="file"
@@ -578,7 +578,7 @@ export function VoorstelForm({
         )}
 
         {submitError && (
-          <p role="alert" className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p role="alert" className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {submitError}
           </p>
         )}
@@ -697,7 +697,7 @@ function ChoiceCard({
   return (
     <label
       className={cn(
-        "flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-medium text-ink transition-colors focus-within:ring-2 focus-within:ring-forest/25",
+        "flex cursor-pointer items-center gap-3 border p-4 text-sm font-medium text-ink transition-colors focus-within:ring-2 focus-within:ring-forest/25",
         checked ? "border-forest bg-forest/5" : "border-mist hover:bg-paper-soft",
       )}
     >

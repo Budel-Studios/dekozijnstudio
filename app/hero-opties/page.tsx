@@ -15,7 +15,7 @@ function Label({ n, title, note }: { n: string; title: string; note: string }) {
     <div className="bg-ink py-5 text-paper">
       <Container className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex size-8 items-center justify-center rounded-full bg-lime text-sm font-bold text-ink">
+          <span className="flex size-8 items-center justify-center bg-lime text-sm font-bold text-ink">
             {n}
           </span>
           <span className="font-display text-lg font-semibold">{title}</span>

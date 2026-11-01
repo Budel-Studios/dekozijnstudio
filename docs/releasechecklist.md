@@ -9,7 +9,7 @@ Gebaseerd op de SEO-strategie (privé, in het claude.ai-project KozijnStudio: `c
 - [ ] **Btw-identificatienummer** aanvullen in `data/company.ts` (staat nog als placeholder, wordt niet getoond).
 - [ ] **Juridische pagina's** (privacy, algemene voorwaarden, cookiebeleid, voorwaarden aanbrengbonus) laten toetsen; open punten: e-mailprovider + verwerkersovereenkomsten, Vercel-regio, bewaartermijnen, geldigheid/betaaltermijn/annulering/garantie.
 - [ ] **Previews beschermen** (Vercel Deployment Protection) en controleren dat productie géén noindex of wachtwoordmuur heeft.
-- [ ] **Search Console**: domein verifiëren, `sitemap.xml` indienen, URL-inspectie op home, /kunststof-kozijnen, /kosten, /kozijnen-vervangen, /montage.
+- [ ] **Search Console**: domein verifiëren, `sitemap.xml` indienen, URL-inspectie op home (landingspagina "kozijnen vervangen in Enschede"), /kosten, /kunststof-kozijnen, /montage.
 
 ## Feitenregister (`data/feiten.ts`) — bevestigen of laten staan
 Elk feit hieronder is nu verborgen. Bevestigen = status op `verified` + `bron` + `gecontroleerd`.

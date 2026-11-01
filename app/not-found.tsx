@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const suggesties = [
   { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", note: "Keuzes, glas en onderhoud" },
-  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen", note: "Zo gaat het in je woning" },
+  { label: "Kozijnen vervangen", href: "/", note: "Zo gaat het in je woning" },
   { label: "Kosten", href: "/kosten", note: "Waar de prijs van afhangt" },
   { label: "Montage", href: "/montage", note: "Wat bij het monteren hoort" },
   { label: "Kennis", href: "/kennis", note: "Uitleg over kozijnen en glas" },
@@ -24,7 +24,7 @@ export default function NotFound() {
       <Container className="text-center">
         {/* Speels kozijn-raam met '404' als 'uitzicht' */}
         <div className="mx-auto mb-8 w-full max-w-xs">
-          <div className="relative rounded-[1.5rem] border-[10px] border-paper bg-gradient-to-b from-[#dbe7ee] to-[#c4d9e3] p-6 shadow-soft ring-1 ring-wood/30">
+          <div className="relative border-[10px] border-paper bg-gradient-to-b from-[#dbe7ee] to-[#c4d9e3] p-6 shadow-soft ring-1 ring-wood/30">
             {/* raamkruis */}
             <div aria-hidden className="absolute inset-6 grid grid-cols-2 grid-rows-2">
               <span className="border-b border-r border-white/50" />
@@ -55,7 +55,7 @@ export default function NotFound() {
             <Link
               key={s.href}
               href={s.href}
-              className="group flex items-center justify-between gap-3 rounded-card border border-mist bg-paper px-4 py-3 text-left transition-shadow hover:shadow-soft"
+              className="group flex items-center justify-between gap-3 border border-mist bg-paper px-4 py-3 text-left transition-colors hover:border-ink/40"
             >
               <span>
                 <span className="block text-sm font-medium text-ink group-hover:text-forest">{s.label}</span>

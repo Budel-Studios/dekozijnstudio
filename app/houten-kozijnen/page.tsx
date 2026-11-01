@@ -142,7 +142,7 @@ export default function HoutenKozijnenPage() {
             </p>
             <FeatureList items={pastBij} className="mt-6" />
           </div>
-          <div className="rounded-card border border-mist bg-paper-soft p-7">
+          <div className="border border-mist bg-paper-soft p-7">
             <h2 className="text-xl text-ink">Wanneer een ander materiaal logischer is</h2>
             <p className="mt-3 leading-relaxed text-ink/70">
               Wil je zo weinig mogelijk onderhoud, maar wel een houtachtige uitstraling? Dan is kunststof met een
@@ -294,7 +294,7 @@ export default function HoutenKozijnenPage() {
                 </Link>
               </li>
               <li>
-                <Link href="/kozijnen-vervangen" className={link}>
+                <Link href="/#zo-gaat-het" className={link}>
                   Hoe kozijnen vervangen in zijn werk gaat
                 </Link>
               </li>

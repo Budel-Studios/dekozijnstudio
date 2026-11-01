@@ -5,8 +5,9 @@
  * No FAQPage: Google no longer shows FAQ results (SEO-strategie 2026-10 (privé projectdocument), h12).
  */
 
-import { SITE_URL } from "@/lib/site";
+import { MODULES, SITE_URL } from "@/lib/site";
 import { company } from "@/data/company";
+import { PLAATS_PAGINAS } from "@/data/regio";
 
 // ─── Organization / LocalBusiness ────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ export function organizationSchema() {
     logo: `${SITE_URL}/brand/logo-512.png`,
     image: `${SITE_URL}/og/default.png`,
     description:
-      "Kozijnen in Enschede en Twente: advies, levering en montage van kunststof, houten en aluminium kozijnen, met een uitgesplitst voorstel.",
+      "Kozijnen vervangen in Enschede en Twente: advies, levering en montage van kunststof, houten en aluminium kozijnen, met een uitgesplitst voorstel.",
     address: {
       "@type": "PostalAddress",
       streetAddress: company.adres,
@@ -54,8 +55,11 @@ export function organizationSchema() {
         closes: "17:00",
       },
     },
+    // Enschede (home base, served by the homepage), the places with their own
+    // page, and Twente as a whole — the same areas the site shows.
     areaServed: [
       { "@type": "City", name: "Enschede" },
+      ...(MODULES.plaatspaginas ? PLAATS_PAGINAS.map((p) => ({ "@type": "City", name: p.naam })) : []),
       { "@type": "AdministrativeArea", name: "Twente" },
     ],
   };
@@ -100,6 +104,30 @@ export function articleSchema(opts: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/kennis/${opts.slug}`,
     },
+  };
+}
+
+// ─── Service (homepage) ───────────────────────────────────────────────────────
+
+/**
+ * The core service, as described on the homepage. No price, rating or
+ * offer data — only what the page itself says (no rich result promised).
+ */
+export function serviceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${SITE_URL}/#kozijnen-vervangen`,
+    name: "Kozijnen vervangen in Enschede",
+    serviceType: "Kozijnen vervangen",
+    description:
+      "Oude kozijnen vervangen door nieuwe kunststof, houten of aluminium kozijnen: inmeten, voorstel, verwijderen, plaatsen en afwerken.",
+    url: `${SITE_URL}/`,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: [
+      { "@type": "City", name: "Enschede" },
+      { "@type": "AdministrativeArea", name: "Twente" },
+    ],
   };
 }
 

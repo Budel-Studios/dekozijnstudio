@@ -76,7 +76,7 @@ export default function StyleguidePage() {
             {colors.map((color) => (
               <div key={color.name}>
                 <div
-                  className={`flex h-24 items-end rounded-card p-3 ${color.className} ${color.text}`}
+                  className={`flex h-24 items-end p-3 ${color.className} ${color.text}`}
                 >
                   <span className="text-xs font-medium">{color.value}</span>
                 </div>
@@ -103,7 +103,7 @@ export default function StyleguidePage() {
               </div>
             ))}
             <div className="grid gap-4 pt-4 sm:grid-cols-2">
-              <div className="rounded-card border border-mist p-5">
+              <div className="border border-mist p-5">
                 <p className="text-xs uppercase tracking-widest text-ink/40">
                   Display — Bricolage Grotesque
                 </p>
@@ -111,7 +111,7 @@ export default function StyleguidePage() {
                   Koppen in Bricolage Grotesque
                 </p>
               </div>
-              <div className="rounded-card border border-mist p-5">
+              <div className="border border-mist p-5">
                 <p className="text-xs uppercase tracking-widest text-ink/40">
                   Body — Sora
                 </p>

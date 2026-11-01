@@ -18,7 +18,7 @@ export function ProcessSteps({ steps }: { steps: Step[] }) {
           <li key={index} className="relative flex gap-5">
             {/* Connector line */}
             <div className="flex flex-col items-center">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-lime bg-lime/10 font-display text-sm font-semibold text-ink">
+              <div className="flex size-9 shrink-0 items-center justify-center border-2 border-lime bg-lime/10 font-display text-sm font-semibold text-ink">
                 {index + 1}
               </div>
               {!isLast && (

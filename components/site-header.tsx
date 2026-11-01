@@ -207,7 +207,7 @@ export function SiteHeader() {
             <ContactLink
               kind="phone"
               location="header"
-              className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-pill border border-ink/25 px-4 text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+              className="inline-flex h-9 items-center gap-2 whitespace-nowrap border border-ink/25 px-4 text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-ink hover:text-paper"
             >
               <PhoneIcon className="size-3.5" />
               {company.telefoon}
@@ -219,7 +219,7 @@ export function SiteHeader() {
             <ContactLink
               kind="phone"
               location="header-mobile"
-              className="inline-flex h-10 items-center gap-1.5 rounded-pill border border-ink/25 px-3 text-sm font-semibold text-ink"
+              className="inline-flex h-10 items-center gap-1.5 border border-ink/25 px-3 text-sm font-semibold text-ink"
             >
               <PhoneIcon className="size-3.5" />
               {/* Very small phones: icon only, so logo and menu keep their space. */}
@@ -317,7 +317,7 @@ export function SiteHeader() {
             <ContactLink
               kind="phone"
               location="mobile-menu"
-              className="flex w-full items-center justify-center gap-2 rounded-pill border border-ink/25 px-4 py-3 text-sm font-semibold text-ink"
+              className="flex w-full items-center justify-center gap-2 border border-ink/25 px-4 py-3 text-sm font-semibold text-ink"
             >
               <PhoneIcon className="size-4" />
               {company.telefoon}

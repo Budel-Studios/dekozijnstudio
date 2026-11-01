@@ -36,7 +36,7 @@ export function Logo({
       href="/"
       aria-label="De Kozijnstudio, naar de homepage"
       className={cn(
-        "inline-flex shrink-0 items-center gap-2.5 rounded-md",
+        "inline-flex shrink-0 items-center gap-2.5",
         inverse ? "text-paper" : "text-ink",
         className,
       )}

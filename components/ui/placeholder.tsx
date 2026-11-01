@@ -20,7 +20,7 @@ export function Placeholder({
       role="img"
       aria-label={`Placeholder — ${label}`}
       className={cn(
-        "flex min-h-40 items-center justify-center rounded-card border border-dashed border-ink/20 bg-mint/60 p-6 text-center",
+        "flex min-h-40 items-center justify-center border border-dashed border-ink/20 bg-mint/60 p-6 text-center",
         className,
       )}
     >
@@ -34,8 +34,8 @@ export function Placeholder({
 /** Small inline tag that flags placeholder/wireframe content. */
 export function PlaceholderTag({ children }: { children?: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-pill border border-dashed border-wood/60 bg-wood/5 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-wood">
-      <span aria-hidden className="size-1.5 rounded-full bg-wood" />
+    <span className="inline-flex items-center gap-2 border border-dashed border-wood/60 bg-wood/5 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-wood">
+      <span aria-hidden className="size-1.5 bg-wood" />
       {children ?? "Wireframe · placeholder"}
     </span>
   );

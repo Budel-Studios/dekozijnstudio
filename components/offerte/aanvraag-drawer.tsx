@@ -120,7 +120,7 @@ export function AanvraagDrawerProvider({ children }: { children: ReactNode }) {
           >
             {success ? (
               <div className="flex flex-1 animate-pop-in flex-col items-center justify-center px-8 text-center">
-                <span className="mb-6 grid size-16 place-items-center rounded-full bg-lime/30 text-ink">
+                <span className="mb-6 grid size-16 place-items-center bg-lime/30 text-ink">
                   <CheckIcon className="size-8" />
                 </span>
                 <h2 id="aanvraag-titel" className="text-2xl font-bold text-ink">
@@ -141,7 +141,7 @@ export function AanvraagDrawerProvider({ children }: { children: ReactNode }) {
                     type="button"
                     onClick={close}
                     aria-label="Sluiten"
-                    className="absolute right-4 top-4 grid size-10 place-items-center rounded-full text-ink/60 transition-colors hover:bg-paper-soft hover:text-ink"
+                    className="absolute right-4 top-4 grid size-10 place-items-center text-ink/60 transition-colors hover:bg-paper-soft hover:text-ink"
                   >
                     <CloseIcon className="size-6" />
                   </button>

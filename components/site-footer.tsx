@@ -38,13 +38,13 @@ export function SiteFooter() {
               <ContactLink
                 kind="phone"
                 location="footer"
-                className="inline-flex items-center rounded-pill bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-lime"
+                className="inline-flex items-center bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-lime"
               >
                 {company.telefoon}
               </ContactLink>
               <Link
                 href={primaryCta.href}
-                className="inline-flex items-center rounded-pill border border-paper/40 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
+                className="inline-flex items-center border border-paper/40 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
               >
                 {primaryCta.label}
               </Link>
@@ -57,7 +57,7 @@ export function SiteFooter() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-2 lg:pr-10">
             <Logo inverse />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-paper/65">
-              Kozijnen met transparante prijzen, van inmeten tot montage.
+              Kozijnen vervangen in Enschede en Twente, met een voorstel waarin elk onderdeel apart staat.
             </p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-paper/65">
               De Kozijnstudio is een merk van{" "}

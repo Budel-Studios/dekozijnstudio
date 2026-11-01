@@ -39,7 +39,7 @@ export default function ProjectenPage() {
               <Link
                 key={p.slug}
                 href={`/projecten/${p.slug}`}
-                className="group overflow-hidden rounded-card border border-mist bg-paper"
+                className="group overflow-hidden border border-mist bg-paper"
               >
                 {foto && (
                   <Image
