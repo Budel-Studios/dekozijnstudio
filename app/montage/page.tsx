@@ -149,7 +149,7 @@ export default function MontagePage() {
             <h2 className="text-xl text-ink">Meer weten over het hele traject?</h2>
             <ul className="mt-4 space-y-3">
               <li>
-                <Link href="/kozijnen-vervangen" className={link}>
+                <Link href="/#zo-gaat-het" className={link}>
                   Kozijnen vervangen: van bestaande situatie tot oplevering
                 </Link>
               </li>

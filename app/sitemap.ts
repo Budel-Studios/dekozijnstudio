@@ -13,11 +13,12 @@ import { PLAATS_PAGINAS, regioPad } from "@/data/regio";
 const CONTENT_UPDATED = "2026-10-29";
 /** Pages whose content changed with the Enschede/werkgebied update. */
 const ENSCHEDE_UPDATE = "2026-10-31";
+/** Homepage rebuilt as the "kozijnen vervangen in Enschede" landing page. */
+const VERVANGEN_FOCUS = "2026-11-01";
 
 const staticPaths: Array<{ path: string; updated: string }> = [
-  { path: "/", updated: ENSCHEDE_UPDATE },
+  { path: "/", updated: VERVANGEN_FOCUS },
   { path: "/kunststof-kozijnen", updated: ENSCHEDE_UPDATE },
-  { path: "/kozijnen-vervangen", updated: ENSCHEDE_UPDATE },
   { path: "/kosten", updated: CONTENT_UPDATED },
   { path: "/montage", updated: CONTENT_UPDATED },
   { path: "/werkwijze", updated: CONTENT_UPDATED },

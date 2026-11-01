@@ -18,9 +18,9 @@ import { pageMetadata } from "@/lib/seo";
 import { breadcrumbSchema, jsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
-  title: "Wat kosten nieuwe kozijnen met montage?",
+  title: "Wat kost kozijnen vervangen? Prijs inclusief montage",
   description:
-    "Wat kosten nieuwe kozijnen inclusief montage? Bekijk welke keuzes de prijs bepalen en hoe je offertes met dezelfde uitgangspunten vergelijkt.",
+    "Wat kost kozijnen vervangen, inclusief montage? Bekijk welke keuzes de prijs bepalen en hoe je offertes met dezelfde uitgangspunten vergelijkt.",
   path: "/kosten",
 });
 
@@ -136,7 +136,7 @@ export default function KostenPage() {
       />
       <PageHero
         eyebrow="Kosten"
-        title="Wat kosten nieuwe kozijnen inclusief montage?"
+        title="Wat kost kozijnen vervangen inclusief montage?"
         lead="Het eerlijke antwoord: dat hangt af van je woning en je keuzes. Hieronder zie je uit welke onderdelen een prijs bestaat, wat elk onderdeel duurder of goedkoper maakt, en hoe je offertes eerlijk naast elkaar legt."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Kosten" }]}
         actions={
@@ -328,7 +328,7 @@ export default function KostenPage() {
         actions={
           <>
             <Button href="/offerte">Vraag een voorstel</Button>
-            <Button href="/kozijnen-vervangen" variant="light">
+            <Button href="/#zo-gaat-het" variant="light">
               Zo gaat vervangen
             </Button>
           </>

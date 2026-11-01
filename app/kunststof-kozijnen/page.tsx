@@ -241,8 +241,8 @@ export default function KunststofKozijnenPage() {
               <Button href="/montage" variant="secondary">
                 Bekijk wat bij montage hoort
               </Button>
-              <Button href="/kozijnen-vervangen" variant="ghost">
-                Kozijnen vervangen
+              <Button href="/" variant="ghost">
+                Kozijnen vervangen in Enschede
               </Button>
             </div>
           </div>

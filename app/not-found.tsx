@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const suggesties = [
   { label: "Kunststof kozijnen", href: "/kunststof-kozijnen", note: "Keuzes, glas en onderhoud" },
-  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen", note: "Zo gaat het in je woning" },
+  { label: "Kozijnen vervangen", href: "/", note: "Zo gaat het in je woning" },
   { label: "Kosten", href: "/kosten", note: "Waar de prijs van afhangt" },
   { label: "Montage", href: "/montage", note: "Wat bij het monteren hoort" },
   { label: "Kennis", href: "/kennis", note: "Uitleg over kozijnen en glas" },

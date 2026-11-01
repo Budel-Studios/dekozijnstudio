@@ -17,9 +17,10 @@ Uitgevoerd op basis van de SEO-strategie (privé, in het claude.ai-project Kozij
 | /offerte-aanvragen | /offerte | Aanvraagformulier "Vraag een voorstel" (3 stappen) |
 | /referral | /aanbrengbonus | Oude route bestond al niet meer; redirect voor eventuele oude links |
 | /offerte (projectmandje) | /project | Flowpagina, noindex. Geen redirect: /offerte is nu het formulier |
+| /kozijnen-vervangen | / | **1-11-2026, focus "kozijnen vervangen in Enschede":** inhoud samengevoegd in de homepage, die nu de landingspagina voor die zoekopdracht is. Interne links wijzen naar `/`, `/#zo-gaat-het` of `/#wanneer-vervangen` |
 
 ## Nieuw
-- `/kozijnen-vervangen`, `/werkwijze` (P0)
+- `/werkwijze` (P0)
 - `/bedankt` (noindex, niet in sitemap)
 - `/projecten/<slug>` (template; route geeft 404 zolang `data/projecten.ts` leeg is)
 

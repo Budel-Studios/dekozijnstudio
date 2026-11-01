@@ -201,7 +201,7 @@ export function RegioPaginaTemplate({ data }: { data: RegioPagina }) {
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="/kozijnen-vervangen" variant="secondary" size="sm">
+          <Button href="/#zo-gaat-het" variant="secondary" size="sm">
             Zo gaat kozijnen vervangen
           </Button>
           <Button href="/montage" variant="secondary" size="sm">

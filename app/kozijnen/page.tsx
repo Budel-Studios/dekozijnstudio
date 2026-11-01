@@ -205,7 +205,7 @@ export default function KozijnenGidsPage() {
                 Bekijk wat bij de montage hoort
               </Link>{" "}
               en{" "}
-              <Link href="/kozijnen-vervangen" className={link}>
+              <Link href="/#zo-gaat-het" className={link}>
                 hoe kozijnen vervangen in zijn werk gaat
               </Link>
               .

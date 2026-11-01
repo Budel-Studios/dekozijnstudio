@@ -1,8 +1,10 @@
 /**
  * Site navigation — single source of truth for header and footer.
  * Structure follows SEO-strategie 2026-10 (privé projectdocument) (h6): a small menu
- * (Kozijnen · Kosten · Montage en werkwijze · Over ons) plus one primary
- * action. Kennis and werkgebied are reachable via the footer.
+ * plus one primary action. Since 1-11-2026 the site focuses on "kozijnen
+ * vervangen in Enschede": that group comes first and its first link is the
+ * homepage (the landing page for that query). Menu: Kozijnen vervangen ·
+ * Materialen · Kosten · Over ons. Kennis and werkgebied are in the footer.
  * Routes of modules that are switched off (lib/site.ts MODULES) and pages
  * without real content (projecten) are not linked.
  */
@@ -40,7 +42,7 @@ export const kozijnenLinks: NavLink[] = [
 ];
 
 export const werkLinks: NavLink[] = [
-  { label: "Kozijnen vervangen", href: "/kozijnen-vervangen", description: "Wat er in je woning gebeurt" },
+  { label: "Kozijnen vervangen in Enschede", href: "/", description: "Wanneer, hoe en wat het kost" },
   { label: "Montage", href: "/montage", description: "Wat bij het monteren hoort" },
   { label: "Werkwijze", href: "/werkwijze", description: "Van eerste vraag tot oplevering" },
   { label: "Bouwkundige aanpassingen", href: "/bouwkundige-aanpassingen", description: "Opening vergroten, latei, metselwerk" },
@@ -50,23 +52,23 @@ export const werkLinks: NavLink[] = [
 /** Header: dropdown groups and direct links, in menu order. */
 export const headerGroups: NavGroup[] = [
   {
-    label: "Kozijnen",
+    label: "Kozijnen vervangen",
+    links: werkLinks,
+    intro: {
+      title: "Kozijnen vervangen in Enschede",
+      text: "Van inmeten tot oplevering: wat er in je woning gebeurt en welke keuzes je maakt.",
+      href: "/#zo-gaat-het",
+      button: "Zo gaat het",
+    },
+  },
+  {
+    label: "Materialen",
     links: kozijnenLinks,
     intro: {
       title: "Kozijnen in hout, kunststof en aluminium",
       text: "Vergelijk de materialen en bekijk wat bij je woning past.",
       href: "/kozijnen",
       button: "Materialen vergelijken",
-    },
-  },
-  {
-    label: "Montage en werkwijze",
-    links: werkLinks,
-    intro: {
-      title: "Van eerste vraag tot oplevering",
-      text: "Wat er gebeurt bij het vervangen, monteren en afwerken van je kozijnen.",
-      href: "/werkwijze",
-      button: "Bekijk de werkwijze",
     },
   },
 ];
@@ -121,8 +123,8 @@ export const legalLinks: NavLink[] = [
 ];
 
 export const footerGroups: NavGroup[] = [
-  { label: "Kozijnen", links: kozijnenLinks },
-  { label: "Montage en werkwijze", links: werkLinks },
+  { label: "Kozijnen vervangen", links: werkLinks },
+  { label: "Materialen", links: kozijnenLinks },
   { label: "Informatie", links: infoLinks },
   { label: "Bedrijf", links: companyLinks },
 ];

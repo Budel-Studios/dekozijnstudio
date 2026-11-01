@@ -144,7 +144,7 @@ export default function SubsidiePage() {
               Lees de verschillen
             </Link>{" "}
             of bekijk{" "}
-            <Link href="/kozijnen-vervangen" className={link}>
+            <Link href="/#zo-gaat-het" className={link}>
               hoe het vervangen van kozijnen verloopt
             </Link>
             .

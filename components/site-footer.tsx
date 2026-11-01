@@ -57,7 +57,7 @@ export function SiteFooter() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-2 lg:pr-10">
             <Logo inverse />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-paper/65">
-              Kozijnen met transparante prijzen, van inmeten tot montage.
+              Kozijnen vervangen in Enschede en Twente, met een voorstel waarin elk onderdeel apart staat.
             </p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-paper/65">
               De Kozijnstudio is een merk van{" "}

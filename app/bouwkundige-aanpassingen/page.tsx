@@ -185,7 +185,7 @@ export default function BouwkundigeAanpassingenPage() {
             </p>
             <p className="mt-4 leading-relaxed text-ink/70">
               Wil je weten wat er gebeurt als je kozijnen in dezelfde opening vervangt? Lees{" "}
-              <Link href="/kozijnen-vervangen" className={link}>
+              <Link href="/#zo-gaat-het" className={link}>
                 hoe kozijnen vervangen in zijn werk gaat
               </Link>
               .

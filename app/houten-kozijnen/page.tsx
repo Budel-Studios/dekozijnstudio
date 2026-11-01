@@ -294,7 +294,7 @@ export default function HoutenKozijnenPage() {
                 </Link>
               </li>
               <li>
-                <Link href="/kozijnen-vervangen" className={link}>
+                <Link href="/#zo-gaat-het" className={link}>
                   Hoe kozijnen vervangen in zijn werk gaat
                 </Link>
               </li>

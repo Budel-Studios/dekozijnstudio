@@ -25,7 +25,7 @@ Het feitenregister staat in `data/feiten.ts`. Zolang een feit `needs_confirmatio
 Geen "[…]", "TODO", "placeholder", "volgt", "Lorem ipsum" of `<Placeholder>`-vlakken met "foto volgt" in publieke pagina's. Ontbreekt iets: laat het onderdeel weg.
 
 ## URL's (na de migratie)
-`/kosten` (was /prijzen) · `/subsidie` (was /isde-subsidie) · `/kennis` en `/kennis/<slug>` (was /kennisbank) · `/werkgebied` en `/werkgebied/<plaats>` (was /kozijnen-twente, /kozijnen-<plaats>) · `/offerte` = aanvraagformulier · `/project` = projectmandje uit de configurator · nieuw: `/kozijnen-vervangen`, `/werkwijze`. Niet linken: `/diy`, `/projecten` (staan uit), `/kozijnen-enschede` (bestaat niet meer; de homepage bedient Enschede).
+`/kosten` (was /prijzen) · `/subsidie` (was /isde-subsidie) · `/kennis` en `/kennis/<slug>` (was /kennisbank) · `/werkgebied` en `/werkgebied/<plaats>` (was /kozijnen-twente, /kozijnen-<plaats>) · `/offerte` = aanvraagformulier · `/project` = projectmandje uit de configurator · nieuw: `/werkwijze`. Kozijnen vervangen staat op de homepage (`/`, secties `#wanneer-vervangen` en `#zo-gaat-het`; `/kozijnen-vervangen` stuurt door). Niet linken: `/diy`, `/projecten` (staan uit), `/kozijnen-enschede` (bestaat niet meer; de homepage bedient Enschede).
 
 ## Structured data
 Geen `FAQPage`-schema meer (Google toont geen FAQ-resultaten meer). Vragen en antwoorden blijven gewoon zichtbaar op de pagina. Geen review- of rating-schema voor het eigen bedrijf.
